@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="AtkSharp">
+      <HintPath>..\..\..\..\..\..\programming\GtkSharp\BuildOutput\Release\AtkSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="CairoSharp">
+      <HintPath>..\..\..\..\..\..\programming\GtkSharp\BuildOutput\Release\CairoSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="GdkSharp">
+      <HintPath>..\..\..\..\..\..\programming\GtkSharp\BuildOutput\Release\GdkSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="GioSharp">
+      <HintPath>..\..\..\..\..\..\programming\GtkSharp\BuildOutput\Release\GioSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="GLibSharp">
+      <HintPath>..\..\..\..\..\..\programming\GtkSharp\BuildOutput\Release\GLibSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="GtkSharp">
+      <HintPath>..\..\..\..\..\..\programming\GtkSharp\BuildOutput\Release\GtkSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="PangoSharp">
+      <HintPath>..\..\..\..\..\..\programming\GtkSharp\BuildOutput\Release\PangoSharp.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
