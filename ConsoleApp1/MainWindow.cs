@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Gtk;
 
 namespace ConsoleApp1
@@ -11,6 +13,11 @@ namespace ConsoleApp1
             SetCloseOnExit();
             PopulateGui();
             ShowAll();
+        }
+
+        public MainWindow SetChoices(IEnumerable<String> choices, String label)
+        {
+            return this;
         }
 
         private void PopulateGui()
@@ -81,8 +88,18 @@ namespace ConsoleApp1
                 ShadowType = ShadowType.EtchedIn,
                 Expand = true
             };
-            var choices = new TextView();
-            sw.Add(choices);
+
+            var c = new List<ITreeViewChoice>
+            {
+                new TreeViewChoice("test"),
+                new TreeViewChoice("test") {Selected = true },
+                new TreeViewChoice("test"),
+                new TreeViewChoice("test")
+            };
+
+            var choices = new OrderedTreeView();
+            choices.SetChoices(c);
+            sw.Add(choices.GuiElement);
 
             var accept = new Button("Accept");
             var back = new Button("Back");
