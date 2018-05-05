@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Gdk;
 using Gtk;
+using Window = Gtk.Window;
 
 namespace ConsoleApp1
 {
@@ -14,6 +16,8 @@ namespace ConsoleApp1
             PopulateGui();
             ShowAll();
         }
+
+
 
         public MainWindow SetChoices(IEnumerable<String> choices, String label)
         {
@@ -29,7 +33,7 @@ namespace ConsoleApp1
                 ColumnHomogeneous = false,
                 RowHomogeneous = false,
                 ColumnSpacing = 10,
-                BorderWidth = 15
+                BorderWidth = 15,
             };
 
             AddLeftElements(leftContainer);
@@ -81,36 +85,27 @@ namespace ConsoleApp1
 
         private void AddLeftElements(Grid container)
         {
-            var label = new Label("Search: ");
-            var search = new Entry() {Expand = false};
-            var sw = new ScrolledWindow
-            {
-                ShadowType = ShadowType.EtchedIn,
-                Expand = true
-            };
-
+            var searchableThing = new SearchableTreeView();
+            var treeViewChoice = new TreeViewChoice("Settings") {Selected = true };
+            treeViewChoice.CalculateScore("test");
             var c = new List<ITreeViewChoice>
             {
-                new TreeViewChoice("test"),
-                new TreeViewChoice("test") {Selected = true },
-                new TreeViewChoice("test"),
+                new TreeViewChoice("Projectss"),
+                treeViewChoice,
+                new TreeViewChoice("cccc"),
                 new TreeViewChoice("test")
             };
-
-            var choices = new OrderedTreeView();
-            choices.SetChoices(c);
-            sw.Add(choices.GuiElement);
+            searchableThing.SetChoices(c);
 
             var accept = new Button("Accept");
             var back = new Button("Back");
             var exit = new Button("Exit");
 
-            container.Attach(label, 1, 1, 1, 1);
-            container.AttachNextTo(search, label, PositionType.Bottom, 1, 1);
-            container.AttachNextTo(sw, search, PositionType.Bottom, 1, 5);
-            container.AttachNextTo(accept, sw, PositionType.Bottom, 1, 1);
+            container.Add(searchableThing);
+            container.AttachNextTo(accept, searchableThing, PositionType.Bottom, 1, 1);
             container.AttachNextTo(back, accept, PositionType.Bottom,1,1);  
             container.AttachNextTo(exit, back, PositionType.Bottom,1,1);  
+
         }
 
         private void OnChanged(object sender, EventArgs e)
@@ -118,5 +113,14 @@ namespace ConsoleApp1
             var search = (Entry) sender;
             Console.WriteLine(search.Text);
         }
+        protected override bool OnKeyPressEvent(EventKey evnt)
+        {
+            if (evnt.Key == Gdk.Key.Tab)
+            {
+                return false;
+            }
+            return base.OnKeyPressEvent(evnt);
+        }
+ 
     }
 }

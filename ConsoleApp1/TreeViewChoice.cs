@@ -8,7 +8,7 @@ namespace ConsoleApp1
     internal interface ITreeViewChoice : IComparable<ITreeViewChoice>
     {
         string GetChoiceText();
-
+        ITreeViewChoice CalculateScore(string s);
         int GetScore();
         bool IsSelected();
     }
@@ -34,14 +34,15 @@ namespace ConsoleApp1
             return Score;
         }
 
-        public void CalculateScore(string compareString)
+        public ITreeViewChoice CalculateScore(string compareString)
         {
             Score = GetJoshScore(ChoiceText, compareString);
+            return this;
         }
 
         public int CompareTo(ITreeViewChoice other)
         {
-            return GetScore().CompareTo(other.GetScore());
+            return other.GetScore().CompareTo(Score);
         }
 
         public bool IsSelected()
