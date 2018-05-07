@@ -100,26 +100,34 @@ namespace ConsoleApp1
             var back = new Button("Back");
             back.Clicked += OnBackClick;
             var exit = new Button("Exit");
+            exit.Clicked += OnExitClick;
 
             container.Add(_searchableThing);
             container.AttachNextTo(accept, _searchableThing, PositionType.Bottom, 1, 1);
             container.AttachNextTo(back, accept, PositionType.Bottom,1,1);  
             container.AttachNextTo(exit, back, PositionType.Bottom,1,1);  
+        }
 
+        private void Callback(UserActionResult.ResultType t, IEnumerable<ITreeViewChoice> c)
+        {
+            _userActionResult.Result = t;
+            _userActionResult.UserChoices = c;
+            _acceptCallback();
+        }
+        private void OnExitClick(object sender, EventArgs e)
+        {
+            Callback(UserActionResult.ResultType.ExitApp, null);
+            Application.Quit();
         }
 
         private void OnBackClick(object sender, EventArgs e)
         {
-            _userActionResult.Result = UserActionResult.ResultType.Canceled;
-            _userActionResult.UserChoices = null;
-            _acceptCallback();
+            Callback(UserActionResult.ResultType.Canceled, null);
         }
 
         private void OnAcceptClick(object sender, EventArgs e)
         {
-            _userActionResult.Result = UserActionResult.ResultType.Accept;
-            _userActionResult.UserChoices = _searchableThing.GetSelectedItems();
-            _acceptCallback();
+            Callback(UserActionResult.ResultType.Accept, _searchableThing.GetSelectedItems());
         }
 
         public MainWindow SetMultiSelect(bool b)

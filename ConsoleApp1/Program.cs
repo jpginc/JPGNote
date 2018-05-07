@@ -7,18 +7,23 @@ public class GtkHelloWorld
     public static void Main()
     {
         var manager = new GuiManager();
-        var choice = manager.GetChoice(GetChoices());
-        if (choice.Result == UserActionResult.ResultType.Accept)
+        while (true)
         {
-            foreach (var s in choice.UserChoices) Console.WriteLine(s.GetChoiceText());
-            ;
-        }
-
-        manager.GetChoices(GetChoices());
-        if (choice.Result == UserActionResult.ResultType.Accept)
-        {
-            foreach (var s in choice.UserChoices) Console.WriteLine(s.GetChoiceText());
-            ;
+            var choice = manager.GetChoice(GetChoices());
+            switch (choice.Result)
+            {
+                case UserActionResult.ResultType.ExitApp:
+                    return;
+                case UserActionResult.ResultType.Canceled:
+                    Console.WriteLine("cancelled!");
+                    break;
+                case UserActionResult.ResultType.Accept:
+                    foreach (var s in choice.UserChoices) Console.WriteLine(s.GetChoiceText());
+                    break;
+                case UserActionResult.ResultType.NoInput:
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 
