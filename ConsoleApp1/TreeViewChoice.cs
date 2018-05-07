@@ -11,38 +11,39 @@ namespace ConsoleApp1
         ITreeViewChoice CalculateScore(string s);
         int GetScore();
         bool IsSelected();
+        ITreeViewChoice SetSelected(bool selected);
     }
 
     internal class TreeViewChoice : ITreeViewChoice
     {
         public bool Selected = false;
-        private string ChoiceText;
-        private int Score = 0;
+        private readonly string _choiceText;
+        private int _score = 0;
 
         public TreeViewChoice(string choiceText)
         {
-            ChoiceText = choiceText;
+            _choiceText = choiceText;
         }
 
         public string GetChoiceText()
         {
-            return ChoiceText;
+            return _choiceText;
         }
 
         public int GetScore()
         {
-            return Score;
+            return _score;
         }
 
         public ITreeViewChoice CalculateScore(string compareString)
         {
-            Score = GetJoshScore(ChoiceText, compareString);
+            _score = GetJoshScore(_choiceText, compareString);
             return this;
         }
 
         public int CompareTo(ITreeViewChoice other)
         {
-            return other.GetScore().CompareTo(Score);
+            return other.GetScore().CompareTo(_score);
         }
 
         public bool IsSelected()
@@ -50,19 +51,10 @@ namespace ConsoleApp1
             return Selected;
         }
 
-        public void Select(bool isSelected)
+        public ITreeViewChoice SetSelected(bool selected)
         {
-            Selected = isSelected;
-        }
-
-        public void Select()
-        {
-            Selected = true;
-        }
-
-        public void DeSelect()
-        {
-            Selected = false;
+            Selected = selected;
+            return this;
         }
     }
 }
