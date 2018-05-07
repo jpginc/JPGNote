@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using GLib;
-using Application = Gtk.Application;
-using System.Threading;
-using Thread = System.Threading.Thread;
-
+using Gtk;
 
 namespace ConsoleApp1
 {
@@ -19,6 +15,7 @@ namespace ConsoleApp1
         {
             _prompt = prompt;
         }
+
         public GuiManager()
         {
             new Thread(() =>
@@ -30,7 +27,6 @@ namespace ConsoleApp1
             ).Start();
 
             Thread.Sleep(1000);
-
         }
 
         private bool AcceptCallback()
@@ -38,34 +34,22 @@ namespace ConsoleApp1
             return _waitForCallbackHandle.Set();
         }
 
-        public ITreeViewChoice GetChoice(IEnumerable<ITreeViewChoice> choices)
+        public UserActionResult GetChoice(IEnumerable<ITreeViewChoice> choices)
         {
-            GetChoice(false, choices);
-            Console.WriteLine("Got a single choice!");
-            return null;
+            return GetChoice(false, choices);
         }
 
-        public IEnumerable<ITreeViewChoice> GetChoices(IEnumerable<ITreeViewChoice> choices)
+        public UserActionResult GetChoices(IEnumerable<ITreeViewChoice> choices)
         {
-            GetChoice(true, choices);
-            Console.WriteLine("Got lots of choices");
-            return null;
+            return GetChoice(true, choices);
         }
 
-        private IEnumerable<ITreeViewChoice> GetChoice(bool multiSelect, IEnumerable<ITreeViewChoice> choices)
+        private UserActionResult GetChoice(bool multiSelect, IEnumerable<ITreeViewChoice> choices)
         {
-            //new Thread(() => { 
-                if (choices == null)
-                {
-                    throw new Exception("shit");
-                }
-                _gui.SetChoices(choices, _prompt)
+            _gui.SetChoices(choices, _prompt)
                 .SetMultiSelect(multiSelect);
-                Console.WriteLine("Hello, world");
-            //}).Start();
             _waitForCallbackHandle.WaitOne();
-            //todo
-            return null;
+            return _gui.GetUserActionResult();
         }
     }
 }

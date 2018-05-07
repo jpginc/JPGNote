@@ -11,6 +11,7 @@ namespace ConsoleApp1
     {
         private readonly Func<bool> _acceptCallback;
         SearchableTreeView _searchableThing;
+        private UserActionResult _userActionResult = new UserActionResult {Result = UserActionResult.ResultType.NoInput};
         public MainWindow(string title, Func<bool> acceptCallback) : base(title)
         {
             _acceptCallback = acceptCallback;
@@ -25,6 +26,8 @@ namespace ConsoleApp1
         {
             _searchableThing.SetChoices(choices);
             _searchableThing.SetLabelText(label);
+            _userActionResult.Result = UserActionResult.ResultType.NoInput;
+            _userActionResult.UserChoices = null;
             return this;
         }
 
@@ -107,6 +110,8 @@ namespace ConsoleApp1
         private void OnAcceptClick(object sender, EventArgs e)
         {
             Console.WriteLine("click handler working");
+            _userActionResult.Result = UserActionResult.ResultType.Accept;
+            _userActionResult.UserChoices = _searchableThing.GetSelectedItems();
             _acceptCallback();
         }
 
@@ -114,6 +119,11 @@ namespace ConsoleApp1
         {
             _searchableThing.SetMultiSelect(b);
             return this;
+        }
+
+        public UserActionResult GetUserActionResult()
+        {
+            return _userActionResult;
         }
     }
 }

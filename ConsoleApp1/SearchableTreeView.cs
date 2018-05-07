@@ -69,5 +69,10 @@ namespace ConsoleApp1
             _treeview.SetMultiSelect(b);
             return this;
         }
+
+        public IEnumerable<ITreeViewChoice> GetSelectedItems()
+        {
+            return _treeview.GetSelectedItems();
+        }
     }
 }

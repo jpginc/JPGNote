@@ -81,5 +81,14 @@ namespace ConsoleApp1
             }
             return UpdateSelectedItem(item);
         }
+
+        public IEnumerable<ITreeViewChoice> GetSelectedItems()
+        {
+            return Selection.GetSelectedRows().Select(p =>
+            {
+                _store.GetIter(out var item, p);
+                return (ITreeViewChoice) _store.GetValue(item, (int) Column.Value);
+            }).ToList();
+        }
     }
 }
