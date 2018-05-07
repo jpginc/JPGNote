@@ -43,9 +43,20 @@ namespace ConsoleApp1
             return this;
         }
 
-        public IEnumerable<ITreeViewChoice> GetSelectedItems()
+        public JpgTreeView ToggleTopItem()
         {
-            return null;
+            TreeIter item;
+            _store.GetIterFirst(out item);
+            if (Selection.IterIsSelected(item))
+            {
+                Selection.UnselectIter(item);
+            }
+            else
+            {
+                Selection.SelectIter(item);
+            }
+
+            return this;
         }
     }
 }

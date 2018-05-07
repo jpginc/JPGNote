@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Gtk;
-using Key = Gdk.Key;
 
 namespace ConsoleApp1
 {
@@ -12,8 +11,8 @@ namespace ConsoleApp1
         private readonly NoTabSearchEntry _search;
         private readonly JpgTreeView _treeview;
         private IEnumerable<ITreeViewChoice> _choices;
-        public int Height = 5;
-        public int Width = 1;
+        public new int Height = 5;
+        public new int Width = 1;
 
         public SearchableTreeView()
         {
@@ -21,8 +20,6 @@ namespace ConsoleApp1
             _search = new NoTabSearchEntry {Expand = false};
             _search.Changed += OnSearchChange;
             _search.Activated += OnSearchSubmit;
-            _search.KeyPressEvent += OnTab;
-            _search.MoveFocus += Test;
 
             BottomElement = new ScrolledWindow
             {
@@ -36,19 +33,9 @@ namespace ConsoleApp1
             AttachNextTo(BottomElement, _search, PositionType.Bottom, Width, Height);
         }
 
-        private void Test(object o, MoveFocusArgs args)
-        {
-            args.RetVal = false;
-        }
-
-        private void OnTab(object o, KeyPressEventArgs args)
-        {
-            if (args.Event.Key == Key.Tab) Console.WriteLine("tab");
-        }
-
         private void OnSearchSubmit(object sender, EventArgs e)
         {
-            Console.WriteLine("Here");
+            _treeview.ToggleTopItem();
         }
 
         private void OnSearchChange(object sender, EventArgs e)
