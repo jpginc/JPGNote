@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Gdk;
 using Gtk;
+using Key = Gdk.Key;
 
 namespace ConsoleApp1
 {
-    class SearchableTreeView : Grid
+    internal class SearchableTreeView : Grid
     {
-
         private readonly Label _label;
-        private readonly SearchEntry _search;
+        private readonly NoTabSearchEntry _search;
         private readonly JpgTreeView _treeview;
         private IEnumerable<ITreeViewChoice> _choices;
         public int Height = 5;
@@ -20,7 +18,7 @@ namespace ConsoleApp1
         public SearchableTreeView()
         {
             _label = new Label("Search: ");
-            _search = new SearchEntry() {Expand = false};
+            _search = new NoTabSearchEntry {Expand = false};
             _search.Changed += OnSearchChange;
             _search.Activated += OnSearchSubmit;
             _search.KeyPressEvent += OnTab;
@@ -45,12 +43,7 @@ namespace ConsoleApp1
 
         private void OnTab(object o, KeyPressEventArgs args)
         {
-            if (args.Event.Key == Gdk.Key.Tab)
-            {
-                Console.WriteLine("tab");
-                //args.RetVal = false;
-                //_search.GrabFocus();
-            }
+            if (args.Event.Key == Key.Tab) Console.WriteLine("tab");
         }
 
         private void OnSearchSubmit(object sender, EventArgs e)
@@ -61,7 +54,7 @@ namespace ConsoleApp1
         private void OnSearchChange(object sender, EventArgs e)
         {
             var searchText = ((SearchEntry) sender).Text;
-            _choices = _choices.Select(s => s.CalculateScore(searchText)).OrderBy(s=>s);
+            _choices = _choices.Select(s => s.CalculateScore(searchText)).OrderBy(s => s);
             UpdateChoices();
         }
 
@@ -75,7 +68,7 @@ namespace ConsoleApp1
 
         public void SetChoices(IEnumerable<ITreeViewChoice> treeViewChoices)
         {
-            _choices = treeViewChoices.Select(s=>s);
+            _choices = treeViewChoices.Select(s => s);
             UpdateChoices();
         }
 
@@ -83,6 +76,5 @@ namespace ConsoleApp1
         {
             _treeview.SetChoices(_choices);
         }
-
-   }
+    }
 }

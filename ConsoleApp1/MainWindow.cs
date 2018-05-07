@@ -17,8 +17,6 @@ namespace ConsoleApp1
             ShowAll();
         }
 
-
-
         public MainWindow SetChoices(IEnumerable<String> choices, String label)
         {
             return this;
@@ -113,14 +111,5 @@ namespace ConsoleApp1
             var search = (Entry) sender;
             Console.WriteLine(search.Text);
         }
-        protected override bool OnKeyPressEvent(EventKey evnt)
-        {
-            if (evnt.Key == Gdk.Key.Tab)
-            {
-                return false;
-            }
-            return base.OnKeyPressEvent(evnt);
-        }
- 
     }
 }

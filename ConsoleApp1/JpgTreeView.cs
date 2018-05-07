@@ -31,7 +31,6 @@ namespace ConsoleApp1
 
         public JpgTreeView SetChoices(IEnumerable<ITreeViewChoice> choices)
         {
-            //todo shouldn't be sorting here, there is probably a way to do this automatically
             _store.Clear();
             foreach (var choice in choices)
             {
@@ -42,6 +41,11 @@ namespace ConsoleApp1
                 }
             }
             return this;
+        }
+
+        public IEnumerable<ITreeViewChoice> GetSelectedItems()
+        {
+            return null;
         }
     }
 }
