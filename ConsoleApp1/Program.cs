@@ -6,10 +6,9 @@ public class GtkHelloWorld
 {
     public static void Main()
     {
-        Application.Init();
-        var mainWindow = new MainWindow("JPG Tree");
-        mainWindow.SetChoices(GetChoices(), "Chose Something!!");
-        Application.Run();
+        var manager = new GuiManager();
+        manager.GetChoice(GetChoices());
+        manager.GetChoices(GetChoices());
     }
 
     private static IEnumerable<ITreeViewChoice> GetChoices()

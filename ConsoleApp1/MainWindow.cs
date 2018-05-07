@@ -9,14 +9,17 @@ namespace ConsoleApp1
 {
     internal class MainWindow : Window
     {
+        private readonly Func<bool> _acceptCallback;
         SearchableTreeView _searchableThing;
-        public MainWindow(string title) : base(title)
+        public MainWindow(string title, Func<bool> acceptCallback) : base(title)
         {
+            _acceptCallback = acceptCallback;
             SetSize();
             SetCloseOnExit();
             PopulateGui();
             ShowAll();
         }
+
 
         public MainWindow SetChoices(IEnumerable<ITreeViewChoice> choices, string label)
         {
@@ -79,9 +82,9 @@ namespace ConsoleApp1
             var choices = new TextView();
             sw.Add(choices);
             var save = new Button("Save");
-            container.Attach(label, 2, 1, 1, 1);
-            container.Attach(sw, 2, 2, 1, 8);
-            container.Attach(save, 2, 10, 1, 1);
+            container.Add(label);
+            container.AttachNextTo(sw, label, PositionType.Bottom, 1, 8);
+            container.AttachNextTo(save, sw, PositionType.Bottom, 1, 1);
         }
 
         private void AddLeftElements(Grid container)
@@ -90,6 +93,7 @@ namespace ConsoleApp1
 
 
             var accept = new Button("Accept");
+            accept.Clicked += OnAcceptClick;
             var back = new Button("Back");
             var exit = new Button("Exit");
 
@@ -100,10 +104,16 @@ namespace ConsoleApp1
 
         }
 
-        private void OnChanged(object sender, EventArgs e)
+        private void OnAcceptClick(object sender, EventArgs e)
         {
-            var search = (Entry) sender;
-            Console.WriteLine(search.Text);
+            Console.WriteLine("click handler working");
+            _acceptCallback();
+        }
+
+        public MainWindow SetMultiSelect(bool b)
+        {
+            _searchableThing.SetMultiSelect(b);
+            return this;
         }
     }
 }

@@ -63,5 +63,11 @@ namespace ConsoleApp1
         {
             _treeview.SetChoices(_choices);
         }
+
+        public SearchableTreeView SetMultiSelect(bool b)
+        {
+            _treeview.SetMultiSelect(b);
+            return this;
+        }
     }
 }

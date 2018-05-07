@@ -55,6 +55,7 @@ namespace ConsoleApp1
         public JpgTreeView SetChoices(IEnumerable<ITreeViewChoice> choices)
         {
             _store.Clear();
+            Console.WriteLine("getting here");
             foreach (var choice in choices)
             {
                 TreeIter x = _store.AppendValues(choice.GetChoiceText(), choice);
