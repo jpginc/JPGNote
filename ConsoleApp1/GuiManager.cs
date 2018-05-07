@@ -18,6 +18,7 @@ namespace ConsoleApp1
 
         public GuiManager()
         {
+            //this shit isn't thread safe
             new Thread(() =>
                 {
                     Application.Init();
@@ -25,8 +26,7 @@ namespace ConsoleApp1
                     Application.Run();
                 }
             ).Start();
-
-            Thread.Sleep(1000);
+            Thread.Sleep(1000); 
         }
 
         private bool AcceptCallback()

@@ -46,11 +46,13 @@ namespace ConsoleApp1
             return other.GetScore().CompareTo(_score);
         }
 
+        //this could be made better but have to worry about threads with the treeview sort wrapper
         public bool IsSelected()
         {
             return Selected;
         }
 
+        //this could be made better but have to worry about threads with the treeview sort wrapper
         public ITreeViewChoice SetSelected(bool selected)
         {
             Selected = selected;

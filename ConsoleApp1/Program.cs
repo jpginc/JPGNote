@@ -29,14 +29,11 @@ public class GtkHelloWorld
 
     private static IEnumerable<ITreeViewChoice> GetChoices()
     {
-        var treeViewChoice = new TreeViewChoice("Settings") {Selected = true};
-        treeViewChoice.CalculateScore("test");
         var c = new List<ITreeViewChoice>
         {
-            new TreeViewChoice("Projectss"),
-            treeViewChoice,
-            new TreeViewChoice("cccc"),
-            new TreeViewChoice("test")
+            new TreeViewChoice("New Note"),
+            new TreeViewChoice("Settings"),
+            new TreeViewChoice("Exit")
         };
         return c;
     }

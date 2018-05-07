@@ -52,7 +52,7 @@ namespace ConsoleApp1
 
         private void SetCloseOnExit()
         {
-            DeleteEvent += delegate { Application.Quit(); };
+            DeleteEvent += Exit;
         }
 
         private void SetSize()
@@ -94,13 +94,21 @@ namespace ConsoleApp1
         {
             _searchableThing = new SearchableTreeView();
 
+            AccelGroup agr = new AccelGroup();
+            AddAccelGroup(agr);
 
-            var accept = new Button("Accept");
+            var accept = new Button("_Accept");
             accept.Clicked += OnAcceptClick;
-            var back = new Button("Back");
+            accept.AddAccelerator("activate", agr, 
+                new AccelKey(Gdk.Key.a, ModifierType.Mod1Mask, AccelFlags.Visible));
+            var back = new Button("_Back");
             back.Clicked += OnBackClick;
-            var exit = new Button("Exit");
-            exit.Clicked += OnExitClick;
+            back.AddAccelerator("activate", agr, 
+                new AccelKey(Gdk.Key.b, ModifierType.Mod1Mask, AccelFlags.Visible));
+            var exit = new Button("E_xit");
+            exit.Clicked += Exit;
+            exit.AddAccelerator("activate", agr, 
+                new AccelKey(Gdk.Key.x, ModifierType.Mod1Mask, AccelFlags.Visible));
 
             container.Add(_searchableThing);
             container.AttachNextTo(accept, _searchableThing, PositionType.Bottom, 1, 1);
@@ -112,9 +120,9 @@ namespace ConsoleApp1
         {
             _userActionResult.Result = t;
             _userActionResult.UserChoices = c;
-            _acceptCallback();
+            _acceptCallback?.Invoke();
         }
-        private void OnExitClick(object sender, EventArgs e)
+        private void Exit(object sender, EventArgs e)
         {
             Callback(UserActionResult.ResultType.ExitApp, null);
             Application.Quit();
