@@ -98,6 +98,7 @@ namespace ConsoleApp1
             var accept = new Button("Accept");
             accept.Clicked += OnAcceptClick;
             var back = new Button("Back");
+            back.Clicked += OnBackClick;
             var exit = new Button("Exit");
 
             container.Add(_searchableThing);
@@ -107,9 +108,15 @@ namespace ConsoleApp1
 
         }
 
+        private void OnBackClick(object sender, EventArgs e)
+        {
+            _userActionResult.Result = UserActionResult.ResultType.Canceled;
+            _userActionResult.UserChoices = null;
+            _acceptCallback();
+        }
+
         private void OnAcceptClick(object sender, EventArgs e)
         {
-            Console.WriteLine("click handler working");
             _userActionResult.Result = UserActionResult.ResultType.Accept;
             _userActionResult.UserChoices = _searchableThing.GetSelectedItems();
             _acceptCallback();
