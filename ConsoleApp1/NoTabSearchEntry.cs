@@ -3,15 +3,18 @@ using Gdk;
 using Gtk;
 using Key = Gdk.Key;
 
-internal class NoTabSearchEntry : SearchEntry
+namespace ConsoleApp1
 {
-    protected override bool OnKeyPressEvent(EventKey evnt)
+    internal class NoTabSearchEntry : SearchEntry
     {
-        if (evnt.Key == Key.Tab)
+        protected override bool OnKeyPressEvent(EventKey evnt)
         {
-            Console.WriteLine("tab pressed");
-            return true;
+            if (evnt.Key == Key.Tab)
+            {
+                Console.WriteLine("tab pressed");
+                return true;
+            }
+            return base.OnKeyPressEvent(evnt);
         }
-        return base.OnKeyPressEvent(evnt);
     }
 }

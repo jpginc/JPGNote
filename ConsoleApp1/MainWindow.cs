@@ -9,6 +9,7 @@ namespace ConsoleApp1
 {
     internal class MainWindow : Window
     {
+        SearchableTreeView _searchableThing;
         public MainWindow(string title) : base(title)
         {
             SetSize();
@@ -17,8 +18,10 @@ namespace ConsoleApp1
             ShowAll();
         }
 
-        public MainWindow SetChoices(IEnumerable<String> choices, String label)
+        public MainWindow SetChoices(IEnumerable<ITreeViewChoice> choices, string label)
         {
+            _searchableThing.SetChoices(choices);
+            _searchableThing.SetLabelText(label);
             return this;
         }
 
@@ -83,24 +86,15 @@ namespace ConsoleApp1
 
         private void AddLeftElements(Grid container)
         {
-            var searchableThing = new SearchableTreeView();
-            var treeViewChoice = new TreeViewChoice("Settings") {Selected = true };
-            treeViewChoice.CalculateScore("test");
-            var c = new List<ITreeViewChoice>
-            {
-                new TreeViewChoice("Projectss"),
-                treeViewChoice,
-                new TreeViewChoice("cccc"),
-                new TreeViewChoice("test")
-            };
-            searchableThing.SetChoices(c);
+            _searchableThing = new SearchableTreeView();
+
 
             var accept = new Button("Accept");
             var back = new Button("Back");
             var exit = new Button("Exit");
 
-            container.Add(searchableThing);
-            container.AttachNextTo(accept, searchableThing, PositionType.Bottom, 1, 1);
+            container.Add(_searchableThing);
+            container.AttachNextTo(accept, _searchableThing, PositionType.Bottom, 1, 1);
             container.AttachNextTo(back, accept, PositionType.Bottom,1,1);  
             container.AttachNextTo(exit, back, PositionType.Bottom,1,1);  
 
