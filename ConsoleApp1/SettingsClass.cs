@@ -10,6 +10,8 @@ namespace ConsoleApp1
     internal class SettingsClass
     {
         private static string _fileName;
+        //todo get password from user
+        private static string _password = "password";
         public static SettingsClass Instance { get; set; }
 
         [DataMember] public NotesManager NotesManager { get; private set; }
@@ -19,13 +21,18 @@ namespace ConsoleApp1
             NotesManager = new NotesManager();
         }
 
-        public static SettingsClass Start(string fileName)
+        public static SettingsClass Start(string fileName, string password)
         {
+            if (!password.Equals(""))
+            {
+                _password = password;
+            }
+            StreamReader file = null;
             _fileName = fileName;
             try
             {
-                var file = File.OpenText(fileName);
-                var s = file.ReadToEnd();
+                file = File.OpenText(fileName);
+                var s = AESThenHMAC.SimpleDecryptWithPassword(file.ReadToEnd(), _password);
                 file.Close();
                 var ms = new MemoryStream(Encoding.UTF8.GetBytes(s));
                 var ser = new DataContractJsonSerializer(typeof(SettingsClass));
@@ -36,6 +43,11 @@ namespace ConsoleApp1
             {
                 Console.WriteLine(e.StackTrace);
                 Instance = new SettingsClass();
+                throw e;
+            }
+            finally
+            {
+                file?.Close();
             }
 
             NotesManager.Instance = Instance.NotesManager;
@@ -55,7 +67,7 @@ namespace ConsoleApp1
             StreamWriter writer = new StreamWriter(_fileName);
             // Rewrite the entire value of s to the file
             stream1.Position = 0;
-            writer.Write(sr.ReadToEnd());
+            writer.Write(AESThenHMAC.SimpleEncryptWithPassword(sr.ReadToEnd(), _password));
             writer.Close();
             return this;
         }

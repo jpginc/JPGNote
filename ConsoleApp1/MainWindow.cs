@@ -72,7 +72,7 @@ namespace ConsoleApp1
 
         private void SetSize()
         {
-            SetDefaultSize(500, 900);
+            SetDefaultSize(900, 500);
             SetPosition(WindowPosition.Center);
         }
 
