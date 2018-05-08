@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using Gdk;
 using Gtk;
+using Key = Gdk.Key;
 using Window = Gtk.Window;
 
 namespace ConsoleApp1
@@ -12,8 +12,11 @@ namespace ConsoleApp1
         public static MainWindow Instance { get; } = new MainWindow("JPG Tree");
 
         public Func<bool> UserActionCallback;
-        SearchableTreeView _searchableThing;
-        private readonly UserActionResult _userActionResult = new UserActionResult {Result = UserActionResult.ResultType.NoInput};
+        private SearchableTreeView _searchableThing;
+
+        private readonly UserActionResult _userActionResult =
+            new UserActionResult {Result = UserActionResult.ResultType.NoInput};
+
         private Label _messageDialog;
         private TextView _inputWidget;
         private readonly AccelGroup _accelGroup = new AccelGroup();
@@ -46,7 +49,7 @@ namespace ConsoleApp1
                 ColumnHomogeneous = false,
                 RowHomogeneous = false,
                 ColumnSpacing = 10,
-                BorderWidth = 15,
+                BorderWidth = 15
             };
 
             AddNotificationElement(topContainer);
@@ -80,12 +83,8 @@ namespace ConsoleApp1
         {
             //todo get from settings
             if (name.Equals("height"))
-            {
                 return "500";
-            } else if( name.Equals("width"))
-            { 
-                return "900";
-            }
+            if (name.Equals("width")) return "900";
             throw new Exception("don't actually check settings yet");
         }
 
@@ -101,8 +100,8 @@ namespace ConsoleApp1
             sw.Add(_inputWidget);
             var save = new Button("_Save");
             save.Clicked += OnSaveClick;
-            save.AddAccelerator("activate", _accelGroup, 
-                new AccelKey(Gdk.Key.a, ModifierType.Mod1Mask, AccelFlags.Visible));
+            save.AddAccelerator("activate", _accelGroup,
+                new AccelKey(Key.a, ModifierType.Mod1Mask, AccelFlags.Visible));
             container.Add(label);
             container.AttachNextTo(sw, label, PositionType.Bottom, 1, 8);
             container.AttachNextTo(save, sw, PositionType.Bottom, 1, 1);
@@ -121,21 +120,21 @@ namespace ConsoleApp1
 
             var accept = new Button("_Accept");
             accept.Clicked += OnAcceptClick;
-            accept.AddAccelerator("activate", _accelGroup, 
-                new AccelKey(Gdk.Key.a, ModifierType.Mod1Mask, AccelFlags.Visible));
+            accept.AddAccelerator("activate", _accelGroup,
+                new AccelKey(Key.a, ModifierType.Mod1Mask, AccelFlags.Visible));
             var back = new Button("_Back");
             back.Clicked += OnBackClick;
-            back.AddAccelerator("activate", _accelGroup, 
-                new AccelKey(Gdk.Key.b, ModifierType.Mod1Mask, AccelFlags.Visible));
+            back.AddAccelerator("activate", _accelGroup,
+                new AccelKey(Key.b, ModifierType.Mod1Mask, AccelFlags.Visible));
             var exit = new Button("E_xit");
             exit.Clicked += Exit;
-            exit.AddAccelerator("activate", _accelGroup, 
-                new AccelKey(Gdk.Key.x, ModifierType.Mod1Mask, AccelFlags.Visible));
+            exit.AddAccelerator("activate", _accelGroup,
+                new AccelKey(Key.x, ModifierType.Mod1Mask, AccelFlags.Visible));
 
             container.Add(_searchableThing);
             container.AttachNextTo(accept, _searchableThing, PositionType.Bottom, 1, 1);
-            container.AttachNextTo(back, accept, PositionType.Bottom,1,1);  
-            container.AttachNextTo(exit, back, PositionType.Bottom,1,1);  
+            container.AttachNextTo(back, accept, PositionType.Bottom, 1, 1);
+            container.AttachNextTo(exit, back, PositionType.Bottom, 1, 1);
         }
 
         private void Callback(UserActionResult.ResultType t, IEnumerable<ITreeViewChoice> c)
@@ -146,6 +145,7 @@ namespace ConsoleApp1
             _userActionResult.SingleLineInput = _searchableThing.GetSearchValue();
             UserActionCallback?.Invoke();
         }
+
         private void Exit(object sender, EventArgs e)
         {
             //Application.Quit();
@@ -186,13 +186,14 @@ namespace ConsoleApp1
                 _searchableThing.Reset();
                 Notify("");
             }
+
             return this;
         }
 
         public void Notify(string message)
         {
             _messageDialog.Text = message;
-            Color color = new Color();
+            var color = new Color();
             Color.Parse("default", ref color);
             _messageDialog.ModifyBg(StateType.Normal, color);
         }
@@ -201,7 +202,7 @@ namespace ConsoleApp1
         {
             _messageDialog.Text = message;
 
-            Color color = new Color();
+            var color = new Color();
             Color.Parse("red", ref color);
             _messageDialog.ModifyBg(StateType.Normal, color);
         }

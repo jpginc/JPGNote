@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using Gtk;
 
@@ -12,22 +13,24 @@ namespace ConsoleApp1
 
         private GuiManager()
         {
+            ManualResetEvent ev = new ManualResetEvent(false);
             //this shit isn't thread safe
             new Thread(() =>
                 {
                     Application.Init();
                     _gui = MainWindow.Instance;
                     _gui.UserActionCallback = AcceptCallback;
+                    ev.Set();
                     Application.Run();
                 }
             ).Start();
-            Thread.Sleep(1000);
+            ev.WaitOne();
         }
 
         private bool AcceptCallback()
         {
             //todo fix threads
-            Thread.Sleep(300);
+            //Thread.Sleep(300);
             _waitForCallbackHandle.Set();
             return true;
         }

@@ -17,7 +17,10 @@ namespace ConsoleApp1
 
         public JpgTreeView SetMultiSelect(bool doMulti)
         {
-            Selection.Mode = doMulti ? SelectionMode.Multiple : SelectionMode.Single;
+            //GuiThread.Go(() =>
+            //{
+                Selection.Mode = doMulti ? SelectionMode.Multiple : SelectionMode.Single;
+            //});
             return this;
         }
 
@@ -72,25 +75,29 @@ namespace ConsoleApp1
 
         public JpgTreeView SetChoices(IEnumerable<ITreeViewChoice> choices)
         {
-            //todo this is probably where threads are dying
-            _store.Clear();
-            foreach (var choice in choices)
-            {
-                var x = _store.AppendValues(choice.GetChoiceText(), choice);
-                if (choice.IsSelected())
+            //GuiThread.Go(() =>
+            //{
+                _store.Clear();
+                foreach (var choice in choices)
                 {
-                    Console.WriteLine(choice.GetChoiceText() + " is selected");
-                    Selection.SelectIter(x);
+                    var x = _store.AppendValues(choice.GetChoiceText(), choice);
+                    if (choice.IsSelected())
+                    {
+                        Console.WriteLine(choice.GetChoiceText() + " is selected");
+                        Selection.SelectIter(x);
+                    }
                 }
-            }
-
+            //});
             return this;
         }
 
         public JpgTreeView ToggleTopItem()
         {
-            _store.GetIterFirst(out var item);
-            ToggleSelect(item);
+            //GuiThread.Go(() =>
+            //{
+                _store.GetIterFirst(out var item);
+                ToggleSelect(item);
+            //});
             return this;
         }
 
@@ -102,11 +109,16 @@ namespace ConsoleApp1
 
         public IEnumerable<ITreeViewChoice> GetSelectedItems()
         {
-            return Selection.GetSelectedRows().Select(p =>
-            {
-                _store.GetIter(out var item, p);
-                return (ITreeViewChoice) _store.GetValue(item, (int) Column.Value);
-            }).ToList();
+            IEnumerable<ITreeViewChoice> retVal = null;
+            //GuiThread.Go(() =>
+            //{
+                retVal = Selection.GetSelectedRows().Select(p =>
+                {
+                    _store.GetIter(out var item, p);
+                    return (ITreeViewChoice) _store.GetValue(item, (int) Column.Value);
+                }).ToList();
+            //});
+            return retVal;
         }
     }
 }

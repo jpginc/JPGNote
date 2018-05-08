@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Gtk;
 
 namespace ConsoleApp1
@@ -55,8 +56,11 @@ namespace ConsoleApp1
 
         public void SetChoices(IEnumerable<ITreeViewChoice> treeViewChoices)
         {
-            _choices = treeViewChoices.Select(s => s);
-            UpdateChoices();
+            GuiThread.Go(() =>
+            {
+                _choices = treeViewChoices.Select(s => s);
+                UpdateChoices();
+            });
         }
 
         private void UpdateChoices()
