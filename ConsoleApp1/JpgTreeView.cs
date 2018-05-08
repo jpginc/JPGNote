@@ -7,7 +7,7 @@ namespace ConsoleApp1
 {
     internal class JpgTreeView : TreeView
     {
-        private readonly ListStore _store = new ListStore(typeof(string), typeof(ITreeViewChoice));
+        private readonly TreeStore _store = new TreeStore(typeof(string), typeof(ITreeViewChoice));
         private DateTime _lastClick = DateTime.Now;
         private string _lastText;
 
