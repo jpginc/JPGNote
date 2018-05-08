@@ -37,7 +37,7 @@ namespace ConsoleApp1
 
         private JpgTreeView UpdateSelectedItem(TreeIter item)
         {
-            ((ITreeViewChoice) _store.GetValue(item, (int) Column.Value))
+            ((ITreeViewChoice) _store.GetValue(item, (int) Column.Value))?
                 .SetSelected(Selection.IterIsSelected(item));
             return this;
         }
@@ -96,7 +96,7 @@ namespace ConsoleApp1
 
         private void NotifyOfSelect(TreeIter item)
         {
-            ((ITreeViewChoice) _store.GetValue(item, (int) Column.Value))
+            ((ITreeViewChoice) _store.GetValue(item, (int) Column.Value))?
                 .OnTreeViewSelectCallback(this);
         }
 

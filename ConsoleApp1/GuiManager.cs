@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading;
 using Gtk;
 
@@ -23,12 +21,15 @@ namespace ConsoleApp1
                     Application.Run();
                 }
             ).Start();
-            Thread.Sleep(1000); 
+            Thread.Sleep(1000);
         }
 
         private bool AcceptCallback()
         {
-            return _waitForCallbackHandle.Set();
+            //todo fix threads
+            Thread.Sleep(50);
+            _waitForCallbackHandle.Set();
+            return true;
         }
 
         public UserActionResult GetChoice(IEnumerable<ITreeViewChoice> choices, string prompt)
@@ -43,7 +44,14 @@ namespace ConsoleApp1
 
         private UserActionResult GetChoice(bool multiSelect, IEnumerable<ITreeViewChoice> choices, string prompt)
         {
-            _gui.SetChoices(choices, prompt)
+            return GetChoice(multiSelect, choices, prompt, true);
+        }
+
+        private UserActionResult GetChoice(bool multiSelect, IEnumerable<ITreeViewChoice> choices, string prompt,
+            bool doReset)
+        {
+            _gui.Reset(doReset)
+                .SetChoices(choices, prompt)
                 .SetMultiSelect(multiSelect);
             WaitForCallback();
             return _gui.GetUserActionResult();
@@ -57,9 +65,31 @@ namespace ConsoleApp1
 
         public UserActionResult GetSingleLineInput(string prompt)
         {
-            _gui.SetChoices(Enumerable.Empty<ITreeViewChoice>(), prompt)
-                .SetMultiSelect(false);
-            _waitForCallbackHandle.WaitOne();
+            return GetSingleLineInput(prompt, true);
+        }
+
+        public string GetSingleLineInputString(string prompt)
+        {
+            return GetSingleLineInput(prompt).TreeViewSearchValue;
+        }
+
+        public string GetNonEmptySingleLineInputString(string prompt)
+        {
+            var resetGui = true;
+            while (true)
+            {
+                var choice = GetSingleLineInput(prompt, resetGui);
+                if (choice.Result == UserActionResult.ResultType.Accept && !choice.TreeViewSearchValue.Equals(""))
+                    return choice.TreeViewSearchValue;
+                UserNotifier.Error("Error: Input is required");
+                resetGui = false;
+            }
+        }
+
+        private UserActionResult GetSingleLineInput(string prompt, bool resetGui)
+        {
+            var choice = new ITreeViewChoice[] {new AcceptOnSelectTreeViewChoice("Press enter to finish input")};
+            GetChoice(false, choice, prompt, resetGui);
             return _gui.GetUserActionResult();
         }
     }

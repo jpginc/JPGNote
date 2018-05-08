@@ -11,8 +11,6 @@ public class GtkHelloWorld
             var choice = GuiManager.Instance.GetChoices(GetChoices(), "What do you want to do?");
             switch (choice.Result)
             {
-                case UserActionResult.ResultType.ExitApp:
-                    return;
                 case UserActionResult.ResultType.Canceled:
                     Console.WriteLine("cancelled!");
                     break;
@@ -22,6 +20,8 @@ public class GtkHelloWorld
                         Console.WriteLine(s.GetChoiceText());
                         s.OnAcceptCallback();
                     }
+                    break;
+                case UserActionResult.ResultType.Save:
                     break;
                 case UserActionResult.ResultType.NoInput:
                 default:
@@ -34,9 +34,9 @@ public class GtkHelloWorld
     {
         var c = new List<ITreeViewChoice>
         {
-            new TreeViewChoice("New Note"),
-            new TreeViewChoice("Settings"),
-            new TreeViewChoice("Exit")
+            new SimpleTreeViewChoice("New Note"),
+            new SimpleTreeViewChoice("Settings"),
+            new SimpleTreeViewChoice("Exit")
         };
         return c;
     }

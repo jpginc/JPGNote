@@ -14,6 +14,7 @@ namespace ConsoleApp1
         public Func<bool> UserActionCallback;
         SearchableTreeView _searchableThing;
         private readonly UserActionResult _userActionResult = new UserActionResult {Result = UserActionResult.ResultType.NoInput};
+        private Label _messageDialog;
 
         private MainWindow(string title) : base(title)
         {
@@ -37,6 +38,7 @@ namespace ConsoleApp1
         {
             var leftContainer = new Grid();
             var rightContainer = new Grid();
+            var topContainer = new Grid();
             var container = new Grid
             {
                 ColumnHomogeneous = false,
@@ -45,11 +47,20 @@ namespace ConsoleApp1
                 BorderWidth = 15,
             };
 
+            AddNotificationElement(topContainer);
             AddLeftElements(leftContainer);
             AddRightElements(rightContainer);
+            container.Attach(topContainer, 1, 0, 2, 1);
             container.Attach(leftContainer, 1, 1, 3, 1);
             container.AttachNextTo(rightContainer, leftContainer, PositionType.Right, 7, 1);
             Add(container);
+        }
+
+        private void AddNotificationElement(Grid container)
+        {
+            _messageDialog = new Label("This is a notificationt thing!!");
+
+            container.Add(_messageDialog);
         }
 
         private void SetCloseOnExit()
@@ -128,13 +139,19 @@ namespace ConsoleApp1
         }
         private void Exit(object sender, EventArgs e)
         {
-            Callback(UserActionResult.ResultType.ExitApp, null);
-            Application.Quit();
+            //Application.Quit();
+            Environment.Exit(0);
         }
 
         private void OnBackClick(object sender, EventArgs e)
         {
             Callback(UserActionResult.ResultType.Canceled, null);
+        }
+
+        public MainWindow Accept()
+        {
+            OnAcceptClick(null, null);
+            return this;
         }
 
         private void OnAcceptClick(object sender, EventArgs e)
@@ -151,6 +168,33 @@ namespace ConsoleApp1
         public UserActionResult GetUserActionResult()
         {
             return _userActionResult;
+        }
+
+        public MainWindow Reset(bool doReset)
+        {
+            if (doReset)
+            {
+                _searchableThing.Reset();
+                Notify("");
+            }
+            return this;
+        }
+
+        public void Notify(string message)
+        {
+            _messageDialog.Text = message;
+            Color color = new Color();
+            Color.Parse("default", ref color);
+            _messageDialog.ModifyBg(StateType.Normal, color);
+        }
+
+        public void Error(string message)
+        {
+            _messageDialog.Text = message;
+
+            Color color = new Color();
+            Color.Parse("red", ref color);
+            _messageDialog.ModifyBg(StateType.Normal, color);
         }
     }
 }

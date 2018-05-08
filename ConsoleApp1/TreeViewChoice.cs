@@ -17,13 +17,25 @@ namespace ConsoleApp1
 
     }
 
-    internal class TreeViewChoice : ITreeViewChoice
+    internal class SimpleTreeViewChoice : TreeViewChoice
+    {
+        public override bool OnTreeViewSelectCallback(JpgTreeView jpgTreeView)
+        {
+            Console.WriteLine("this callback is working");
+            return true;
+        }
+
+        public SimpleTreeViewChoice(string choiceText) : base(choiceText)
+        {
+        }
+    }
+    internal abstract class TreeViewChoice : ITreeViewChoice
     {
         public bool Selected = false;
         private readonly string _choiceText;
         private int _score = 0;
 
-        public TreeViewChoice(string choiceText)
+        protected TreeViewChoice(string choiceText)
         {
             _choiceText = choiceText;
         }
@@ -66,18 +78,13 @@ namespace ConsoleApp1
             return this;
         }
 
-        public bool OnTreeViewSelectCallback(JpgTreeView jpgTreeView)
-        {
-            return true;
-        }
+        public abstract bool OnTreeViewSelectCallback(JpgTreeView jpgTreeView);
+
 
         public bool OnAcceptCallback()
         {
-            var input = GuiManager.Instance.GetSingleLineInput("Set Input Name:");
-            if (input.Result == UserActionResult.ResultType.Accept)
-            {
-                Console.WriteLine(input.TreeViewSearchValue);
-            }
+            var input = GuiManager.Instance.GetNonEmptySingleLineInputString("Set Input Name:");
+            Console.WriteLine(input);
             return true;
         }
     }

@@ -9,8 +9,7 @@ namespace ConsoleApp1
             Accept,
             Save,
             Canceled,
-            NoInput,
-            ExitApp
+            NoInput
         }
 
         public IEnumerable<ITreeViewChoice> UserChoices;

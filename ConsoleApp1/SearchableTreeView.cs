@@ -79,5 +79,13 @@ namespace ConsoleApp1
         {
             return _search.Text;
         }
+
+        public SearchableTreeView Reset()
+        {
+            _search.Text = "";
+            _treeview.SetMultiSelect(false);
+            SetChoices(Enumerable.Empty<ITreeViewChoice>());
+            return this;
+        }
     }
 }
