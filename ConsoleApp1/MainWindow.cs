@@ -10,16 +10,15 @@ namespace ConsoleApp1
     internal class MainWindow : Window
     {
         public static MainWindow Instance { get; } = new MainWindow("JPG Tree");
-
         public Func<bool> UserActionCallback;
-        private SearchableTreeView _searchableThing;
+        private SearchableTreeView _searchableTreeView;
 
         private readonly UserActionResult _userActionResult =
             new UserActionResult {Result = UserActionResult.ResultType.NoInput};
 
-        private Label _messageDialog;
-        private TextView _inputWidget;
-        private readonly AccelGroup _accelGroup = new AccelGroup();
+        private Label _notificationLabel;
+        private TextView _multiLineInputWidget;
+        private readonly AccelGroup _buttonKeyboardShortcutAccelGroup = new AccelGroup();
 
         private MainWindow(string title) : base(title)
         {
@@ -29,11 +28,10 @@ namespace ConsoleApp1
             ShowAll();
         }
 
-
         public MainWindow SetChoices(IEnumerable<ITreeViewChoice> choices, string label)
         {
-            _searchableThing.SetChoices(choices);
-            _searchableThing.SetLabelText(label);
+            _searchableTreeView.SetChoices(choices);
+            _searchableTreeView.SetLabelText(label);
             _userActionResult.Result = UserActionResult.ResultType.NoInput;
             _userActionResult.UserChoices = null;
             return this;
@@ -61,11 +59,10 @@ namespace ConsoleApp1
             Add(container);
         }
 
-        private void AddNotificationElement(Grid container)
+        private void AddNotificationElement(Container container)
         {
-            _messageDialog = new Label("This is a notificationt thing!!");
-
-            container.Add(_messageDialog);
+            _notificationLabel = new Label("This is a notificationt thing!!");
+            container.Add(_notificationLabel);
         }
 
         private void SetCloseOnExit()
@@ -75,33 +72,24 @@ namespace ConsoleApp1
 
         private void SetSize()
         {
-            SetDefaultSize(Convert.ToInt32(GetSetting("width")), Convert.ToInt32(GetSetting("height")));
+            SetDefaultSize(500, 900);
             SetPosition(WindowPosition.Center);
-        }
-
-        private static string GetSetting(string name)
-        {
-            //todo get from settings
-            if (name.Equals("height"))
-                return "500";
-            if (name.Equals("width")) return "900";
-            throw new Exception("don't actually check settings yet");
         }
 
         private void AddRightElements(Grid container)
         {
-            var label = new Label("Output <ctrl + o> ");
+            var label = new Label("Output <ctrl+o>");
             var sw = new ScrolledWindow
             {
                 ShadowType = ShadowType.EtchedIn,
                 Expand = true
             };
             //keyboard shortcut setup in the OnKeyPressEvent override
-            _inputWidget = new TextView();
-            sw.Add(_inputWidget);
+            _multiLineInputWidget = new TextView();
+            sw.Add(_multiLineInputWidget);
             var save = new Button("_Save");
             save.Clicked += OnSaveClick;
-            save.AddAccelerator("activate", _accelGroup,
+            save.AddAccelerator("activate", _buttonKeyboardShortcutAccelGroup,
                 new AccelKey(Key.a, ModifierType.Mod1Mask, AccelFlags.Visible));
             container.Add(label);
             container.AttachNextTo(sw, label, PositionType.Bottom, 1, 8);
@@ -110,30 +98,30 @@ namespace ConsoleApp1
 
         private void OnSaveClick(object sender, EventArgs e)
         {
-            Callback(UserActionResult.ResultType.Save, _searchableThing.GetSelectedItems());
+            Callback(UserActionResult.ResultType.Save, _searchableTreeView.GetSelectedItems());
         }
 
         private void AddLeftElements(Grid container)
         {
-            _searchableThing = new SearchableTreeView();
+            _searchableTreeView = new SearchableTreeView();
 
-            AddAccelGroup(_accelGroup);
+            AddAccelGroup(_buttonKeyboardShortcutAccelGroup);
 
             var accept = new Button("_Accept");
             accept.Clicked += OnAcceptClick;
-            accept.AddAccelerator("activate", _accelGroup,
+            accept.AddAccelerator("activate", _buttonKeyboardShortcutAccelGroup,
                 new AccelKey(Key.a, ModifierType.Mod1Mask, AccelFlags.Visible));
             var back = new Button("_Back");
             back.Clicked += OnBackClick;
-            back.AddAccelerator("activate", _accelGroup,
+            back.AddAccelerator("activate", _buttonKeyboardShortcutAccelGroup,
                 new AccelKey(Key.b, ModifierType.Mod1Mask, AccelFlags.Visible));
             var exit = new Button("E_xit");
             exit.Clicked += Exit;
-            exit.AddAccelerator("activate", _accelGroup,
+            exit.AddAccelerator("activate", _buttonKeyboardShortcutAccelGroup,
                 new AccelKey(Key.x, ModifierType.Mod1Mask, AccelFlags.Visible));
 
-            container.Add(_searchableThing);
-            container.AttachNextTo(accept, _searchableThing, PositionType.Bottom, 1, 1);
+            container.Add(_searchableTreeView);
+            container.AttachNextTo(accept, _searchableTreeView, PositionType.Bottom, 1, 1);
             container.AttachNextTo(back, accept, PositionType.Bottom, 1, 1);
             container.AttachNextTo(exit, back, PositionType.Bottom, 1, 1);
         }
@@ -142,14 +130,13 @@ namespace ConsoleApp1
         {
             _userActionResult.Result = t;
             _userActionResult.UserChoices = c;
-            _userActionResult.MultiLineInput = _inputWidget.Buffer.Text;
-            _userActionResult.SingleLineInput = _searchableThing.GetSearchValue();
+            _userActionResult.MultiLineInput = _multiLineInputWidget.Buffer.Text;
+            _userActionResult.SingleLineInput = _searchableTreeView.GetSearchValue();
             UserActionCallback?.Invoke();
         }
 
-        private void Exit(object sender, EventArgs e)
+        private static void Exit(object sender, EventArgs e)
         {
-            //Application.Quit();
             Environment.Exit(0);
         }
 
@@ -166,12 +153,12 @@ namespace ConsoleApp1
 
         private void OnAcceptClick(object sender, EventArgs e)
         {
-            Callback(UserActionResult.ResultType.Accept, _searchableThing.GetSelectedItems());
+            Callback(UserActionResult.ResultType.Accept, _searchableTreeView.GetSelectedItems());
         }
 
         public MainWindow SetMultiSelect(bool b)
         {
-            _searchableThing.SetMultiSelect(b);
+            _searchableTreeView.SetMultiSelect(b);
             return this;
         }
 
@@ -184,8 +171,8 @@ namespace ConsoleApp1
         {
             if (doReset)
             {
-                _searchableThing.Reset();
-                _inputWidget.Buffer.Text = "";
+                _searchableTreeView.Reset();
+                _multiLineInputWidget.Buffer.Text = "";
                 UserNotify("Double clicking or hitting Return twice will activate an item");
             }
 
@@ -194,37 +181,41 @@ namespace ConsoleApp1
 
         public void UserNotify(string message)
         {
-            _messageDialog.Text = message;
+            _notificationLabel.Text = message;
             var color = new Color();
             Color.Parse("lightblue", ref color);
-            _messageDialog.ModifyBg(StateType.Normal, color);
+            _notificationLabel.ModifyBg(StateType.Normal, color);
         }
 
         public void Error(string message)
         {
-            _messageDialog.Text = message;
+            _notificationLabel.Text = message;
 
             var color = new Color();
             Color.Parse("red", ref color);
-            _messageDialog.ModifyBg(StateType.Normal, color);
+            _notificationLabel.ModifyBg(StateType.Normal, color);
         }
 
         public MainWindow SetInputText(string noteContents)
         {
-            _inputWidget.Buffer.Text = noteContents;
+            _multiLineInputWidget.Buffer.Text = noteContents;
             return this;
         }
+
         protected override bool OnKeyPressEvent(EventKey evnt)
         {
             if (evnt.Key == Key.o && evnt.State == ModifierType.ControlMask)
             {
-                _inputWidget.GrabFocus();
-                return true;
-            } else if (evnt.Key == Key.i && evnt.State == ModifierType.ControlMask)
-            {
-                _searchableThing.FocusInput();
+                _multiLineInputWidget.GrabFocus();
                 return true;
             }
+
+            if (evnt.Key == Key.i && evnt.State == ModifierType.ControlMask)
+            {
+                _searchableTreeView.FocusInput();
+                return true;
+            }
+
             return base.OnKeyPressEvent(evnt);
         }
     }
