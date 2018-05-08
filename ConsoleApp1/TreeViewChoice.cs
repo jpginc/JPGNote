@@ -5,30 +5,6 @@ using System.Collections.Generic;
 
 namespace ConsoleApp1
 {
-    internal interface ITreeViewChoice : IComparable<ITreeViewChoice>
-    {
-        string GetChoiceText();
-        ITreeViewChoice CalculateScore(string s);
-        int GetScore();
-        bool IsSelected();
-        ITreeViewChoice SetSelected(bool selected);
-        bool OnTreeViewSelectCallback(JpgTreeView jpgTreeView);
-        bool OnAcceptCallback();
-
-    }
-
-    internal class SimpleTreeViewChoice : TreeViewChoice
-    {
-        public override bool OnTreeViewSelectCallback(JpgTreeView jpgTreeView)
-        {
-            Console.WriteLine("this callback is working");
-            return true;
-        }
-
-        public SimpleTreeViewChoice(string choiceText) : base(choiceText)
-        {
-        }
-    }
     internal abstract class TreeViewChoice : ITreeViewChoice
     {
         public bool Selected = false;
@@ -81,11 +57,6 @@ namespace ConsoleApp1
         public abstract bool OnTreeViewSelectCallback(JpgTreeView jpgTreeView);
 
 
-        public bool OnAcceptCallback()
-        {
-            var input = GuiManager.Instance.GetNonEmptySingleLineInputString("Set Input Name:");
-            Console.WriteLine(input);
-            return true;
-        }
+        public abstract bool OnAcceptCallback();
     }
 }

@@ -15,6 +15,7 @@ namespace ConsoleApp1
         SearchableTreeView _searchableThing;
         private readonly UserActionResult _userActionResult = new UserActionResult {Result = UserActionResult.ResultType.NoInput};
         private Label _messageDialog;
+        private TextView _inputWidget;
 
         private MainWindow(string title) : base(title)
         {
@@ -95,8 +96,8 @@ namespace ConsoleApp1
                 ShadowType = ShadowType.EtchedIn,
                 Expand = true
             };
-            var choices = new TextView();
-            sw.Add(choices);
+            _inputWidget = new TextView();
+            sw.Add(_inputWidget);
             var save = new Button("Save");
             container.Add(label);
             container.AttachNextTo(sw, label, PositionType.Bottom, 1, 8);
@@ -133,8 +134,8 @@ namespace ConsoleApp1
         {
             _userActionResult.Result = t;
             _userActionResult.UserChoices = c;
-            _userActionResult.InputBoxValue = "";
-            _userActionResult.TreeViewSearchValue = _searchableThing.GetSearchValue();
+            _userActionResult.MultiLineInput = "";
+            _userActionResult.SingleLineInput = _searchableThing.GetSearchValue();
             UserActionCallback?.Invoke();
         }
         private void Exit(object sender, EventArgs e)
@@ -195,6 +196,12 @@ namespace ConsoleApp1
             Color color = new Color();
             Color.Parse("red", ref color);
             _messageDialog.ModifyBg(StateType.Normal, color);
+        }
+
+        public MainWindow SetInputText(string noteContents)
+        {
+            _inputWidget.Buffer.Text = noteContents;
+            return this;
         }
     }
 }

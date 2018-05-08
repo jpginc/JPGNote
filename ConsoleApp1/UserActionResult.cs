@@ -13,8 +13,8 @@ namespace ConsoleApp1
         }
 
         public IEnumerable<ITreeViewChoice> UserChoices;
-        public string TreeViewSearchValue;
-        public string InputBoxValue;
+        public string SingleLineInput;
+        public string MultiLineInput;
         public ResultType Result;
     }
 }

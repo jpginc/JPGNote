@@ -15,5 +15,9 @@ namespace ConsoleApp1
             return true;
         }
 
+        public override bool OnAcceptCallback()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

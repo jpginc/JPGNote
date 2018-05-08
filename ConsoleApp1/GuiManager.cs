@@ -27,7 +27,7 @@ namespace ConsoleApp1
         private bool AcceptCallback()
         {
             //todo fix threads
-            Thread.Sleep(50);
+            Thread.Sleep(100);
             _waitForCallbackHandle.Set();
             return true;
         }
@@ -68,19 +68,18 @@ namespace ConsoleApp1
             return GetSingleLineInput(prompt, true);
         }
 
-        public string GetSingleLineInputString(string prompt)
-        {
-            return GetSingleLineInput(prompt).TreeViewSearchValue;
-        }
-
-        public string GetNonEmptySingleLineInputString(string prompt)
+        public UserActionResult GetNonEmptySingleLineInput(string prompt)
         {
             var resetGui = true;
             while (true)
             {
                 var choice = GetSingleLineInput(prompt, resetGui);
-                if (choice.Result == UserActionResult.ResultType.Accept && !choice.TreeViewSearchValue.Equals(""))
-                    return choice.TreeViewSearchValue;
+                if (choice.Result == UserActionResult.ResultType.Canceled 
+                    || (choice.Result == UserActionResult.ResultType.Accept && !choice.SingleLineInput.Equals("")))
+                {
+                    return choice;
+                }
+
                 UserNotifier.Error("Error: Input is required");
                 resetGui = false;
             }

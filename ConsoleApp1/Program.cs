@@ -32,12 +32,6 @@ public class GtkHelloWorld
 
     private static IEnumerable<ITreeViewChoice> GetChoices()
     {
-        var c = new List<ITreeViewChoice>
-        {
-            new SimpleTreeViewChoice("New Note"),
-            new SimpleTreeViewChoice("Settings"),
-            new SimpleTreeViewChoice("Exit")
-        };
-        return c;
+        return ActionManager.GetActions();
     }
 }
