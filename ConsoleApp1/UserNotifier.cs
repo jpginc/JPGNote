@@ -11,5 +11,10 @@ namespace ConsoleApp1
             //new Thread(() => { MainWindow.Instance.Error(message, AcceptCallback); }).Start();
             MainWindow.Instance.Error(message);
         }
+
+        public static void Notify(string message)
+        {
+            MainWindow.Instance.UserNotify(message);
+        }
     }
 }

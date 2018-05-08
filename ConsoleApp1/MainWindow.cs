@@ -55,7 +55,7 @@ namespace ConsoleApp1
             AddNotificationElement(topContainer);
             AddLeftElements(leftContainer);
             AddRightElements(rightContainer);
-            container.Attach(topContainer, 1, 0, 2, 1);
+            container.Attach(topContainer, 1, 0, 10, 1);
             container.Attach(leftContainer, 1, 1, 3, 1);
             container.AttachNextTo(rightContainer, leftContainer, PositionType.Right, 7, 1);
             Add(container);
@@ -194,7 +194,7 @@ namespace ConsoleApp1
         {
             _messageDialog.Text = message;
             var color = new Color();
-            Color.Parse("default", ref color);
+            Color.Parse("lightblue", ref color);
             _messageDialog.ModifyBg(StateType.Normal, color);
         }
 

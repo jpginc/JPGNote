@@ -15,7 +15,8 @@ namespace ConsoleApp1
 
         public override bool OnTreeViewSelectCallback(JpgTreeView jpgTreeView)
         {
-            MainWindow.Instance.SetInputText(_n.NoteContents); 
+            MainWindow.Instance.SetInputText(_n.NoteContents);
+            UserNotifier.Notify("Double-Click or hit the Accept button to view more Note options");
             return true;
         }
 
