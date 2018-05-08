@@ -18,10 +18,15 @@ public class GtkHelloWorld
                     foreach (var s in choice.UserChoices)
                     {
                         Console.WriteLine(s.GetChoiceText());
-                        s.OnAcceptCallback();
+                        s.OnAcceptCallback(choice);
                     }
                     break;
                 case UserActionResult.ResultType.Save:
+                    foreach (var s in choice.UserChoices)
+                    {
+                        Console.WriteLine(s.GetChoiceText());
+                        s.OnSaveCallback(choice);
+                    }
                     break;
                 case UserActionResult.ResultType.NoInput:
                 default:

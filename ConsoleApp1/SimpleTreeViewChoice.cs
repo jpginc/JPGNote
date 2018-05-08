@@ -10,7 +10,12 @@ namespace ConsoleApp1
             return true;
         }
 
-        public override bool OnAcceptCallback()
+        public override bool OnAcceptCallback(UserActionResult choice)
+        {
+            return true;
+        }
+
+        public override bool OnSaveCallback(UserActionResult choice)
         {
             return true;
         }

@@ -72,8 +72,8 @@ namespace ConsoleApp1
 
         public JpgTreeView SetChoices(IEnumerable<ITreeViewChoice> choices)
         {
+            //todo this is probably where threads are dying
             _store.Clear();
-            Console.WriteLine("getting here");
             foreach (var choice in choices)
             {
                 var x = _store.AppendValues(choice.GetChoiceText(), choice);

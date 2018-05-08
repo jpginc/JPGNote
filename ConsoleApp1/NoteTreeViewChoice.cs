@@ -1,4 +1,6 @@
-﻿namespace ConsoleApp1
+﻿using System;
+
+namespace ConsoleApp1
 {
     internal class NoteTreeViewChoice : TreeViewChoice
     {
@@ -15,8 +17,15 @@
             return true;
         }
 
-        public override bool OnAcceptCallback()
+        public override bool OnAcceptCallback(UserActionResult choice)
         {
+            return true;
+        }
+
+        public override bool OnSaveCallback(UserActionResult choice)
+        {
+            Console.WriteLine("the save data is " + choice.MultiLineInput);
+            _n.NoteContents = choice.MultiLineInput;
             return true;
         }
     }

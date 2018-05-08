@@ -10,7 +10,7 @@ namespace ConsoleApp1
         bool IsSelected();
         ITreeViewChoice SetSelected(bool selected);
         bool OnTreeViewSelectCallback(JpgTreeView jpgTreeView);
-        bool OnAcceptCallback();
-
+        bool OnAcceptCallback(UserActionResult choice);
+        bool OnSaveCallback(UserActionResult choice);
     }
 }

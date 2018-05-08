@@ -27,7 +27,7 @@ namespace ConsoleApp1
         private bool AcceptCallback()
         {
             //todo fix threads
-            Thread.Sleep(100);
+            Thread.Sleep(300);
             _waitForCallbackHandle.Set();
             return true;
         }
@@ -80,7 +80,7 @@ namespace ConsoleApp1
                     return choice;
                 }
 
-                UserNotifier.Error("Error: Input is required");
+                UserNotifier.Error("Error: Input cannot be an empty string");
                 resetGui = false;
             }
         }

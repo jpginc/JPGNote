@@ -16,6 +16,7 @@ namespace ConsoleApp1
         private readonly UserActionResult _userActionResult = new UserActionResult {Result = UserActionResult.ResultType.NoInput};
         private Label _messageDialog;
         private TextView _inputWidget;
+        private readonly AccelGroup _accelGroup = new AccelGroup();
 
         private MainWindow(string title) : base(title)
         {
@@ -98,30 +99,37 @@ namespace ConsoleApp1
             };
             _inputWidget = new TextView();
             sw.Add(_inputWidget);
-            var save = new Button("Save");
+            var save = new Button("_Save");
+            save.Clicked += OnSaveClick;
+            save.AddAccelerator("activate", _accelGroup, 
+                new AccelKey(Gdk.Key.a, ModifierType.Mod1Mask, AccelFlags.Visible));
             container.Add(label);
             container.AttachNextTo(sw, label, PositionType.Bottom, 1, 8);
             container.AttachNextTo(save, sw, PositionType.Bottom, 1, 1);
+        }
+
+        private void OnSaveClick(object sender, EventArgs e)
+        {
+            Callback(UserActionResult.ResultType.Save, _searchableThing.GetSelectedItems());
         }
 
         private void AddLeftElements(Grid container)
         {
             _searchableThing = new SearchableTreeView();
 
-            AccelGroup agr = new AccelGroup();
-            AddAccelGroup(agr);
+            AddAccelGroup(_accelGroup);
 
             var accept = new Button("_Accept");
             accept.Clicked += OnAcceptClick;
-            accept.AddAccelerator("activate", agr, 
+            accept.AddAccelerator("activate", _accelGroup, 
                 new AccelKey(Gdk.Key.a, ModifierType.Mod1Mask, AccelFlags.Visible));
             var back = new Button("_Back");
             back.Clicked += OnBackClick;
-            back.AddAccelerator("activate", agr, 
+            back.AddAccelerator("activate", _accelGroup, 
                 new AccelKey(Gdk.Key.b, ModifierType.Mod1Mask, AccelFlags.Visible));
             var exit = new Button("E_xit");
             exit.Clicked += Exit;
-            exit.AddAccelerator("activate", agr, 
+            exit.AddAccelerator("activate", _accelGroup, 
                 new AccelKey(Gdk.Key.x, ModifierType.Mod1Mask, AccelFlags.Visible));
 
             container.Add(_searchableThing);
@@ -134,7 +142,7 @@ namespace ConsoleApp1
         {
             _userActionResult.Result = t;
             _userActionResult.UserChoices = c;
-            _userActionResult.MultiLineInput = "";
+            _userActionResult.MultiLineInput = _inputWidget.Buffer.Text;
             _userActionResult.SingleLineInput = _searchableThing.GetSearchValue();
             UserActionCallback?.Invoke();
         }

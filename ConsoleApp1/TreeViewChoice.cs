@@ -57,6 +57,7 @@ namespace ConsoleApp1
         public abstract bool OnTreeViewSelectCallback(JpgTreeView jpgTreeView);
 
 
-        public abstract bool OnAcceptCallback();
+        public abstract bool OnAcceptCallback(UserActionResult choice);
+        public abstract bool OnSaveCallback(UserActionResult choice);
     }
 }
