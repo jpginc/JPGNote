@@ -9,12 +9,14 @@ namespace ConsoleApp1
 {
     internal class MainWindow : Window
     {
-        private readonly Func<bool> _acceptCallback;
+        public static MainWindow Instance { get; } = new MainWindow("JPG Tree");
+
+        public Func<bool> UserActionCallback;
         SearchableTreeView _searchableThing;
-        private UserActionResult _userActionResult = new UserActionResult {Result = UserActionResult.ResultType.NoInput};
-        public MainWindow(string title, Func<bool> acceptCallback) : base(title)
+        private readonly UserActionResult _userActionResult = new UserActionResult {Result = UserActionResult.ResultType.NoInput};
+
+        private MainWindow(string title) : base(title)
         {
-            _acceptCallback = acceptCallback;
             SetSize();
             SetCloseOnExit();
             PopulateGui();
@@ -120,7 +122,9 @@ namespace ConsoleApp1
         {
             _userActionResult.Result = t;
             _userActionResult.UserChoices = c;
-            _acceptCallback?.Invoke();
+            _userActionResult.InputBoxValue = "";
+            _userActionResult.TreeViewSearchValue = _searchableThing.GetSearchValue();
+            UserActionCallback?.Invoke();
         }
         private void Exit(object sender, EventArgs e)
         {

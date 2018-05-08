@@ -6,10 +6,9 @@ public class GtkHelloWorld
 {
     public static void Main()
     {
-        var manager = new GuiManager();
         while (true)
         {
-            var choice = manager.GetChoice(GetChoices());
+            var choice = GuiManager.Instance.GetChoices(GetChoices(), "What do you want to do?");
             switch (choice.Result)
             {
                 case UserActionResult.ResultType.ExitApp:
@@ -18,7 +17,11 @@ public class GtkHelloWorld
                     Console.WriteLine("cancelled!");
                     break;
                 case UserActionResult.ResultType.Accept:
-                    foreach (var s in choice.UserChoices) Console.WriteLine(s.GetChoiceText());
+                    foreach (var s in choice.UserChoices)
+                    {
+                        Console.WriteLine(s.GetChoiceText());
+                        s.OnAcceptCallback();
+                    }
                     break;
                 case UserActionResult.ResultType.NoInput:
                 default:

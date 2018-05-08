@@ -74,5 +74,10 @@ namespace ConsoleApp1
         {
             return _treeview.GetSelectedItems();
         }
+
+        public string GetSearchValue()
+        {
+            return _search.Text;
+        }
     }
 }

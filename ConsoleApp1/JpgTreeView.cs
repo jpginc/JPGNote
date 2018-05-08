@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Gdk;
 using Gtk;
 
 namespace ConsoleApp1
@@ -11,7 +9,7 @@ namespace ConsoleApp1
     {
         private readonly ListStore _store = new ListStore(typeof(string), typeof(ITreeViewChoice));
 
-        enum Column
+        private enum Column
         {
             Text,
             Value
@@ -31,7 +29,7 @@ namespace ConsoleApp1
             var valueColumn = new TreeViewColumn();
             AppendColumn(valueColumn);
             var visisbleColumnTextRenderer = new CellRendererText();
-            valueColumn.PackStart(visisbleColumnTextRenderer , true);
+            valueColumn.PackStart(visisbleColumnTextRenderer, true);
             valueColumn.AddAttribute(visisbleColumnTextRenderer, "text", 0);
             ActivateOnSingleClick = true;
             RowActivated += ClickHandler;
@@ -40,7 +38,7 @@ namespace ConsoleApp1
         private JpgTreeView UpdateSelectedItem(TreeIter item)
         {
             ((ITreeViewChoice) _store.GetValue(item, (int) Column.Value))
-                    .SetSelected(Selection.IterIsSelected(item));
+                .SetSelected(Selection.IterIsSelected(item));
             return this;
         }
 
@@ -48,9 +46,29 @@ namespace ConsoleApp1
         {
             Console.WriteLine("Clicked");
             _store.GetIter(out var item, args.Path);
-            UpdateSelectedItem(item);
+            SetSelected(item, true);
             SearchEntry.GrabFocusWithoutSelecting();
         }
+
+        private void SetSelected(TreeIter item, bool selected)
+        {
+            if (selected)
+            {
+                Selection.SelectIter(item);
+                NotifyOfSelect(item);
+            }
+            else
+            {
+                Selection.UnselectIter(item);
+            }
+            UpdateSelectedItem(item);
+        }
+
+        private void ToggleSelect(TreeIter item)
+        {
+            SetSelected(item, !Selection.IterIsSelected(item));
+        }
+
 
         public JpgTreeView SetChoices(IEnumerable<ITreeViewChoice> choices)
         {
@@ -58,28 +76,28 @@ namespace ConsoleApp1
             Console.WriteLine("getting here");
             foreach (var choice in choices)
             {
-                TreeIter x = _store.AppendValues(choice.GetChoiceText(), choice);
+                var x = _store.AppendValues(choice.GetChoiceText(), choice);
                 if (choice.IsSelected())
                 {
-                    Console.WriteLine("It is selected");
+                    Console.WriteLine(choice.GetChoiceText() + " is selected");
                     Selection.SelectIter(x);
                 }
             }
+
             return this;
         }
 
         public JpgTreeView ToggleTopItem()
         {
             _store.GetIterFirst(out var item);
-            if (Selection.IterIsSelected(item))
-            {
-                Selection.UnselectIter(item);
-            }
-            else
-            {
-                Selection.SelectIter(item);
-            }
-            return UpdateSelectedItem(item);
+            ToggleSelect(item);
+            return this;
+        }
+
+        private void NotifyOfSelect(TreeIter item)
+        {
+            ((ITreeViewChoice) _store.GetValue(item, (int) Column.Value))
+                .OnTreeViewSelectCallback(this);
         }
 
         public IEnumerable<ITreeViewChoice> GetSelectedItems()

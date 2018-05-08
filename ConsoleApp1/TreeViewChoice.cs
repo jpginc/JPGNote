@@ -12,6 +12,9 @@ namespace ConsoleApp1
         int GetScore();
         bool IsSelected();
         ITreeViewChoice SetSelected(bool selected);
+        bool OnTreeViewSelectCallback(JpgTreeView jpgTreeView);
+        bool OnAcceptCallback();
+
     }
 
     internal class TreeViewChoice : ITreeViewChoice
@@ -55,8 +58,27 @@ namespace ConsoleApp1
         //this could be made better but have to worry about threads with the treeview sort wrapper
         public ITreeViewChoice SetSelected(bool selected)
         {
+            if (selected)
+            {
+                Console.WriteLine("Selecting " + _choiceText);
+            }
             Selected = selected;
             return this;
+        }
+
+        public bool OnTreeViewSelectCallback(JpgTreeView jpgTreeView)
+        {
+            return true;
+        }
+
+        public bool OnAcceptCallback()
+        {
+            var input = GuiManager.Instance.GetSingleLineInput("Set Input Name:");
+            if (input.Result == UserActionResult.ResultType.Accept)
+            {
+                Console.WriteLine(input.TreeViewSearchValue);
+            }
+            return true;
         }
     }
 }
