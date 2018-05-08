@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
+using Gdk;
 using Gtk;
 
 namespace ConsoleApp1
@@ -14,12 +14,16 @@ namespace ConsoleApp1
         private IEnumerable<ITreeViewChoice> _choices;
         public new int Height = 5;
         public new int Width = 1;
+        private DateTime _lastRotate = DateTime.Now;
 
         public SearchableTreeView()
         {
             _label = new Label("Search: ");
-            _search = new NoTabSearchEntry {Expand = false};
-            _search.PlaceholderText = "<ctrl+i> to focus";
+            _search = new NoTabSearchEntry(this)
+            {
+                Expand = false,
+                PlaceholderText = "<ctrl+i> to focus"
+            };
             _search.Changed += OnSearchChange;
             _search.Activated += OnSearchSubmit;
 
@@ -96,6 +100,31 @@ namespace ConsoleApp1
         public void FocusInput()
         {
             _search.GrabFocus();
+        }
+
+        public void HandleRotateKeypress(EventKey evnt)
+        {
+            if (evnt.Key == Gdk.Key.Down || evnt.Key == Gdk.Key.Up)
+            {
+                RoatateAndUpdateChoices(evnt.Key == Gdk.Key.Down);
+            }
+            else
+            {
+                RoatateAndUpdateChoices(evnt.State == ModifierType.ShiftMask);
+            }
+        }
+
+        private void RoatateAndUpdateChoices(bool forwardDirection)
+        {
+            if ((DateTime.Now - _lastRotate).Milliseconds < 100) return;
+            if (_choices.Count() <= 1)
+                return;
+
+            _choices = !forwardDirection
+                ? _choices.Skip(1).Concat(_choices.Take(1))
+                : _choices.TakeLast(1).Concat(_choices.SkipLast(1));
+            UpdateChoices();
+            _lastRotate = DateTime.Now;
         }
     }
 }

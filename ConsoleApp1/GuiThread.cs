@@ -15,5 +15,10 @@ namespace ConsoleApp1
             });
             ev.WaitOne();
         }
+
+        public static void DontWait(Action action)
+        {
+            Application.Invoke((a, b) => action());
+        }
     }
 }
