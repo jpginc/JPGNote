@@ -1,16 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace ConsoleApp1
 {
+    [DataContract]
     internal class NotesManager
     {
-        public static NotesManager Instance { get; } = new NotesManager();
-        public List<Note> Notes { get; }
+        public static NotesManager Instance { get; set; }
+        [DataMember]
+        public List<Note> Notes { get; set; }
 
-        private NotesManager()
+        public NotesManager()
         {
+            //don't want to change this because i'm doing serialisation stuff
             Notes = new List<Note>();
+            Instance = this;
         }
 
         public NotesManager NewNote(string noteName)

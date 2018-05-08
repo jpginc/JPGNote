@@ -184,13 +184,13 @@ namespace ConsoleApp1
             if (doReset)
             {
                 _searchableThing.Reset();
-                Notify("");
+                UserNotify("");
             }
 
             return this;
         }
 
-        public void Notify(string message)
+        public void UserNotify(string message)
         {
             _messageDialog.Text = message;
             var color = new Color();

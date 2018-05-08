@@ -6,6 +6,7 @@ public class GtkHelloWorld
 {
     public static void Main()
     {
+        SettingsClass.Start("c:\\jpgtree\\settings.txt");
         while (true)
         {
             var choice = GuiManager.Instance.GetChoices(GetChoices(), "What do you want to do?");

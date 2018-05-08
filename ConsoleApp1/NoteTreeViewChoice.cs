@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Runtime.Serialization.Json;
 
 namespace ConsoleApp1
 {
@@ -26,6 +28,7 @@ namespace ConsoleApp1
         {
             Console.WriteLine("the save data is " + choice.MultiLineInput);
             _n.NoteContents = choice.MultiLineInput;
+            SettingsClass.Instance.Save();
             return true;
         }
     }

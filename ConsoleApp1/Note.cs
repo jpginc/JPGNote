@@ -1,11 +1,16 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace ConsoleApp1
 {
+    [DataContract]
     internal class Note : IComparable<Note>
     {
+        [DataMember]
         public readonly string NoteName;
+        [DataMember]
         private readonly string _uniqueId;
+        [DataMember]
         public string NoteContents { get; set; }
 
         public Note(string noteName)
