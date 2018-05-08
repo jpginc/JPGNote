@@ -8,6 +8,8 @@ namespace ConsoleApp1
     internal class JpgTreeView : TreeView
     {
         private readonly ListStore _store = new ListStore(typeof(string), typeof(ITreeViewChoice));
+        private DateTime _lastClick = DateTime.Now;
+        private string _lastText;
 
         private enum Column
         {
@@ -40,17 +42,37 @@ namespace ConsoleApp1
 
         private JpgTreeView UpdateSelectedItem(TreeIter item)
         {
-            ((ITreeViewChoice) _store.GetValue(item, (int) Column.Value))?
-                .SetSelected(Selection.IterIsSelected(item));
+            GetValueFromIter(item)?.SetSelected(Selection.IterIsSelected(item));
             return this;
+        }
+
+        private ITreeViewChoice GetValueFromIter(TreeIter item)
+        {
+            return (ITreeViewChoice) _store.GetValue(item, (int) Column.Value);
+        }
+
+        private bool CheckForDoubleClickOrDoubleReturn(TreeIter item)
+        {
+            var cellText = GetValueFromIter(item)?.GetChoiceText();
+            var retVal = (DateTime.Now - _lastClick).Seconds < 0.5 && Equals(_lastText, cellText);
+            _lastClick = DateTime.Now;
+            _lastText = cellText;
+            return retVal;
         }
 
         private void ClickHandler(object o, RowActivatedArgs args)
         {
-            Console.WriteLine("Clicked");
             _store.GetIter(out var item, args.Path);
-            SetSelected(item, true);
-            SearchEntry.GrabFocusWithoutSelecting();
+            if(CheckForDoubleClickOrDoubleReturn(item))
+            {
+                MainWindow.Instance.Accept();
+            }
+            else
+            {
+                Console.WriteLine("Clicked");
+                SetSelected(item, true);
+                SearchEntry.GrabFocusWithoutSelecting();
+            }
         }
 
         private void SetSelected(TreeIter item, bool selected)
@@ -67,6 +89,7 @@ namespace ConsoleApp1
             UpdateSelectedItem(item);
         }
 
+
         private void ToggleSelect(TreeIter item)
         {
             SetSelected(item, !Selection.IterIsSelected(item));
@@ -75,29 +98,31 @@ namespace ConsoleApp1
 
         public JpgTreeView SetChoices(IEnumerable<ITreeViewChoice> choices)
         {
-            //GuiThread.Go(() =>
-            //{
-                _store.Clear();
-                foreach (var choice in choices)
+            _store.Clear();
+            foreach (var choice in choices)
+            {
+                var x = _store.AppendValues(choice.GetChoiceText(), choice);
+                if (choice.IsSelected())
                 {
-                    var x = _store.AppendValues(choice.GetChoiceText(), choice);
-                    if (choice.IsSelected())
-                    {
-                        Console.WriteLine(choice.GetChoiceText() + " is selected");
-                        Selection.SelectIter(x);
-                    }
+                    Console.WriteLine(choice.GetChoiceText() + " is selected");
+                    Selection.SelectIter(x);
                 }
-            //});
+            }
             return this;
         }
 
-        public JpgTreeView ToggleTopItem()
+        public JpgTreeView HandleSearchReturnKey()
         {
-            //GuiThread.Go(() =>
-            //{
-                _store.GetIterFirst(out var item);
+            _store.GetIterFirst(out var item);
+            if (CheckForDoubleClickOrDoubleReturn(item))
+            {
+                MainWindow.Instance.Accept();
+            }
+            else
+            {
                 ToggleSelect(item);
-            //});
+            }
+
             return this;
         }
 
@@ -110,14 +135,11 @@ namespace ConsoleApp1
         public IEnumerable<ITreeViewChoice> GetSelectedItems()
         {
             IEnumerable<ITreeViewChoice> retVal = null;
-            //GuiThread.Go(() =>
-            //{
-                retVal = Selection.GetSelectedRows().Select(p =>
-                {
-                    _store.GetIter(out var item, p);
-                    return (ITreeViewChoice) _store.GetValue(item, (int) Column.Value);
-                }).ToList();
-            //});
+            retVal = Selection.GetSelectedRows().Select(p =>
+            {
+                _store.GetIter(out var item, p);
+                return (ITreeViewChoice) _store.GetValue(item, (int) Column.Value);
+            }).ToList();
             return retVal;
         }
     }

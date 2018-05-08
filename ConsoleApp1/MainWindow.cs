@@ -184,7 +184,7 @@ namespace ConsoleApp1
             if (doReset)
             {
                 _searchableThing.Reset();
-                UserNotify("");
+                UserNotify("Double clicking or hitting Return twice will activate an item");
             }
 
             return this;

@@ -9,7 +9,7 @@ public class GtkHelloWorld
         SettingsClass.Start("c:\\jpgtree\\settings.txt");
         while (true)
         {
-            var choice = GuiManager.Instance.GetChoices(GetChoices(), "What do you want to do?");
+            var choice = GuiManager.Instance.GetChoice(GetChoices(), "What do you want to do?");
             switch (choice.Result)
             {
                 case UserActionResult.ResultType.Canceled:

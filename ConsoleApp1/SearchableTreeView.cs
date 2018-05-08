@@ -36,7 +36,7 @@ namespace ConsoleApp1
 
         private void OnSearchSubmit(object sender, EventArgs e)
         {
-            _treeview.ToggleTopItem();
+            _treeview.HandleSearchReturnKey();
         }
 
         private void OnSearchChange(object sender, EventArgs e)
