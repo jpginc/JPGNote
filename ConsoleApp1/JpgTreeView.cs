@@ -54,7 +54,7 @@ namespace ConsoleApp1
         private bool CheckForDoubleClickOrDoubleReturn(TreeIter item)
         {
             var cellText = GetValueFromIter(item)?.GetChoiceText();
-            var retVal = (DateTime.Now - _lastClick).Seconds < 0.5 && Equals(_lastText, cellText);
+            var retVal = (DateTime.Now - _lastClick).Milliseconds < 200 && Equals(_lastText, cellText);
             _lastClick = DateTime.Now;
             _lastText = cellText;
             return retVal;

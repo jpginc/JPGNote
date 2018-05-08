@@ -9,7 +9,7 @@ namespace ConsoleApp1
     {
         protected override bool OnKeyPressEvent(EventKey evnt)
         {
-            if (evnt.Key == Key.Tab)
+            if (evnt.Key == Key.Tab && evnt.State != ModifierType.ControlMask)
             {
                 Console.WriteLine("tab pressed");
                 return true;

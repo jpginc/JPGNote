@@ -90,12 +90,13 @@ namespace ConsoleApp1
 
         private void AddRightElements(Grid container)
         {
-            var label = new Label("Output: ");
+            var label = new Label("Output <ctrl + o> ");
             var sw = new ScrolledWindow
             {
                 ShadowType = ShadowType.EtchedIn,
                 Expand = true
             };
+            //keyboard shortcut setup in the OnKeyPressEvent override
             _inputWidget = new TextView();
             sw.Add(_inputWidget);
             var save = new Button("_Save");
@@ -184,6 +185,7 @@ namespace ConsoleApp1
             if (doReset)
             {
                 _searchableThing.Reset();
+                _inputWidget.Buffer.Text = "";
                 UserNotify("Double clicking or hitting Return twice will activate an item");
             }
 
@@ -211,6 +213,19 @@ namespace ConsoleApp1
         {
             _inputWidget.Buffer.Text = noteContents;
             return this;
+        }
+        protected override bool OnKeyPressEvent(EventKey evnt)
+        {
+            if (evnt.Key == Key.o && evnt.State == ModifierType.ControlMask)
+            {
+                _inputWidget.GrabFocus();
+                return true;
+            } else if (evnt.Key == Key.i && evnt.State == ModifierType.ControlMask)
+            {
+                _searchableThing.FocusInput();
+                return true;
+            }
+            return base.OnKeyPressEvent(evnt);
         }
     }
 }

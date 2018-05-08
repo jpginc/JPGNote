@@ -19,6 +19,7 @@ namespace ConsoleApp1
         {
             _label = new Label("Search: ");
             _search = new NoTabSearchEntry {Expand = false};
+            _search.PlaceholderText = "<ctrl+i> to focus";
             _search.Changed += OnSearchChange;
             _search.Activated += OnSearchSubmit;
 
@@ -90,6 +91,11 @@ namespace ConsoleApp1
             _treeview.SetMultiSelect(false);
             SetChoices(Enumerable.Empty<ITreeViewChoice>());
             return this;
+        }
+
+        public void FocusInput()
+        {
+            _search.GrabFocus();
         }
     }
 }
