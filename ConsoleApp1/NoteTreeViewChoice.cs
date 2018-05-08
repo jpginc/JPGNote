@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Runtime.Serialization.Json;
 
 namespace ConsoleApp1
 {
@@ -22,6 +20,7 @@ namespace ConsoleApp1
 
         public override bool OnAcceptCallback(UserActionResult choice)
         {
+            //NotesManager.Instance.HandleNoteAccept(_n, choice);
             return true;
         }
 

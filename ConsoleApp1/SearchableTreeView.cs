@@ -47,8 +47,7 @@ namespace ConsoleApp1
         private void OnSearchChange(object sender, EventArgs e)
         {
             var searchText = ((SearchEntry) sender).Text;
-            _choices = _choices.Select(s => s.CalculateScore(searchText)).OrderBy(s => s);
-            UpdateChoices();
+            _treeview.UpdateOrder(searchText);
         }
 
         public SearchableTreeView SetLabelText(string text)
@@ -61,16 +60,7 @@ namespace ConsoleApp1
 
         public void SetChoices(IEnumerable<ITreeViewChoice> treeViewChoices)
         {
-            GuiThread.Go(() =>
-            {
-                _choices = treeViewChoices.Select(s => s);
-                UpdateChoices();
-            });
-        }
-
-        private void UpdateChoices()
-        {
-            _treeview.SetChoices(_choices);
+            GuiThread.Go(() => { _treeview.SetChoices(treeViewChoices); });
         }
 
         public SearchableTreeView SetMultiSelect(bool b)
@@ -106,25 +96,13 @@ namespace ConsoleApp1
         {
             if (evnt.Key == Gdk.Key.Down || evnt.Key == Gdk.Key.Up)
             {
-                RoatateAndUpdateChoices(evnt.Key == Gdk.Key.Down);
+                //todo
+                //RoatateAndUpdateChoices(evnt.Key == Gdk.Key.Down);
             }
             else
             {
-                RoatateAndUpdateChoices(evnt.State == ModifierType.ShiftMask);
+                //RoatateAndUpdateChoices(evnt.State == ModifierType.ShiftMask);
             }
-        }
-
-        private void RoatateAndUpdateChoices(bool forwardDirection)
-        {
-            if ((DateTime.Now - _lastRotate).Milliseconds < 100) return;
-            if (_choices.Count() <= 1)
-                return;
-
-            _choices = !forwardDirection
-                ? _choices.Skip(1).Concat(_choices.Take(1))
-                : _choices.TakeLast(1).Concat(_choices.SkipLast(1));
-            UpdateChoices();
-            _lastRotate = DateTime.Now;
         }
     }
 }
