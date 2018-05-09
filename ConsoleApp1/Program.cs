@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using ConsoleApp1;
 
 public class GtkHelloWorld
@@ -12,23 +11,20 @@ public class GtkHelloWorld
         var actionManager = new JpgActionManager();
         while (true)
         {
-            UserActionResult choice = GuiManager.Instance.GetChoice(actionManager.GetActions(), "What do you want to do?");
+            var choice = GuiManager.Instance.GetChoice(actionManager.GetActions(), "What do you want to do?");
+            if (actionManager.CurrentActionProvider.HandleUserAction(choice)
+                == ActionProviderResult.ProcessingFinished)
+                continue;
             switch (choice.Result)
             {
                 case UserActionResult.ResultType.Canceled:
                     actionManager.UnrollActionContext();
                     break;
                 case UserActionResult.ResultType.Accept:
-                    foreach (var s in choice.UserChoices)
-                    {
-                        s.OnAcceptCallback(choice);
-                    }
+                    foreach (var s in choice.UserChoices) s.OnAcceptCallback(choice);
                     break;
                 case UserActionResult.ResultType.Save:
-                    foreach (var s in choice.UserChoices)
-                    {
-                        s.OnSaveCallback(choice);
-                    }
+                    foreach (var s in choice.UserChoices) s.OnSaveCallback(choice);
 
                     break;
                 case UserActionResult.ResultType.NoInput:
@@ -40,7 +36,7 @@ public class GtkHelloWorld
 
     private static void InitialiseSettingsClass()
     {
-        SettingsClass.Start(_fileName , GetPassword());
+        SettingsClass.Start(_fileName, GetPassword());
     }
 
     private static string GetPassword()
@@ -49,12 +45,13 @@ public class GtkHelloWorld
         var pwd = "";
         while (true)
         {
-            ConsoleKeyInfo i = Console.ReadKey(true);
+            var i = Console.ReadKey(true);
             if (i.Key == ConsoleKey.Enter)
             {
                 break;
             }
-            else if (i.Key == ConsoleKey.Backspace)
+
+            if (i.Key == ConsoleKey.Backspace)
             {
                 if (pwd.Length > 0)
                 {
