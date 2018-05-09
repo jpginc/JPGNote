@@ -3,13 +3,13 @@ using ConsoleApp1.BuiltInActions;
 
 namespace ConsoleApp1
 {
-    internal class NoteTreeViewChoice : ITreeViewChoice
+    internal class NoteChoice : ITreeViewChoice
     {
         public readonly Note Note;
         public string SortByText => Note.NoteName;
         public string Text => Note.NoteName;
 
-        public NoteTreeViewChoice(Note note)
+        public NoteChoice(Note note)
         {
             Note = note;
         }
@@ -22,7 +22,7 @@ namespace ConsoleApp1
 
         public bool OnAcceptCallback(UserActionResult choice)
         {
-            JpgActionManager.PushActionContext(new NoteAction(Note));
+            JpgActionManager.PushActionContext(new BuiltInActions.NoteAction(Note));
             MainWindow.Instance.SetInputText(Note.NoteContents);
             return true;
         }

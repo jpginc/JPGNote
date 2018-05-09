@@ -19,7 +19,7 @@ namespace ConsoleApp1.BuiltInActions
 
         public IEnumerable<ITreeViewChoice> GetProjects()
         {
-            return Projects.Select(p => new ProjectTreeViewChoice(p));
+            return Projects.Select(p => new ProjectChoice(p));
         }
 
         public void NewProject(UserActionResult obj)
@@ -27,9 +27,7 @@ namespace ConsoleApp1.BuiltInActions
             GuiThread.Go(() =>
             {
                 var filechooser = new FileChooserDialog("Select Folder To Save Project Data",
-                        MainWindow.Instance,
-                        FileChooserAction.SelectFolder,
-                        "Cancel", ResponseType.Cancel,
+                        MainWindow.Instance, FileChooserAction.SelectFolder, "Cancel", ResponseType.Cancel,
                         "Open", ResponseType.Accept);
 
                 if (filechooser.Run() == (int) ResponseType.Accept)

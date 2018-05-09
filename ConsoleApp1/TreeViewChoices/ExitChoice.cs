@@ -2,9 +2,9 @@
 
 namespace ConsoleApp1.BuiltInActions
 {
-    internal class ExitAction : SimpleTreeViewChoice
+    internal class ExitChoice : SimpleTreeViewChoice
     {
-        public ExitAction() : base("Exit")
+        public ExitChoice() : base("Exit")
         {
             AcceptHandler = (a) => Environment.Exit(0);
         }

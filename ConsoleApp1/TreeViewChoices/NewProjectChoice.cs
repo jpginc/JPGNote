@@ -1,8 +1,8 @@
 ﻿namespace ConsoleApp1.BuiltInActions
 {
-    internal class CreateProjectTreeViewChoice : SimpleTreeViewChoice
+    internal class NewProjectChoice : SimpleTreeViewChoice
     {
-        public CreateProjectTreeViewChoice() : base("New Project")
+        public NewProjectChoice() : base("New Project")
         {
             AcceptHandler = ProjectManager.Instance.NewProject;
         }

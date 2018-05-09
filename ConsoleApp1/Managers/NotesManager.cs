@@ -36,9 +36,9 @@ namespace ConsoleApp1
             return this;
         }
 
-        public IEnumerable<NoteTreeViewChoice> GetNoteChoices()
+        public IEnumerable<NoteChoice> GetNoteChoices()
         {
-            return Notes.Select(n => new NoteTreeViewChoice(n));
+            return Notes.Select(n => new NoteChoice(n));
         }
 
         public NotesManager Delete(Note note)

@@ -1,10 +1,10 @@
 ﻿namespace ConsoleApp1.BuiltInActions
 {
-    internal class ProjectTreeViewChoice : SimpleTreeViewChoice
+    internal class ProjectChoice : SimpleTreeViewChoice
     {
         private readonly Project _project;
 
-        public ProjectTreeViewChoice(Project project) : base("New Project")
+        public ProjectChoice(Project project) : base("New Project")
         {
             _project = project;
             AcceptHandler = ProjectContext;

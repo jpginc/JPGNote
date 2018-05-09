@@ -10,8 +10,8 @@ namespace ConsoleApp1.BuiltInActions
             var projects = ProjectManager.Instance.GetProjects();
             var c = new List<ITreeViewChoice>
             {
-                new CreateProjectTreeViewChoice(),
-                new ExitAction(),
+                new NewProjectChoice(),
+                new ExitChoice(),
             };
             return projects.Concat(c);
         }

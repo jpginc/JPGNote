@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace ConsoleApp1.BuiltInActions
 {
+    //todo split up the action and the choice
     internal class DeleteNotesAction : SimpleTreeViewChoice, IActionProvider
     {
         public InputType InputType => InputType.Multi;
@@ -27,7 +28,7 @@ namespace ConsoleApp1.BuiltInActions
             {
                 foreach (var treeViewChoice in res.UserChoices)
                 {
-                    var choice = (NoteTreeViewChoice) treeViewChoice;
+                    var choice = (ConsoleApp1.NoteChoice) treeViewChoice;
                     NotesManager.Instance.Delete(choice.Note);
                 }
                 SettingsClass.Instance.Save();

@@ -9,8 +9,8 @@ namespace ConsoleApp1.BuiltInActions
         {
             var c = new List<ITreeViewChoice>
             {
-                new CreateNoteAction(),
-                new ExitAction(),
+                new NewNoteChoice(),
+                new ExitChoice(),
                 new DeleteNotesAction()
             };
             return c.Concat(NotesManager.Instance.GetNoteChoices());

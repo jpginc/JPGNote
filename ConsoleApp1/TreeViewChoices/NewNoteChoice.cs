@@ -1,8 +1,8 @@
 ﻿namespace ConsoleApp1.BuiltInActions
 {
-    internal class CreateNoteAction : SimpleTreeViewChoice
+    internal class NewNoteChoice : SimpleTreeViewChoice
     {
-        public CreateNoteAction() : base("New Note")
+        public NewNoteChoice() : base("New Note")
         {
             AcceptHandler = NotesManager.Instance.NewNoteAction;
         }
