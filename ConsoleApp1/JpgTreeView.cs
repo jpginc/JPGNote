@@ -42,7 +42,7 @@ namespace ConsoleApp1
 
         private JpgTreeView UpdateSelectedItem(TreeIter item)
         {
-            GetValueFromIter(item)?.SetSelected(Selection.IterIsSelected(item));
+            //GetValueFromIter(item)?.SetSelected(Selection.IterIsSelected(item));
             return this;
         }
 
@@ -53,7 +53,7 @@ namespace ConsoleApp1
 
         private bool CheckForDoubleClickOrDoubleReturn(TreeIter item)
         {
-            var cellText = GetValueFromIter(item)?.GetChoiceText();
+            var cellText = GetValueFromIter(item)?.Text;
             var retVal = (DateTime.Now - _lastClick).Milliseconds < 200 && Equals(_lastText, cellText);
             _lastClick = DateTime.Now;
             _lastText = cellText;
@@ -101,12 +101,7 @@ namespace ConsoleApp1
             _store.Clear();
             foreach (var choice in choices)
             {
-                var x = _store.AppendValues(choice.GetChoiceText(), choice);
-                if (choice.IsSelected())
-                {
-                    Console.WriteLine(choice.GetChoiceText() + " is selected");
-                    Selection.SelectIter(x);
-                }
+                var x = _store.AppendValues(choice.Text, choice);
             }
             return this;
         }
@@ -141,6 +136,37 @@ namespace ConsoleApp1
                 return (ITreeViewChoice) _store.GetValue(item, (int) Column.Value);
             }).ToList();
             return retVal;
+        }
+
+        public void UpdateOrder(string text)
+        {
+            //todo
+            Console.WriteLine("trying to move order");
+        }
+
+        public void RotateItems(bool forwardDirection)
+        {
+            Console.WriteLine("trying to rotate");
+            _store.GetIterFirst(out var firstRow);
+            var lastRow = GetLastRow();
+            if (forwardDirection)
+            {
+                _store.MoveAfter(firstRow, lastRow);
+            }
+            else
+            {
+                _store.MoveBefore(lastRow, firstRow);
+            }
+        }
+
+        private TreeIter GetLastRow()
+        {
+            _store.GetIterFirst(out var iter);
+            for (int i = 0; i < _store.IterNChildren() - 1; i++)
+            {
+                _store.IterNext(ref iter);
+            }
+            return iter;
         }
     }
 }

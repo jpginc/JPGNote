@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security;
 using ConsoleApp1;
 
 public class GtkHelloWorld
@@ -22,7 +21,6 @@ public class GtkHelloWorld
                 case UserActionResult.ResultType.Accept:
                     foreach (var s in choice.UserChoices)
                     {
-                        Console.WriteLine(s.GetChoiceText());
                         s.OnAcceptCallback(choice);
                     }
 
@@ -30,7 +28,6 @@ public class GtkHelloWorld
                 case UserActionResult.ResultType.Save:
                     foreach (var s in choice.UserChoices)
                     {
-                        Console.WriteLine(s.GetChoiceText());
                         s.OnSaveCallback(choice);
                     }
 

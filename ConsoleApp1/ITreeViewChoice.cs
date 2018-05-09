@@ -2,14 +2,10 @@
 
 namespace ConsoleApp1
 {
-    public interface ITreeViewChoice : IComparable<ITreeViewChoice>
+    public interface ITreeViewChoice : IJoshSortable
     {
         //todo figure out sorted treeviews and remove the rubbish from this class
-        string GetChoiceText();
-        ITreeViewChoice CalculateScore(string s);
-        int GetScore();
-        bool IsSelected();
-        ITreeViewChoice SetSelected(bool selected);
+        string Text { get; set; }
         bool OnTreeViewSelectCallback(JpgTreeView jpgTreeView);
 
         bool OnAcceptCallback(UserActionResult choice);
@@ -20,52 +16,13 @@ namespace ConsoleApp1
     }
     internal class TreeViewChoice : ITreeViewChoice
     {
-        public bool Selected = false;
-        private readonly string _choiceText;
-        private int _score = 0;
 
         public TreeViewChoice(string choiceText)
         {
-            _choiceText = choiceText;
+            Text = choiceText;
         }
 
-        public string GetChoiceText()
-        {
-            return _choiceText;
-        }
-
-        public int GetScore()
-        {
-            return _score;
-        }
-
-        public ITreeViewChoice CalculateScore(string compareString)
-        {
-            _score = JoshSort.GetJoshScore(_choiceText, compareString);
-            return this;
-        }
-
-        public int CompareTo(ITreeViewChoice other)
-        {
-            return other.GetScore().CompareTo(_score);
-        }
-
-        //this could be made better but have to worry about threads with the treeview sort wrapper
-        public bool IsSelected()
-        {
-            return Selected;
-        }
-
-        //this could be made better but have to worry about threads with the treeview sort wrapper
-        public ITreeViewChoice SetSelected(bool selected)
-        {
-            if (selected)
-            {
-                Console.WriteLine("Selecting " + _choiceText);
-            }
-            Selected = selected;
-            return this;
-        }
+        public string Text { get; set; }
 
         public bool OnTreeViewSelectCallback(JpgTreeView jpgTreeView)
         {
@@ -93,6 +50,8 @@ namespace ConsoleApp1
         private static void DoNothingHandler(object obj)
         {
         }
+
+        public string SortByText => Text;
     }
 
 }

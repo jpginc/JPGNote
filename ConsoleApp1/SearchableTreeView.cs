@@ -11,7 +11,6 @@ namespace ConsoleApp1
         private readonly Label _label;
         private readonly NoTabSearchEntry _search;
         private readonly JpgTreeView _treeview;
-        private IEnumerable<ITreeViewChoice> _choices;
         public new int Height = 5;
         public new int Width = 1;
         private DateTime _lastRotate = DateTime.Now;
@@ -46,9 +45,7 @@ namespace ConsoleApp1
 
         private void OnSearchChange(object sender, EventArgs e)
         {
-            var searchText = ((SearchEntry) sender).Text;
-            _choices = _choices.Select(s => s.CalculateScore(searchText)).OrderBy(s => s);
-            UpdateChoices();
+            _treeview.UpdateOrder(((SearchEntry) sender).Text);
         }
 
         public SearchableTreeView SetLabelText(string text)
@@ -61,16 +58,7 @@ namespace ConsoleApp1
 
         public void SetChoices(IEnumerable<ITreeViewChoice> treeViewChoices)
         {
-            GuiThread.Go(() =>
-            {
-                _choices = treeViewChoices.Select(s => s);
-                UpdateChoices();
-            });
-        }
-
-        private void UpdateChoices()
-        {
-            _treeview.SetChoices(_choices);
+            _treeview.SetChoices(treeViewChoices);
         }
 
         public SearchableTreeView SetMultiSelect(bool b)
@@ -117,13 +105,7 @@ namespace ConsoleApp1
         private void RoatateAndUpdateChoices(bool forwardDirection)
         {
             if ((DateTime.Now - _lastRotate).Milliseconds < 100) return;
-            if (_choices.Count() <= 1)
-                return;
-
-            _choices = !forwardDirection
-                ? _choices.Skip(1).Concat(_choices.Take(1))
-                : _choices.TakeLast(1).Concat(_choices.SkipLast(1));
-            UpdateChoices();
+            _treeview.RotateItems(forwardDirection);
             _lastRotate = DateTime.Now;
         }
     }
