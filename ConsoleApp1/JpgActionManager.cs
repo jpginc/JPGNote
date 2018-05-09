@@ -21,10 +21,5 @@ namespace ConsoleApp1
                 return CurrentActionProvider.GetActions();
             }
         }
-
-        public static ITreeViewChoice AcceptOnSelectAction(string text)
-        {
-            return new SimpleTreeViewChoice(text) {SelectHandler = MainWindow.Instance.Accept};
-        }
     }
 }
