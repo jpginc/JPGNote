@@ -8,14 +8,24 @@ namespace ConsoleApp1
         ProcessingFinished,
         PassToTreeViewChoices
     }
+
+    public enum InputType
+    {
+        Single,
+        Multi,
+        FreeTextSingle,
+        FreeTextMulti
+    }
     public interface IActionProvider
     {
+        InputType InputType { get; }
         IEnumerable<ITreeViewChoice> GetActions();
         ActionProviderResult HandleUserAction(UserActionResult res);
     }
 
-    abstract class SimpleActionProvider : IActionProvider
+    public abstract class SimpleActionProvider : IActionProvider
     {
+        public InputType InputType => InputType.Single;
         public abstract IEnumerable<ITreeViewChoice> GetActions();
 
         public ActionProviderResult HandleUserAction(UserActionResult res)

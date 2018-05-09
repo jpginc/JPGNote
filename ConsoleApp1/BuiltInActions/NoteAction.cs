@@ -4,11 +4,11 @@ namespace ConsoleApp1.BuiltInActions
 {
     internal class NoteAction : SimpleActionProvider
     {
-        private Note note;
+        private readonly Note _note;
 
         public NoteAction(Note note)
         {
-            this.note = note;
+            _note = note;
         }
 
         public override IEnumerable<ITreeViewChoice> GetActions()
@@ -21,8 +21,8 @@ namespace ConsoleApp1.BuiltInActions
         }
         private void Delete(UserActionResult obj)
         {
-            NotesManager.Instance.Delete(note);
-            JpgActionManager.PushActionContext(this);
+            NotesManager.Instance.Delete(_note);
+            JpgActionManager.UnrollActionContext();
         }
 
         private void AddTag(UserActionResult obj)
@@ -30,7 +30,7 @@ namespace ConsoleApp1.BuiltInActions
             var input = GuiManager.Instance.GetNonEmptySingleLineInput("Enter tag");
             if (input.Result == UserActionResult.ResultType.Accept)
             {
-                note.Tags.Add(input.SingleLineInput);
+                _note.Tags.Add(input.SingleLineInput);
             }
         }
 

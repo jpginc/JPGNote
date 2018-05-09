@@ -36,7 +36,7 @@ namespace ConsoleApp1
             return this;
         }
 
-        public IEnumerable<ITreeViewChoice> GetNoteChoices()
+        public IEnumerable<NoteTreeViewChoice> GetNoteChoices()
         {
             return Notes.Select(n => new NoteTreeViewChoice(n));
         }

@@ -6,7 +6,7 @@ using GLib;
 
 namespace ConsoleApp1
 {
-    internal class JpgActionManager : SimpleActionProvider
+    public class JpgActionManager : SimpleActionProvider
     {
         public IActionProvider CurrentActionProvider => _actionProviders.Last();
 
@@ -23,7 +23,7 @@ namespace ConsoleApp1
             _actionProviders.Add(action);
         }
 
-        public void UnrollActionContext()
+        public static void UnrollActionContext()
         {
             if (_actionProviders.Count > 1)
             {

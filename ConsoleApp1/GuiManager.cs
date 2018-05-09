@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using Gtk;
+using Action = System.Action;
 
 namespace ConsoleApp1
 {
@@ -92,6 +93,22 @@ namespace ConsoleApp1
             var choice = new[] {(ITreeViewChoice) new SelectingTriggersAcceptAction("Press enter to finish input")};
             GetChoice(false, choice, prompt, resetGui);
             return _gui.GetUserActionResult();
+        }
+
+        public UserActionResult GetUserInput(JpgActionManager actionManager, string prompt)
+        {
+            switch(actionManager.CurrentActionProvider.InputType)
+                {
+                    case InputType.Single:
+                        return GetChoice(actionManager.GetActions(), prompt);
+                    case InputType.Multi:
+                        return GetChoices(actionManager.GetActions(), prompt);
+                    case InputType.FreeTextSingle:
+                        return GetSingleLineInput(prompt);
+                    case InputType.FreeTextMulti:
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
         }
     }
 }

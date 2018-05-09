@@ -11,14 +11,14 @@ public class GtkHelloWorld
         var actionManager = new JpgActionManager();
         while (true)
         {
-            var choice = GuiManager.Instance.GetChoice(actionManager.GetActions(), "What do you want to do?");
+            var choice = GuiManager.Instance.GetUserInput(actionManager, "What do you want to do?");
             if (actionManager.CurrentActionProvider.HandleUserAction(choice)
                 == ActionProviderResult.ProcessingFinished)
                 continue;
             switch (choice.Result)
             {
                 case UserActionResult.ResultType.Canceled:
-                    actionManager.UnrollActionContext();
+                    JpgActionManager.UnrollActionContext();
                     break;
                 case UserActionResult.ResultType.Accept:
                     foreach (var s in choice.UserChoices) s.OnAcceptCallback(choice);
