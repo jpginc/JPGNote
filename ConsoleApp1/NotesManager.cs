@@ -38,7 +38,7 @@ namespace ConsoleApp1
 
         public IEnumerable<ITreeViewChoice> GetNoteChoices()
         {
-            return Notes;
+            return Notes.Select(n => new NoteTreeViewChoice(n));
         }
 
         public NotesManager Delete(Note note)

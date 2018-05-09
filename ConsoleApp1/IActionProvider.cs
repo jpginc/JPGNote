@@ -14,7 +14,6 @@ namespace ConsoleApp1
         ActionProviderResult HandleUserAction(UserActionResult res);
     }
 
-    [DataContract]
     abstract class SimpleActionProvider : IActionProvider
     {
         public abstract IEnumerable<ITreeViewChoice> GetActions();
