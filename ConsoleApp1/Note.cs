@@ -11,6 +11,7 @@ namespace ConsoleApp1
         [DataMember] private readonly string _uniqueId;
         [DataMember] public string NoteContents { get; set; }
         [DataMember] public DateTime CreateTime { get; set; }
+        [DataMember] public List<string> Tags { get; set; } = new List<string>();
 
         public Note(string noteName)
         {
@@ -45,12 +46,30 @@ namespace ConsoleApp1
 
         public IEnumerable<ITreeViewChoice> GetChoices()
         {
-            return new[] {new TreeViewChoice("Delete note") {AcceptHandler = Delete}};
+            return new[]
+            {
+                new TreeViewChoice("Delete note") {AcceptHandler = Delete},
+                new TreeViewChoice("Add Tags") {AcceptHandler = AddTag}
+            };
+        }
+
+        private void AddTag(UserActionResult obj)
+        {
+            var input = GuiManager.Instance.GetNonEmptySingleLineInput("Enter tag");
+            if (input.Result == UserActionResult.ResultType.Accept)
+            {
+                Tags.Add(input.SingleLineInput);
+            }
         }
 
         private void Delete(UserActionResult obj)
         {
             NotesManager.Instance.Delete(this);
+            if (JpgActionManager.ActionContext == this)
+            {
+                JpgActionManager.ActionContext = null;
+            }
         }
+
     }
 }

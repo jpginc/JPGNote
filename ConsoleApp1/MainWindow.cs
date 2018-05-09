@@ -172,7 +172,7 @@ namespace ConsoleApp1
             if (doReset)
             {
                 _searchableTreeView.Reset();
-                _multiLineInputWidget.Buffer.Text = "";
+                GuiThread.DontWait(() => { _multiLineInputWidget.Buffer.Text = ""; });
                 UserNotify("Double clicking or hitting Return twice will activate an item");
             }
 
@@ -181,19 +181,24 @@ namespace ConsoleApp1
 
         public void UserNotify(string message)
         {
-            _notificationLabel.Text = message;
-            var color = new Color();
-            Color.Parse("lightblue", ref color);
-            _notificationLabel.ModifyBg(StateType.Normal, color);
+            GuiThread.DontWait(() =>
+            {
+                _notificationLabel.Text = message;
+                var color = new Color();
+                Color.Parse("lightblue", ref color);
+                _notificationLabel.ModifyBg(StateType.Normal, color);
+            });
         }
 
         public void Error(string message)
         {
-            _notificationLabel.Text = message;
-
-            var color = new Color();
-            Color.Parse("red", ref color);
-            _notificationLabel.ModifyBg(StateType.Normal, color);
+            GuiThread.DontWait(() =>
+            {
+                _notificationLabel.Text = message;
+                var color = new Color();
+                Color.Parse("red", ref color);
+                _notificationLabel.ModifyBg(StateType.Normal, color);
+            });
         }
 
         public MainWindow SetInputText(string noteContents)
