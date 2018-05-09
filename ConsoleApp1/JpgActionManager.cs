@@ -11,7 +11,7 @@ namespace ConsoleApp1
         public IActionProvider CurrentActionProvider => _actionProviders.Last();
 
         private static readonly List<IActionProvider> _actionProviders 
-            = new List<IActionProvider>() {new MainMenu()}; 
+            = new List<IActionProvider>() {new ProgramMenu()}; 
 
         public override IEnumerable<ITreeViewChoice> GetActions()
         {
