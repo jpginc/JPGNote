@@ -17,7 +17,7 @@ public class GtkHelloWorld
             {
                 case UserActionResult.ResultType.Canceled:
                     Console.WriteLine("cancelled!");
-                    JpgActionManager.ActionContext = null;
+                    JpgActionManager.CurrentActionProvider = null;
                     break;
                 case UserActionResult.ResultType.Accept:
                     foreach (var s in choice.UserChoices)

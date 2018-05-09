@@ -71,9 +71,8 @@ namespace ConsoleApp1
             return GetSingleLineInput(prompt, true);
         }
 
-        public UserActionResult GetNonEmptySingleLineInput(string prompt)
+        public UserActionResult GetNonEmptySingleLineInput(string prompt, bool resetGui = true)
         {
-            var resetGui = true;
             while (true)
             {
                 var choice = GetSingleLineInput(prompt, resetGui);

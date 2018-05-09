@@ -172,7 +172,7 @@ namespace ConsoleApp1
             if (doReset)
             {
                 _searchableTreeView.Reset();
-                GuiThread.DontWait(() => { _multiLineInputWidget.Buffer.Text = ""; });
+                //GuiThread.DontWait(() => { _multiLineInputWidget.Buffer.Text = ""; });
                 UserNotify("Double clicking or hitting Return twice will activate an item");
             }
 

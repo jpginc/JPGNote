@@ -2,8 +2,12 @@
 
 namespace ConsoleApp1
 {
+    public interface IActionProvider
+    {
+        IEnumerable<ITreeViewChoice> GetActions();
+    }
+
     public interface IActionContext
     {
-        IEnumerable<ITreeViewChoice> GetChoices();
     }
 }

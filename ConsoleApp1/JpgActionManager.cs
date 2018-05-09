@@ -7,27 +7,17 @@ namespace ConsoleApp1
 {
     internal class JpgActionManager
     {
-        public static IActionContext ActionContext { get; set; }
+        public static IActionProvider CurrentActionProvider { get; set; }
         public static IEnumerable<ITreeViewChoice> GetActions()
         {
-            if (ActionContext == null)
+            if (CurrentActionProvider == null)
             {
-                var c = new List<ITreeViewChoice>
-                {
-                    new TreeViewChoice("New Note")
-                    {
-                        AcceptHandler = NotesManager.Instance.NewNoteAction
-                    },
-                    new TreeViewChoice("Settings"),
-                    new TreeViewChoice("Exit") {AcceptHandler = (a) => Environment.Exit(0)}
-                };
-
-                return c.Concat(NotesManager.Instance.GetNoteChoices());
+                return BuiltInActionProvider.Instance.GetActions();
             }
             else
             {
                 Console.WriteLine("getting the actions choices");
-                return ActionContext.GetChoices();
+                return CurrentActionProvider.GetActions();
             }
         }
 
