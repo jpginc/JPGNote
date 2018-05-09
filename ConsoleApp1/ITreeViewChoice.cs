@@ -5,19 +5,15 @@ namespace ConsoleApp1
     public interface ITreeViewChoice : IJoshSortable
     {
         //todo figure out sorted treeviews and remove the rubbish from this class
-        string Text { get; set; }
+        string Text { get; }
         bool OnTreeViewSelectCallback(JpgTreeView jpgTreeView);
-
         bool OnAcceptCallback(UserActionResult choice);
         bool OnSaveCallback(UserActionResult choice);
-        Action<JpgTreeView> SelectHandler { get; set; }
-        Action<UserActionResult> AcceptHandler { get; set; }
-        Action<UserActionResult> SaveHandler { get; set; }
     }
-    internal class TreeViewChoice : ITreeViewChoice
+    internal class SimpleTreeViewChoice : ITreeViewChoice
     {
 
-        public TreeViewChoice(string choiceText)
+        public SimpleTreeViewChoice(string choiceText)
         {
             Text = choiceText;
         }

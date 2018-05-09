@@ -15,14 +15,14 @@ namespace ConsoleApp1
         {
                 var c = new List<ITreeViewChoice>
                 {
-                    new TreeViewChoice("New Note")
+                    new SimpleTreeViewChoice("New Note")
                     {
                         AcceptHandler = NotesManager.Instance.NewNoteAction
                     },
-                    new TreeViewChoice("Delete Notes")
+                    new SimpleTreeViewChoice("Delete Notes")
                         {AcceptHandler = DeleteNotes},
-                    new TreeViewChoice("Settings"),
-                    new TreeViewChoice("Exit") {AcceptHandler = (a) => Environment.Exit(0)}
+                    new SimpleTreeViewChoice("Settings"),
+                    new SimpleTreeViewChoice("Exit") {AcceptHandler = (a) => Environment.Exit(0)}
                 };
                 return c.Concat(NotesManager.Instance.GetNoteChoices());
         }

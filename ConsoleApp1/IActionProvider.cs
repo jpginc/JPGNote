@@ -6,8 +6,4 @@ namespace ConsoleApp1
     {
         IEnumerable<ITreeViewChoice> GetActions();
     }
-
-    public interface IActionContext
-    {
-    }
 }

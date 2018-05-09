@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace ConsoleApp1
 {
     [DataContract]
-    internal class Note : IComparable<Note>, IActionProvider
+    internal class Note : IComparable<Note>, IActionProvider, ITreeViewChoice
     {
         [DataMember] public readonly string NoteName;
         [DataMember] private readonly string _uniqueId;
@@ -21,24 +21,6 @@ namespace ConsoleApp1
             CreateTime = DateTime.Now;
         }
 
-        public void ShowNoteAction(JpgTreeView treeView)
-        {
-            MainWindow.Instance.SetInputText(NoteContents);
-        }
-
-        public void SaveNoteAction(UserActionResult choice)
-        {
-            Console.WriteLine("the save data is " + choice.MultiLineInput);
-            NoteContents = choice.MultiLineInput;
-            NotesManager.Instance.Save();
-        }
-
-        public void ActivateNoteAction(UserActionResult choice)
-        {
-            JpgActionManager.CurrentActionProvider = this;
-            MainWindow.Instance.SetInputText(NoteContents);
-        }
-
         public int CompareTo(Note obj)
         {
             return string.Compare(_uniqueId, obj._uniqueId, StringComparison.Ordinal);
@@ -48,8 +30,8 @@ namespace ConsoleApp1
         {
             return new[]
             {
-                new TreeViewChoice("Delete note") {AcceptHandler = Delete},
-                new TreeViewChoice("Add Tags") {AcceptHandler = AddTag}
+                new SimpleTreeViewChoice("Delete note") {AcceptHandler = Delete},
+                new SimpleTreeViewChoice("Add Tags") {AcceptHandler = AddTag}
             };
         }
 
@@ -71,5 +53,27 @@ namespace ConsoleApp1
             }
         }
 
+        public string SortByText => NoteName;
+        public string Text => NoteName;
+        public bool OnTreeViewSelectCallback(JpgTreeView jpgTreeView)
+        {
+            MainWindow.Instance.SetInputText(NoteContents);
+            return true;
+        }
+
+        public bool OnAcceptCallback(UserActionResult choice)
+        {
+            JpgActionManager.CurrentActionProvider = this;
+            MainWindow.Instance.SetInputText(NoteContents);
+            return true;
+        }
+
+        public bool OnSaveCallback(UserActionResult choice)
+        {
+            Console.WriteLine("the save data is " + choice.MultiLineInput);
+            NoteContents = choice.MultiLineInput;
+            NotesManager.Instance.Save();
+            return true;
+        }
     }
 }

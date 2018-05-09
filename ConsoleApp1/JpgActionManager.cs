@@ -23,7 +23,7 @@ namespace ConsoleApp1
 
         public static ITreeViewChoice AcceptOnSelectAction(string text)
         {
-            return new TreeViewChoice(text) {SelectHandler = MainWindow.Instance.Accept};
+            return new SimpleTreeViewChoice(text) {SelectHandler = MainWindow.Instance.Accept};
         }
     }
 }

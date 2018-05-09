@@ -38,12 +38,7 @@ namespace ConsoleApp1
 
         public IEnumerable<ITreeViewChoice> GetNoteChoices()
         {
-            return Notes.Select(n => new TreeViewChoice(n.NoteName)
-            {
-                SelectHandler = n.ShowNoteAction,
-                SaveHandler = n.SaveNoteAction,
-                AcceptHandler = n.ActivateNoteAction
-            });
+            return Notes;
         }
 
         public NotesManager Delete(Note note)
