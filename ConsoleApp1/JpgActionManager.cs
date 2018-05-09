@@ -6,25 +6,19 @@ using GLib;
 
 namespace ConsoleApp1
 {
-    internal class JpgActionManager : IActionProvider
+    internal class JpgActionManager : SimpleActionProvider
     {
-        public static JpgActionManager Instance { get; } = new JpgActionManager();
-
         public IActionProvider CurrentActionProvider => _actionProviders.Last();
 
-        private readonly List<IActionProvider> _actionProviders; 
+        private static readonly List<IActionProvider> _actionProviders 
+            = new List<IActionProvider>() {new MainMenu()}; 
 
-        private JpgActionManager()
-        {
-            _actionProviders = new List<IActionProvider>() {BuiltInActionProvider.Instance};
-        }
-
-        public IEnumerable<ITreeViewChoice> GetActions()
+        public override IEnumerable<ITreeViewChoice> GetActions()
         {
             return CurrentActionProvider.GetActions();
         }
 
-        public void PushActionContext(IActionProvider action)
+        public static void PushActionContext(IActionProvider action)
         {
             _actionProviders.Add(action);
         }
@@ -35,11 +29,6 @@ namespace ConsoleApp1
             {
                 _actionProviders.Remove(_actionProviders.Last());
             }
-        }
-
-        IEnumerable<ITreeViewChoice> IActionProvider.GetActions()
-        {
-            return GetActions();
         }
     }
 }

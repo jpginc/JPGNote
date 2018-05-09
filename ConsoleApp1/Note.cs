@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace ConsoleApp1
 {
     [DataContract]
-    internal class Note : IComparable<Note>, IActionProvider, ITreeViewChoice
+    internal class Note : SimpleActionProvider, IComparable<Note>, ITreeViewChoice
     {
         [DataMember] public readonly string NoteName;
         [DataMember] private readonly string _uniqueId;
@@ -26,7 +26,7 @@ namespace ConsoleApp1
             return string.Compare(_uniqueId, obj._uniqueId, StringComparison.Ordinal);
         }
 
-        public IEnumerable<ITreeViewChoice> GetActions()
+        public override IEnumerable<ITreeViewChoice> GetActions()
         {
             return new[]
             {
@@ -47,7 +47,7 @@ namespace ConsoleApp1
         private void Delete(UserActionResult obj)
         {
             NotesManager.Instance.Delete(this);
-            JpgActionManager.Instance.PushActionContext(this);
+            JpgActionManager.PushActionContext(this);
         }
 
         public string SortByText => NoteName;
@@ -60,7 +60,7 @@ namespace ConsoleApp1
 
         public bool OnAcceptCallback(UserActionResult choice)
         {
-            JpgActionManager.Instance.PushActionContext(this);
+            JpgActionManager.PushActionContext(this);
             MainWindow.Instance.SetInputText(NoteContents);
             return true;
         }

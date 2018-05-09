@@ -4,7 +4,6 @@ namespace ConsoleApp1
 {
     public interface ITreeViewChoice : IJoshSortable
     {
-        //todo figure out sorted treeviews and remove the rubbish from this class
         string Text { get; }
         bool OnTreeViewSelectCallback(JpgTreeView jpgTreeView);
         bool OnAcceptCallback(UserActionResult choice);

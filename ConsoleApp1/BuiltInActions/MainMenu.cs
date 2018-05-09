@@ -3,15 +3,9 @@ using System.Linq;
 
 namespace ConsoleApp1.BuiltInActions
 {
-    internal class BuiltInActionProvider : IActionProvider
+    internal class MainMenu : SimpleActionProvider
     {
-        private BuiltInActionProvider()
-        {
-        }
-
-        public static BuiltInActionProvider Instance { get; } = new BuiltInActionProvider();
-
-        public IEnumerable<ITreeViewChoice> GetActions()
+        public override IEnumerable<ITreeViewChoice> GetActions()
         {
             var c = new List<ITreeViewChoice>
             {

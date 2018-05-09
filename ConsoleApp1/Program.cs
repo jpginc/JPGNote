@@ -9,14 +9,14 @@ public class GtkHelloWorld
     public static void Main()
     {
         InitialiseSettingsClass();
+        var actionManager = new JpgActionManager();
         while (true)
         {
-            var choice = GuiManager.Instance.GetChoice(GetChoices(), "What do you want to do?");
+            UserActionResult choice = GuiManager.Instance.GetChoice(actionManager.GetActions(), "What do you want to do?");
             switch (choice.Result)
             {
                 case UserActionResult.ResultType.Canceled:
-                    Console.WriteLine("cancelled!");
-                    JpgActionManager.Instance.UnrollActionContext();
+                    actionManager.UnrollActionContext();
                     break;
                 case UserActionResult.ResultType.Accept:
                     foreach (var s in choice.UserChoices)
@@ -70,10 +70,5 @@ public class GtkHelloWorld
         }
 
         return pwd;
-    }
-
-    private static IEnumerable<ITreeViewChoice> GetChoices()
-    {
-        return JpgActionManager.Instance.GetActions();
     }
 }
