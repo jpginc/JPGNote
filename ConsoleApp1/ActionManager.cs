@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GLib;
 
@@ -10,12 +11,12 @@ namespace ConsoleApp1
         {
             var c = new List<ITreeViewChoice>
             {
-                new TreeViewChoice("New Note hmm wtf")
+                new TreeViewChoice("New Note")
                 {
                     AcceptHandler = NotesManager.Instance.NewNoteAction
                 },
                 new TreeViewChoice("Settings"),
-                new TreeViewChoice("Exit")
+                new TreeViewChoice("Exit") { AcceptHandler = (a) => Environment.Exit(0) }
             };
 
             return c.Concat(NotesManager.Instance.GetNoteChoices());
