@@ -218,5 +218,10 @@ namespace ConsoleApp1
 
             return base.OnKeyPressEvent(evnt);
         }
+
+        public void Accept(JpgTreeView obj)
+        {
+            Accept();
+        }
     }
 }

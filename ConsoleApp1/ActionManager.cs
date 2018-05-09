@@ -10,12 +10,20 @@ namespace ConsoleApp1
         {
             var c = new List<ITreeViewChoice>
             {
-                new NewNoteTreeViewChoice("New Note"),
-                new SimpleTreeViewChoice("Settings"),
-                new SimpleTreeViewChoice("Exit")
+                new TreeViewChoice("New Note hmm wtf")
+                {
+                    AcceptHandler = NotesManager.Instance.NewNoteAction
+                },
+                new TreeViewChoice("Settings"),
+                new TreeViewChoice("Exit")
             };
 
             return c.Concat(NotesManager.Instance.GetNoteChoices());
+        }
+
+        public static ITreeViewChoice AcceptOnSelectAction(string text)
+        {
+            return new TreeViewChoice(text) {SelectHandler = MainWindow.Instance.Accept};
         }
     }
 }

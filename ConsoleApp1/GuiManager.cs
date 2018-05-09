@@ -90,7 +90,7 @@ namespace ConsoleApp1
 
         private UserActionResult GetSingleLineInput(string prompt, bool resetGui)
         {
-            var choice = new ITreeViewChoice[] {new AcceptOnSelectTreeViewChoice("Press enter to finish input")};
+            var choice = new[] {ActionManager.AcceptOnSelectAction("Press enter to finish input")};
             GetChoice(false, choice, prompt, resetGui);
             return _gui.GetUserActionResult();
         }

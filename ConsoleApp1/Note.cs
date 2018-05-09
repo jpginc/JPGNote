@@ -23,6 +23,16 @@ namespace ConsoleApp1
             CreateTime = DateTime.Now;
         }
 
+        public void ShowNoteAction(JpgTreeView treeView)
+        {
+            MainWindow.Instance.SetInputText(NoteContents);
+        }
+        public void SaveNoteAction(UserActionResult choice)
+        {
+            Console.WriteLine("the save data is " + choice.MultiLineInput);
+            NoteContents = choice.MultiLineInput;
+            SettingsClass.Instance.Save();
+        }
         public int CompareTo(Note obj)
         {
             return string.Compare(_uniqueId, obj._uniqueId, StringComparison.Ordinal);

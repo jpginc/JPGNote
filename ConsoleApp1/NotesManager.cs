@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
@@ -10,6 +11,17 @@ namespace ConsoleApp1
         public static NotesManager Instance { get; set; }
         [DataMember]
         public List<Note> Notes { get; set; }
+
+        public void NewNoteAction(UserActionResult userActionResult)
+        {
+            Console.WriteLine("the new not item has been selectd");
+            var noteName = GuiManager.Instance.GetNonEmptySingleLineInput("Enter note name");
+            if (noteName.Result != UserActionResult.ResultType.Canceled)
+            {
+                NewNote(noteName.SingleLineInput);
+            }
+        }
+
 
         public NotesManager()
         {
@@ -26,9 +38,14 @@ namespace ConsoleApp1
         }
 
 
+
         public IEnumerable<ITreeViewChoice> GetNoteChoices()
         {
-            return Notes.Select(n => new NoteTreeViewChoice(n));
+            return Notes.Select(n => new TreeViewChoice(n.NoteName)
+            {
+                SelectHandler = n.ShowNoteAction,
+                SaveHandler = n.SaveNoteAction
+            });
         }
     }
 }
