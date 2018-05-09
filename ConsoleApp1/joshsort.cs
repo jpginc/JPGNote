@@ -63,12 +63,12 @@ namespace ConsoleApp1
 
                     if (value.Equals(mutableWord))
                     {
-                        score *= 10;
+                        score += 10;
                     }
 
                     if (valueLower.Equals(mutableWordLower))
                     {
-                        score *= 5;
+                        score += 5;
                     }
 
                     mutableWord = mutableWord.Substring(1);
