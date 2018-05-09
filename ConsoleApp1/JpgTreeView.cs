@@ -19,10 +19,7 @@ namespace ConsoleApp1
 
         public JpgTreeView SetMultiSelect(bool doMulti)
         {
-            //GuiThread.Go(() =>
-            //{
-                Selection.Mode = doMulti ? SelectionMode.Multiple : SelectionMode.Single;
-            //});
+            Selection.Mode = doMulti ? SelectionMode.Multiple : SelectionMode.Single;
             return this;
         }
 
@@ -30,7 +27,7 @@ namespace ConsoleApp1
         {
             Model = _store;
             HeadersVisible = false;
-            SearchEntry = search;
+            //SearchEntry = search;
             var valueColumn = new TreeViewColumn();
             AppendColumn(valueColumn);
             var visisbleColumnTextRenderer = new CellRendererText();
@@ -63,7 +60,7 @@ namespace ConsoleApp1
         private void ClickHandler(object o, RowActivatedArgs args)
         {
             _store.GetIter(out var item, args.Path);
-            if(CheckForDoubleClickOrDoubleReturn(item))
+            if (CheckForDoubleClickOrDoubleReturn(item))
             {
                 MainWindow.Instance.Accept();
             }
@@ -86,6 +83,7 @@ namespace ConsoleApp1
             {
                 Selection.UnselectIter(item);
             }
+
             UpdateSelectedItem(item);
         }
 
@@ -103,6 +101,7 @@ namespace ConsoleApp1
             {
                 var x = _store.AppendValues(choice.Text, choice);
             }
+
             return this;
         }
 
@@ -110,13 +109,9 @@ namespace ConsoleApp1
         {
             _store.GetIterFirst(out var item);
             if (CheckForDoubleClickOrDoubleReturn(item))
-            {
                 MainWindow.Instance.Accept();
-            }
             else
-            {
                 ToggleSelect(item);
-            }
 
             return this;
         }
@@ -140,8 +135,40 @@ namespace ConsoleApp1
 
         public void UpdateOrder(string text)
         {
-            //todo
-            Console.WriteLine("trying to move order");
+            //todo this is broken works good enough
+                var sortedRows = JoshSort.Sort(text, GetAllItemsWrappedWithTheRow());
+                _store.GetIterFirst(out var firstRow);
+
+                var sortableRowWithValues = sortedRows as SortableRowWithValue[] ?? sortedRows.ToArray();
+                //put the new first row before the current first row. then put the rest of the
+                //ordered items after the new first row
+                var newFirstRow = sortableRowWithValues.First();
+                //if(! firstRow.Equals(newFirstRow.Iter))
+                _store.MoveBefore(newFirstRow.Iter, firstRow);
+
+                var currentRow = newFirstRow.Iter;
+                //Console.WriteLine("1: " + newFirstRow.SortByText);
+                foreach (var row in sortableRowWithValues.Skip(1))
+                {
+                    //Console.WriteLine(row.SortByText + " " + GetValueFromIter(row.Iter).SortByText);
+                    _store.MoveAfter(currentRow, row.Iter);
+                    currentRow = row.Iter;
+                }
+
+            //Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        }
+
+        private IEnumerable<SortableRowWithValue> GetAllItemsWrappedWithTheRow()
+        {
+            var retVal = new List<SortableRowWithValue>();
+            _store.GetIterFirst(out var iter);
+            for (var i = 0; i < _store.IterNChildren(); i++)
+            {
+                retVal.Add(new SortableRowWithValue(iter, GetValueFromIter(iter)));
+                _store.IterNext(ref iter);
+            }
+
+            return retVal;
         }
 
         public void RotateItems(bool forwardDirection)
@@ -149,23 +176,16 @@ namespace ConsoleApp1
             Console.WriteLine("trying to rotate");
             _store.GetIterFirst(out var firstRow);
             var lastRow = GetLastRow();
-            if (forwardDirection)
-            {
+            if (!forwardDirection)
                 _store.MoveAfter(firstRow, lastRow);
-            }
             else
-            {
                 _store.MoveBefore(lastRow, firstRow);
-            }
         }
 
         private TreeIter GetLastRow()
         {
             _store.GetIterFirst(out var iter);
-            for (int i = 0; i < _store.IterNChildren() - 1; i++)
-            {
-                _store.IterNext(ref iter);
-            }
+            for (var i = 0; i < _store.IterNChildren() - 1; i++) _store.IterNext(ref iter);
             return iter;
         }
     }

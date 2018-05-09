@@ -13,7 +13,6 @@ namespace ConsoleApp1
         private readonly JpgTreeView _treeview;
         public new int Height = 5;
         public new int Width = 1;
-        private DateTime _lastRotate = DateTime.Now;
 
         public SearchableTreeView()
         {
@@ -104,9 +103,7 @@ namespace ConsoleApp1
 
         private void RoatateAndUpdateChoices(bool forwardDirection)
         {
-            if ((DateTime.Now - _lastRotate).Milliseconds < 100) return;
             _treeview.RotateItems(forwardDirection);
-            _lastRotate = DateTime.Now;
         }
     }
 }
