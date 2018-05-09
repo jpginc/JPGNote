@@ -5,12 +5,12 @@ namespace ConsoleApp1.BuiltInActions
     internal class ProjectAction : IActionProvider
     {
         private Project _project;
-        private readonly MainMenu _myMenu;
+        private readonly ProjectMainMenu _myMenu;
 
         public ProjectAction(Project project)
         {
             _project = project;
-            _myMenu = new MainMenu();
+            _myMenu = new ProjectMainMenu();
         }
 
         public InputType InputType => _myMenu.InputType;

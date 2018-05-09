@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using Gtk;
-using Action = System.Action;
 
 namespace ConsoleApp1
 {
@@ -14,7 +13,7 @@ namespace ConsoleApp1
 
         private GuiManager()
         {
-            ManualResetEvent ev = new ManualResetEvent(false);
+            var ev = new ManualResetEvent(false);
             //this shit isn't thread safe
             new Thread(() =>
                 {
@@ -77,11 +76,9 @@ namespace ConsoleApp1
             while (true)
             {
                 var choice = GetSingleLineInput(prompt, resetGui);
-                if (choice.Result == UserActionResult.ResultType.Canceled 
-                    || (choice.Result == UserActionResult.ResultType.Accept && !choice.SingleLineInput.Equals("")))
-                {
+                if (choice.Result == UserActionResult.ResultType.Canceled
+                    || choice.Result == UserActionResult.ResultType.Accept && !choice.SingleLineInput.Equals(""))
                     return choice;
-                }
 
                 UserNotifier.Error("Error: Input cannot be an empty string");
                 resetGui = false;
@@ -97,18 +94,41 @@ namespace ConsoleApp1
 
         public UserActionResult GetUserInput(JpgActionManager actionManager, string prompt)
         {
-            switch(actionManager.CurrentActionProvider.InputType)
+            switch (actionManager.CurrentActionProvider.InputType)
+            {
+                case InputType.Single:
+                    return GetChoice(actionManager.GetActions(), prompt);
+                case InputType.Multi:
+                    return GetChoices(actionManager.GetActions(), prompt);
+                case InputType.FreeTextSingle:
+                    return GetSingleLineInput(prompt);
+                case InputType.FreeTextMulti:
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public CancellableObj<string> GetFolder(string prompt)
+        {
+            var retVal = new CancellableObj<string>() {ResponseType = UserActionResult.ResultType.Canceled};
+            GuiThread.Go(() =>
+            {
+                lock (retVal)
                 {
-                    case InputType.Single:
-                        return GetChoice(actionManager.GetActions(), prompt);
-                    case InputType.Multi:
-                        return GetChoices(actionManager.GetActions(), prompt);
-                    case InputType.FreeTextSingle:
-                        return GetSingleLineInput(prompt);
-                    case InputType.FreeTextMulti:
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    var filechooser = new FileChooserDialog("Select Folder To Save Project Data",
+                        MainWindow.Instance, FileChooserAction.SelectFolder, "Cancel", ResponseType.Cancel,
+                        "Open", ResponseType.Accept);
+
+                    if (filechooser.Run() == (int) ResponseType.Accept)
+                    {
+                        retVal.ResponseType = UserActionResult.ResultType.Accept;
+                        retVal.Result = filechooser.Filename;
+                    }
+
+                    filechooser.Destroy();
                 }
+            });
+            return retVal;
         }
     }
 }

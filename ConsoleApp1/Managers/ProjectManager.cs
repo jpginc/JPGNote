@@ -24,20 +24,7 @@ namespace ConsoleApp1.BuiltInActions
 
         public void NewProject(UserActionResult obj)
         {
-            GuiThread.Go(() =>
-            {
-                var filechooser = new FileChooserDialog("Select Folder To Save Project Data",
-                        MainWindow.Instance, FileChooserAction.SelectFolder, "Cancel", ResponseType.Cancel,
-                        "Open", ResponseType.Accept);
-
-                if (filechooser.Run() == (int) ResponseType.Accept)
-                {
-                    Console.WriteLine(filechooser.Filename);
-                    Console.WriteLine(("here"));
-                }
-
-                filechooser.Destroy();
-            });
+            Console.WriteLine(GuiManager.Instance.GetFolder("Select Project Folder").Result);
         }
     }
 }
