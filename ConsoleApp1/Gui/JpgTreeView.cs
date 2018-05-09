@@ -93,10 +93,14 @@ namespace ConsoleApp1
         public JpgTreeView SetChoices(IEnumerable<ITreeViewChoice> choices)
         {
             _store.Clear();
-            foreach (var choice in choices)
+            lock (choices)
             {
-                _store.AppendValues(choice.Text, choice);
+                foreach (var choice in choices)
+                {
+                    _store.AppendValues(choice.Text, choice);
+                }
             }
+
             return this;
         }
 
