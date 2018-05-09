@@ -9,7 +9,7 @@ namespace ConsoleApp1
     {
         private readonly TreeStore _store = new TreeStore(typeof(string), typeof(ITreeViewChoice));
         private DateTime _lastClick = DateTime.Now;
-        private string _lastText;
+        private ITreeViewChoice _lastValue;
         private readonly SearchEntry _search;
 
         private enum Column
@@ -47,10 +47,10 @@ namespace ConsoleApp1
 
         private bool CheckForDoubleClickOrDoubleReturn(TreeIter item)
         {
-            var cellText = GetValueFromIter(item)?.Text;
-            var retVal = (DateTime.Now - _lastClick).Milliseconds < 200 && Equals(_lastText, cellText);
+            var value = GetValueFromIter(item);
+            var retVal = (DateTime.Now - _lastClick).Milliseconds < 200 && Equals(_lastValue, value);
             _lastClick = DateTime.Now;
-            _lastText = cellText;
+            _lastValue = value;
             return retVal;
         }
 

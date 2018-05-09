@@ -30,6 +30,7 @@ namespace ConsoleApp1.BuiltInActions
                     var choice = (NoteTreeViewChoice) treeViewChoice;
                     NotesManager.Instance.Delete(choice.Note);
                 }
+                SettingsClass.Instance.Save();
             }
             JpgActionManager.UnrollActionContext();
             return ActionProviderResult.ProcessingFinished;

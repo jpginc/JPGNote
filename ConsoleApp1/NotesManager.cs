@@ -44,7 +44,6 @@ namespace ConsoleApp1
         public NotesManager Delete(Note note)
         {
             Notes.Remove(note);
-            Save();
             return this;
         }
 
