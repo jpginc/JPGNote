@@ -2,7 +2,7 @@
 
 namespace ConsoleApp1
 {
-    internal class UserActionResult
+    public class UserActionResult
     {
         public enum ResultType
         {

@@ -2,8 +2,7 @@
 
 namespace ConsoleApp1
 {
-
-    internal interface ITreeViewChoice : IComparable<ITreeViewChoice>
+    public interface ITreeViewChoice : IComparable<ITreeViewChoice>
     {
         //todo figure out sorted treeviews and remove the rubbish from this class
         string GetChoiceText();

@@ -22,7 +22,6 @@ namespace ConsoleApp1
             }
         }
 
-
         public NotesManager()
         {
             //don't want to change this because i'm doing serialisation stuff
@@ -37,15 +36,27 @@ namespace ConsoleApp1
             return this;
         }
 
-
-
         public IEnumerable<ITreeViewChoice> GetNoteChoices()
         {
             return Notes.Select(n => new TreeViewChoice(n.NoteName)
             {
                 SelectHandler = n.ShowNoteAction,
-                SaveHandler = n.SaveNoteAction
+                SaveHandler = n.SaveNoteAction,
+                AcceptHandler = n.ActivateNoteAction
             });
+        }
+
+        public NotesManager Delete(Note note)
+        {
+            Notes.Remove(note);
+            Save();
+            return this;
+        }
+
+        public NotesManager Save()
+        {
+            SettingsClass.Instance.Save();
+            return this;
         }
     }
 }

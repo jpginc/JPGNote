@@ -1,19 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace ConsoleApp1
 {
     [DataContract]
-    internal class Note : IComparable<Note>
+    internal class Note : IComparable<Note>, IActionContext
     {
-        [DataMember]
-        public readonly string NoteName;
-        [DataMember]
-        private readonly string _uniqueId;
-        [DataMember]
-        public string NoteContents { get; set; }
-        [DataMember]
-        public DateTime CreateTime { get; set; }
+        [DataMember] public readonly string NoteName;
+        [DataMember] private readonly string _uniqueId;
+        [DataMember] public string NoteContents { get; set; }
+        [DataMember] public DateTime CreateTime { get; set; }
 
         public Note(string noteName)
         {
@@ -27,15 +24,33 @@ namespace ConsoleApp1
         {
             MainWindow.Instance.SetInputText(NoteContents);
         }
+
         public void SaveNoteAction(UserActionResult choice)
         {
             Console.WriteLine("the save data is " + choice.MultiLineInput);
             NoteContents = choice.MultiLineInput;
-            SettingsClass.Instance.Save();
+            NotesManager.Instance.Save();
         }
+
+        public void ActivateNoteAction(UserActionResult choice)
+        {
+            JpgActionManager.ActionContext = this;
+            MainWindow.Instance.SetInputText(NoteContents);
+        }
+
         public int CompareTo(Note obj)
         {
             return string.Compare(_uniqueId, obj._uniqueId, StringComparison.Ordinal);
+        }
+
+        public IEnumerable<ITreeViewChoice> GetChoices()
+        {
+            return new[] {new TreeViewChoice("Delete note") {AcceptHandler = Delete}};
+        }
+
+        private void Delete(UserActionResult obj)
+        {
+            NotesManager.Instance.Delete(this);
         }
     }
 }

@@ -5,7 +5,7 @@ using Gtk;
 
 namespace ConsoleApp1
 {
-    internal class JpgTreeView : TreeView
+    public class JpgTreeView : TreeView
     {
         private readonly TreeStore _store = new TreeStore(typeof(string), typeof(ITreeViewChoice));
         private DateTime _lastClick = DateTime.Now;

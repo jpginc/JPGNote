@@ -77,6 +77,6 @@ public class GtkHelloWorld
 
     private static IEnumerable<ITreeViewChoice> GetChoices()
     {
-        return ActionManager.GetActions();
+        return JpgActionManager.GetActions();
     }
 }
