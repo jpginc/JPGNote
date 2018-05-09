@@ -10,6 +10,7 @@ namespace ConsoleApp1
         private readonly TreeStore _store = new TreeStore(typeof(string), typeof(ITreeViewChoice));
         private DateTime _lastClick = DateTime.Now;
         private string _lastText;
+        private readonly SearchEntry _search;
 
         private enum Column
         {
@@ -27,7 +28,9 @@ namespace ConsoleApp1
         {
             Model = _store;
             HeadersVisible = false;
-            //SearchEntry = search;
+            SearchEntry = new SearchEntry();
+            //hooking up the search makes it select stuff 
+            _search = search; 
             var valueColumn = new TreeViewColumn();
             AppendColumn(valueColumn);
             var visisbleColumnTextRenderer = new CellRendererText();
@@ -35,12 +38,6 @@ namespace ConsoleApp1
             valueColumn.AddAttribute(visisbleColumnTextRenderer, "text", 0);
             ActivateOnSingleClick = true;
             RowActivated += ClickHandler;
-        }
-
-        private JpgTreeView UpdateSelectedItem(TreeIter item)
-        {
-            //GetValueFromIter(item)?.SetSelected(Selection.IterIsSelected(item));
-            return this;
         }
 
         private ITreeViewChoice GetValueFromIter(TreeIter item)
@@ -62,13 +59,14 @@ namespace ConsoleApp1
             _store.GetIter(out var item, args.Path);
             if (CheckForDoubleClickOrDoubleReturn(item))
             {
+                SetSelected(item, true);
                 MainWindow.Instance.Accept();
             }
             else
             {
                 Console.WriteLine("Clicked");
                 SetSelected(item, true);
-                SearchEntry.GrabFocusWithoutSelecting();
+                _search.GrabFocusWithoutSelecting();
             }
         }
 
@@ -83,8 +81,6 @@ namespace ConsoleApp1
             {
                 Selection.UnselectIter(item);
             }
-
-            UpdateSelectedItem(item);
         }
 
 
@@ -99,9 +95,8 @@ namespace ConsoleApp1
             _store.Clear();
             foreach (var choice in choices)
             {
-                var x = _store.AppendValues(choice.Text, choice);
+                _store.AppendValues(choice.Text, choice);
             }
-
             return this;
         }
 
@@ -109,9 +104,14 @@ namespace ConsoleApp1
         {
             _store.GetIterFirst(out var item);
             if (CheckForDoubleClickOrDoubleReturn(item))
+            {
+                SetSelected(item, true);
                 MainWindow.Instance.Accept();
+            }
             else
+            {
                 ToggleSelect(item);
+            }
 
             return this;
         }
@@ -136,26 +136,23 @@ namespace ConsoleApp1
         public void UpdateOrder(string text)
         {
             //todo this is broken works good enough
-                var sortedRows = JoshSort.Sort(text, GetAllItemsWrappedWithTheRow());
-                _store.GetIterFirst(out var firstRow);
-
-                var sortableRowWithValues = sortedRows as SortableRowWithValue[] ?? sortedRows.ToArray();
-                //put the new first row before the current first row. then put the rest of the
-                //ordered items after the new first row
-                var newFirstRow = sortableRowWithValues.First();
-                //if(! firstRow.Equals(newFirstRow.Iter))
-                _store.MoveBefore(newFirstRow.Iter, firstRow);
-
-                var currentRow = newFirstRow.Iter;
-                //Console.WriteLine("1: " + newFirstRow.SortByText);
-                foreach (var row in sortableRowWithValues.Skip(1))
+            var startAgain = true;
+            while (startAgain)
+            {
+                startAgain = false;
+                var sortedRows = JoshSort.Sort(text, GetAllItemsWrappedWithTheRow()).ToArray();
+                _store.GetIterFirst(out var iter);
+                for (var i = 0; i < _store.IterNChildren(); i++)
                 {
-                    //Console.WriteLine(row.SortByText + " " + GetValueFromIter(row.Iter).SortByText);
-                    _store.MoveAfter(currentRow, row.Iter);
-                    currentRow = row.Iter;
+                    if (!sortedRows[i].Iter.Equals(iter))
+                    {
+                        _store.MoveBefore(sortedRows[i].Iter, iter);
+                        startAgain = true;
+                        break;
+                    }
+                    _store.IterNext(ref iter);
                 }
-
-            //Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            }
         }
 
         private IEnumerable<SortableRowWithValue> GetAllItemsWrappedWithTheRow()
