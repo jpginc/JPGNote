@@ -47,10 +47,7 @@ namespace ConsoleApp1
         private void Delete(UserActionResult obj)
         {
             NotesManager.Instance.Delete(this);
-            if (JpgActionManager.CurrentActionProvider == this)
-            {
-                JpgActionManager.CurrentActionProvider = null;
-            }
+            JpgActionManager.Instance.PushActionContext(this);
         }
 
         public string SortByText => NoteName;
@@ -63,7 +60,7 @@ namespace ConsoleApp1
 
         public bool OnAcceptCallback(UserActionResult choice)
         {
-            JpgActionManager.CurrentActionProvider = this;
+            JpgActionManager.Instance.PushActionContext(this);
             MainWindow.Instance.SetInputText(NoteContents);
             return true;
         }

@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace ConsoleApp1.BuiltInActions
 {
-    internal class BuiltInActionProvider
+    internal class BuiltInActionProvider : IActionProvider
     {
         private BuiltInActionProvider()
         {

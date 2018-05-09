@@ -16,14 +16,13 @@ public class GtkHelloWorld
             {
                 case UserActionResult.ResultType.Canceled:
                     Console.WriteLine("cancelled!");
-                    JpgActionManager.CurrentActionProvider = null;
+                    JpgActionManager.Instance.UnrollActionContext();
                     break;
                 case UserActionResult.ResultType.Accept:
                     foreach (var s in choice.UserChoices)
                     {
                         s.OnAcceptCallback(choice);
                     }
-
                     break;
                 case UserActionResult.ResultType.Save:
                     foreach (var s in choice.UserChoices)
@@ -75,6 +74,6 @@ public class GtkHelloWorld
 
     private static IEnumerable<ITreeViewChoice> GetChoices()
     {
-        return JpgActionManager.GetActions();
+        return JpgActionManager.Instance.GetActions();
     }
 }
