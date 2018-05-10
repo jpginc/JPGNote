@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading;
-using Gtk;
+﻿using Gtk;
 
 namespace ConsoleApp1
 {
@@ -8,16 +6,13 @@ namespace ConsoleApp1
     {
         public static void Error(string message)
         {
-            GuiThread.Wait(() =>
-            {
-                var popup = new MessageDialog(MainWindow.Instance,
-                    DialogFlags.Modal | DialogFlags.DestroyWithParent,
-                    MessageType.Error,
-                    ButtonsType.Ok,
-                    message);
-                popup.Run();
-                popup.Destroy();
-            });
+            var popup = new MessageDialog(MainWindow.Instance,
+                DialogFlags.Modal | DialogFlags.DestroyWithParent,
+                MessageType.Error,
+                ButtonsType.Ok,
+                message);
+            popup.Run();
+            popup.Destroy();
         }
 
         public static void Notify(string message)

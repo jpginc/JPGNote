@@ -9,8 +9,8 @@ namespace ConsoleApp1
 {
     internal class MainWindow : Window
     {
-        public static MainWindow Instance { get; } = new MainWindow("JPG Tree");
-        public Func<bool> UserActionCallback;
+        public static MainWindow Instance { get; set; }
+        public Func<UserActionResult, bool> UserActionCallback;
         private SearchableTreeView _searchableTreeView;
 
         private readonly UserActionResult _userActionResult =
@@ -19,6 +19,10 @@ namespace ConsoleApp1
         private Label _notificationLabel;
         private TextView _multiLineInputWidget;
         private readonly AccelGroup _buttonKeyboardShortcutAccelGroup = new AccelGroup();
+
+        public MainWindow() : this("JPGTree")
+        {
+        }
 
         private MainWindow(string title) : base(title)
         {
@@ -136,7 +140,7 @@ namespace ConsoleApp1
             _userActionResult.UserChoices = c;
             _userActionResult.MultiLineInput = _multiLineInputWidget.Buffer.Text;
             _userActionResult.SingleLineInput = _searchableTreeView.GetSearchValue();
-            UserActionCallback?.Invoke();
+            UserActionCallback.Invoke(_userActionResult);
         }
 
         private static void Exit(object sender, EventArgs e)
@@ -176,7 +180,6 @@ namespace ConsoleApp1
             if (doReset)
             {
                 _searchableTreeView.Reset();
-                //GuiThread.DontWait(() => { _multiLineInputWidget.Buffer.Text = ""; });
                 UserNotify("Double clicking or hitting Return twice will activate an item");
             }
 
@@ -185,24 +188,18 @@ namespace ConsoleApp1
 
         public void UserNotify(string message)
         {
-            GuiThread.DontWait(() =>
-            {
-                _notificationLabel.Text = message;
-                var color = new Color();
-                Color.Parse("lightblue", ref color);
-                _notificationLabel.ModifyBg(StateType.Normal, color);
-            });
+            _notificationLabel.Text = message;
+            var color = new Color();
+            Color.Parse("lightblue", ref color);
+            _notificationLabel.ModifyBg(StateType.Normal, color);
         }
 
         public void Error(string message)
         {
-            GuiThread.DontWait(() =>
-            {
-                _notificationLabel.Text = message;
-                var color = new Color();
-                Color.Parse("red", ref color);
-                _notificationLabel.ModifyBg(StateType.Normal, color);
-            });
+            _notificationLabel.Text = message;
+            var color = new Color();
+            Color.Parse("red", ref color);
+            _notificationLabel.ModifyBg(StateType.Normal, color);
         }
 
         public MainWindow SetInputText(string noteContents)

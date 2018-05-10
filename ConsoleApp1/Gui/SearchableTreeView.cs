@@ -49,7 +49,7 @@ namespace ConsoleApp1
 
         public SearchableTreeView SetLabelText(string text)
         {
-            GuiThread.Wait(() => { _label.Text = text; });
+            _label.Text = text;
             return this;
         }
 
