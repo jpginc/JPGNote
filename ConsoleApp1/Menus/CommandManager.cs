@@ -10,6 +10,7 @@ namespace ConsoleApp1.BuiltInActions
         private static string _teeLocation = "C:\\Program Files\\Git\\usr\\bin\\tee.exe";
         private static readonly string _cmdLocation = "C:\\Windows\\System32\\cmd.exe";
 
+
         public void OpenSshSession(Project project)
         {
             //toRun:= ComSpec " /c " this.fixWindowsCommandString(this.sshLocation,
