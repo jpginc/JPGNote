@@ -33,7 +33,7 @@ namespace ConsoleApp1.BuiltInActions
             var machineName = GuiManager.Instance.GetNonEmptySingleLineInput("Set Machine Name");
             if (machineName.ResponseType == UserActionResult.ResultType.Accept)
             {
-                var machine = new SshAbleMachine {Name = new AutoSingleLineString(machineName.Result)};
+                var machine = new SshAbleMachine {Name = machineName.Result};
                 sshAbleMachines.Add(machine);
                 ProgramSettingsClass.Instance.Save();
                 JpgActionManager.PushActionContext(new AutoMenu(machine));
@@ -51,13 +51,13 @@ namespace ConsoleApp1.BuiltInActions
         private string GetIpOrDomain()
         {
             //todo
-            return CurrentMachine.IpOrDomainName.Get();
+            return CurrentMachine.IpOrDomainName;
         }
 
         private string PutSshKeyInTempLocation()
         {
             var tempLocation = Path.GetTempFileName();
-            File.WriteAllText(tempLocation, CurrentMachine.SshKey.Get());
+            File.WriteAllText(tempLocation, CurrentMachine.SshKey);
             new Timer(DeleteTempFile, tempLocation, 1000, Timeout.Infinite);
             return tempLocation;
         }

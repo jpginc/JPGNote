@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 
 namespace ConsoleApp1.BuiltInActions
@@ -11,16 +13,19 @@ namespace ConsoleApp1.BuiltInActions
             var retList = new List<ITreeViewChoice>();
             foreach (var prop in obj.GetType().GetProperties())
             {
-                var value = prop.GetValue(obj);
-                var type = prop.PropertyType;
-                if (type == typeof(AutoSingleLineString))
+                if (prop.PropertyType != typeof(string))
+                {
+                    continue;
+                }
+
+                if (prop.GetCustomAttributes(typeof(AutoSingleLineString), false).Any())
                 {
                     retList.Add(
-                        new AutoSetSingleLinePropertyAction((IGetAndSetString)value, prop.Name));
-                } else if (type == typeof(AutoMultiLineString))
+                        new AutoSetSingleLinePropertyAction(prop, obj, GuiManager.Instance.GetSingleLineInput));
+                } else if (prop.GetCustomAttributes(typeof(AutoMultiLineString), false).Any())
                 {
                     retList.Add(
-                        new AutoSetMultiLinePropertyAction((IGetAndSetString)value, prop.Name));
+                        new AutoSetSingleLinePropertyAction(prop, obj, GuiManager.Instance.GetMultiLineInput));
                 }
             }
 
@@ -28,82 +33,42 @@ namespace ConsoleApp1.BuiltInActions
         }
     }
 
-    internal class AutoSetMultiLinePropertyAction : SimpleTreeViewChoice
-    {
-        private IGetAndSetString _obj;
+    public class AutoMultiLineString : Attribute { }
 
-        public AutoSetMultiLinePropertyAction(IGetAndSetString obj, string propName)
-            : base("Set " + propName) 
-        {
-            _obj = obj;
-            AcceptHandler = Set;
-        }
-
-        private void Set(UserActionResult obj)
-        {
-            var newValue = GuiManager.Instance.GetMultiLineInput("Set New Value", _obj.Get());
-            if (newValue.ResponseType == UserActionResult.ResultType.Accept)
-            {
-                _obj.Set(newValue.Result);
-            }
-        }
- 
-    }
-
-    [DataContract]
-    public class AutoMultiLineString : AutoSingleLineString 
-    {
-        public AutoMultiLineString(string s) : base(s)
-        {
-        }
-    }
 
     internal class AutoSetSingleLinePropertyAction : SimpleTreeViewChoice
     {
-        private readonly IGetAndSetString _obj;
+        private readonly PropertyInfo _property;
+        private readonly object _obj;
+        private Func<string, string, CancellableObj<string>> _getInputFunction;
 
-        public AutoSetSingleLinePropertyAction(IGetAndSetString obj, string propertyName) 
-            : base("Set " + propertyName) 
+        public AutoSetSingleLinePropertyAction(PropertyInfo property, object obj, 
+            Func<string, string, CancellableObj<string>> getSingleLineInput) 
+            : base("Set " + property.Name)
         {
+            _property = property;
             _obj = obj;
+            _getInputFunction = getSingleLineInput;
             AcceptHandler = Set;
+            SelectHandler = Select;
+        }
+
+        private void Select(JpgTreeView obj)
+        {
+            MainWindow.Instance.SetInputText((string)_property.GetValue(_obj));
         }
 
         private void Set(UserActionResult obj)
         {
-            var newValue = GuiManager.Instance.GetSingleLineInput("Set New Value", _obj.Get() ?? "");
+            var newValue = _getInputFunction("Set New Value", 
+                ((string)_property.GetValue(_obj)) ?? "");
             if (newValue.ResponseType == UserActionResult.ResultType.Accept)
             {
-                _obj.Set(newValue.Result);
+                _property.SetValue(_obj, newValue.Result);
             }
         }
     }
-
-    [DataContract]
-    public class AutoSingleLineString : IGetAndSetString
+    public class AutoSingleLineString : Attribute
     {
-        [DataMember] public string S { get; set; }
-
-        public AutoSingleLineString(string s)
-        {
-            S = s;
-        }
-
-        public string Get()
-        {
-            return S;
-        }
-
-        public void Set(string s)
-        {
-            S = s;
-        }
-    }
-
-    internal interface IGetAndSetString
-    {
-        string Get();
-        void Set(string s);
-
     }
 }

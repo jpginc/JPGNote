@@ -1,22 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace ConsoleApp1.BuiltInActions
 {
+
     [DataContract]
     public class SshAbleMachine
     {
-        [DataMember] public AutoSingleLineString MacAddress { get; set; } = new AutoSingleLineString("");
+        [AutoSingleLineString, DataMember] public string MacAddress { get; set; } = "";
 
-        [DataMember] public AutoMultiLineString SshKey { get; set; } = new AutoMultiLineString("");
+        [AutoMultiLineString, DataMember] public string SshKey { get; set; } = "";
 
-        [DataMember] public AutoSingleLineString SshKeyPassphrase { get; set; } = new AutoSingleLineString("");
+        [AutoSingleLineString, DataMember] public string SshKeyPassphrase { get; set; } = "";
 
-        [DataMember] public AutoSingleLineString IpOrDomainName { get; set; } = new AutoSingleLineString("");
+        [AutoSingleLineString, DataMember] public string IpOrDomainName { get; set; } = "";
 
         [DataMember] public List<string> Tags { get; set; }
 
-        [DataMember] public AutoSingleLineString Name { get; set; } = new AutoSingleLineString("");
-        [DataMember] public AutoSingleLineString SshUserName { get; set; } = new AutoSingleLineString("");
+        [AutoSingleLineString, DataMember] public string Name { get; set; } = "";
+        [AutoSingleLineString, DataMember] public string SshUserName { get; set; } = "";
     }
 }
