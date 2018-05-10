@@ -10,7 +10,7 @@ using ConsoleApp1.BuiltInActions;
 internal class ProgramSettingsClass
 {
     [IgnoreDataMember] private static string _fileName;
-    [IgnoreDataMember] private static string _password = "password";
+    [IgnoreDataMember] private static string _password;
 
     public ProgramSettingsClass()
     {
@@ -23,7 +23,7 @@ internal class ProgramSettingsClass
 
     public static ProgramSettingsClass Start(string fileName, string password)
     {
-        if (!password.Equals("")) _password = password;
+        _password = password;
         StreamReader file = null;
         _fileName = fileName;
         try

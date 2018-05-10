@@ -101,6 +101,7 @@ namespace ConsoleApp1
         public static string SimpleEncryptWithPassword(string secretMessage, string password,
                                                        byte[] nonSecretPayload = null)
         {
+            password = Sha256(password);
             if (string.IsNullOrEmpty(secretMessage))
                 throw new ArgumentException("Secret Message Required!", "secretMessage");
 
@@ -126,6 +127,7 @@ namespace ConsoleApp1
         public static string SimpleDecryptWithPassword(string encryptedMessage, string password,
                                                        int nonSecretPayloadLength = 0)
         {
+            password = Sha256(password);
             if (string.IsNullOrWhiteSpace(encryptedMessage))
                 throw new ArgumentException("Encrypted Message Required!", "encryptedMessage");
 
@@ -403,5 +405,17 @@ namespace ConsoleApp1
             return SimpleDecrypt(encryptedMessage, cryptKey, authKey, cryptSalt.Length + authSalt.Length + nonSecretPayloadLength);
         }
 
+        //copied from https://stackoverflow.com/questions/12416249/hashing-a-string-with-sha256
+        static string Sha256(string str)
+        {
+            var crypt = new SHA256Managed();
+            var hash = new StringBuilder();
+            byte[] crypto = crypt.ComputeHash(Encoding.UTF8.GetBytes(str));
+            foreach (byte theByte in crypto)
+            {
+                hash.Append(theByte.ToString("x2"));
+            }
+            return hash.ToString();
+        }
     }
 }
