@@ -117,7 +117,7 @@ namespace ConsoleApp1
         public CancellableObj<string> GetSingleLineInput(string prompt, bool isPassword)
         {
             var retVal = new CancellableObj<string> {ResponseType = UserActionResult.ResultType.Canceled};
-            GuiThread.Go(() =>
+            GuiThread.Wait(() =>
             {
                 lock (retVal)
                 {
@@ -149,7 +149,7 @@ namespace ConsoleApp1
         public CancellableObj<string> GetFolder(string prompt)
         {
             var retVal = new CancellableObj<string> {ResponseType = UserActionResult.ResultType.Canceled};
-            GuiThread.Go(() =>
+            GuiThread.Wait(() =>
             {
                 lock (retVal)
                 {

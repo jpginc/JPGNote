@@ -6,7 +6,7 @@ namespace ConsoleApp1
 {
     internal class GuiThread
     {
-        public static void Go(Action action)
+        public static void Wait(Action action)
         {
             var ev = new ManualResetEvent(false);
             Application.Invoke((a, b) => {

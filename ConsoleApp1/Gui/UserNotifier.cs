@@ -8,8 +8,16 @@ namespace ConsoleApp1
     {
         public static void Error(string message)
         {
-            //new Thread(() => { MainWindow.Instance.Error(message, AcceptCallback); }).Load();
-            MainWindow.Instance.Error(message);
+            GuiThread.Wait(() =>
+            {
+                var popup = new MessageDialog(MainWindow.Instance,
+                    DialogFlags.Modal | DialogFlags.DestroyWithParent,
+                    MessageType.Error,
+                    ButtonsType.Ok,
+                    message);
+                popup.Run();
+                popup.Destroy();
+            });
         }
 
         public static void Notify(string message)
