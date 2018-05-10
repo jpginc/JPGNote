@@ -25,10 +25,10 @@ namespace ConsoleApp1
         {
             _password = password;
             StreamReader file = null;
-            _fileName = folderName;
+            _fileName = folderName + Path.DirectorySeparatorChar + _settingsFileName;
             try
             {
-                file = File.OpenText(folderName + Path.DirectorySeparatorChar + _settingsFileName);
+                file = File.OpenText(_fileName);
                 var s = AESThenHMAC.SimpleDecryptWithPassword(file.ReadToEnd(), _password);
                 Console.WriteLine(s);
                 file.Close();

@@ -12,8 +12,8 @@
 
         private void ProjectContext(UserActionResult obj)
         {
-            //this is where you load an already created 
-            JpgActionManager.PushActionContext(new ProjectAction(_project));
+            var project = ProjectManager.Instance.LoadProject(_project.ProjectFolder, _project.ProjectName);
+            JpgActionManager.PushActionContext(new ProjectAction(project));
         }
     }
 }

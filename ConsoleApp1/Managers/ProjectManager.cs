@@ -44,5 +44,10 @@ namespace ConsoleApp1.BuiltInActions
             Projects.Add(project);
             ProgramSettingsClass.Instance.Save();
         }
+
+        public Project LoadProject(string folder, string name)
+        {
+            return new Project(name, folder, ProgramSettingsClass.Instance.Password);
+        }
     }
 }
