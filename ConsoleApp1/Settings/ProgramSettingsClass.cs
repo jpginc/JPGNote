@@ -15,10 +15,12 @@ internal class ProgramSettingsClass
     public ProgramSettingsClass()
     {
         ProjectManager = new ProjectManager();
+        MachineManager = new MachineManager();
     }
 
     [IgnoreDataMember] public static ProgramSettingsClass Instance { get; set; }
     [DataMember] public ProjectManager ProjectManager { get; private set; }
+    [DataMember] public MachineManager MachineManager { get; private set; }
     public string Password => _password;
 
     public static ProgramSettingsClass Start(string fileName, string password)
@@ -48,7 +50,18 @@ internal class ProgramSettingsClass
             file?.Close();
         }
 
+        if (Instance.ProjectManager == null)
+        {
+            Instance.ProjectManager = new ProjectManager();
+        }
+
+        if (Instance.MachineManager == null)
+        {
+            Instance.MachineManager = new MachineManager();
+        }
+
         ProjectManager.Instance = Instance.ProjectManager;
+        MachineManager.Instance = Instance.MachineManager;
 
         return Instance;
     }

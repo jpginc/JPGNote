@@ -9,7 +9,7 @@
 
         private void ManageSlaveMachines(UserActionResult obj)
         {
-            UserNotifier.Error("not implemented yet!");
+            MachineManager.Instance.ManageMachines();
         }
     }
 }

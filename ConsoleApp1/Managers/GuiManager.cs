@@ -62,11 +62,11 @@ namespace ConsoleApp1
         }
 
 
-        public CancellableObj<string> GetNonEmptySingleLineInput(string prompt, bool resetGui = true)
+        public CancellableObj<string> GetNonEmptySingleLineInput(string prompt, bool isPassword = false)
         {
             while (true)
             {
-                var choice = GetSingleLineInput(prompt);
+                var choice = GetSingleLineInput(prompt, isPassword);
                 if (choice.ResponseType == UserActionResult.ResultType.Canceled
                     || choice.ResponseType == UserActionResult.ResultType.Accept && !choice.Result.Equals(""))
                     return choice;
@@ -114,7 +114,7 @@ namespace ConsoleApp1
             return GetSingleLineInput(prompt, false);
         }
 
-        public CancellableObj<string> GetSingleLineInput(string prompt, bool isPassword)
+        public CancellableObj<string> GetSingleLineInput(string prompt, bool isPassword, string prepopulate = "")
         {
             var retVal = new CancellableObj<string> {ResponseType = UserActionResult.ResultType.Canceled};
             GuiThread.Wait(() =>
@@ -130,7 +130,8 @@ namespace ConsoleApp1
                     {
                         Visibility = !isPassword,
                         InvisibleChar = '*',
-                        ActivatesDefault = true
+                        ActivatesDefault = true,
+                        Text = prepopulate
                     };
                     popup.ContentArea.PackEnd(input, true, false, 5);
                     popup.ShowAll();
@@ -172,6 +173,43 @@ namespace ConsoleApp1
         public CancellableObj<string> GetPassword()
         {
             return GetSingleLineInput("Enter Password", true);
+        }
+
+        public CancellableObj<string> GetSingleLineInput(string prompt, string currentValue)
+        {
+            return GetSingleLineInput(prompt, false, currentValue);
+        }
+
+        public CancellableObj<string> GetMultiLineInput(string prompt, string currentValue)
+        {
+            var retVal = new CancellableObj<string> { ResponseType = UserActionResult.ResultType.Canceled };
+            GuiThread.Wait(() =>
+            {
+                lock (retVal)
+                {
+                    var popup = new MessageDialog(MainWindow.Instance,
+                            DialogFlags.Modal | DialogFlags.DestroyWithParent,
+                            MessageType.Question,
+                            ButtonsType.OkCancel,
+                            prompt)
+                    {
+                        DefaultResponse = ResponseType.Ok,
+                        DefaultHeight = 500,
+                        DefaultWidth = 600,
+                    };
+                    var input = new TextView {Buffer = {Text = currentValue},};
+                    popup.ContentArea.PackEnd(input, true, true, 15);
+                    popup.ShowAll();
+                    if (popup.Run() == (int)ResponseType.Ok)
+                    {
+                        retVal.ResponseType = UserActionResult.ResultType.Accept;
+                        retVal.Result = input.Buffer.Text;
+                    }
+
+                    popup.Destroy();
+                }
+            });
+            return retVal;
         }
     }
 }
