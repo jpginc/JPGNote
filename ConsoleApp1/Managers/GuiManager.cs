@@ -30,7 +30,7 @@ namespace ConsoleApp1
         private bool AcceptCallback()
         {
             //todo fix threads
-            Thread.Sleep(100);
+            //Thread.Sleep(100);
             _waitForCallbackHandle.Set();
             return true;
         }
@@ -66,30 +66,18 @@ namespace ConsoleApp1
             _waitForCallbackHandle.Reset();
         }
 
-        public UserActionResult GetSingleLineInput(string prompt)
-        {
-            return GetSingleLineInput(prompt, true);
-        }
 
-        public UserActionResult GetNonEmptySingleLineInput(string prompt, bool resetGui = true)
+        public CancellableObj<string> GetNonEmptySingleLineInput(string prompt, bool resetGui = true)
         {
             while (true)
             {
-                var choice = GetSingleLineInput(prompt, resetGui);
-                if (choice.Result == UserActionResult.ResultType.Canceled
-                    || choice.Result == UserActionResult.ResultType.Accept && !choice.SingleLineInput.Equals(""))
+                var choice = GetSingleLineInput(prompt);
+                if (choice.ResponseType == UserActionResult.ResultType.Canceled
+                    || choice.ResponseType == UserActionResult.ResultType.Accept && !choice.Result.Equals(""))
                     return choice;
 
                 UserNotifier.Error("Error: Input cannot be an empty string");
-                resetGui = false;
             }
-        }
-
-        private UserActionResult GetSingleLineInput(string prompt, bool resetGui)
-        {
-            var choice = new[] {(ITreeViewChoice) new SelectingTriggersAcceptAction("Press enter to finish input")};
-            GetChoice(false, choice, prompt, resetGui);
-            return _gui.GetUserActionResult();
         }
 
         public UserActionResult GetUserInput(JpgActionManager actionManager, string prompt)
@@ -100,17 +88,51 @@ namespace ConsoleApp1
                     return GetChoice(actionManager.GetActions(), prompt);
                 case InputType.Multi:
                     return GetChoices(actionManager.GetActions(), prompt);
-                case InputType.FreeTextSingle:
-                    return GetSingleLineInput(prompt);
-                case InputType.FreeTextMulti:
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
 
+        public CancellableObj<string> GetSingleLineInput(string prompt)
+        {
+            return GetSingleLineInput(prompt, false);
+        }
+
+        public CancellableObj<string> GetSingleLineInput(string prompt, bool isPassword)
+        {
+            var retVal = new CancellableObj<string> {ResponseType = UserActionResult.ResultType.Canceled};
+            GuiThread.Go(() =>
+            {
+                lock (retVal)
+                {
+                    var popup = new MessageDialog(MainWindow.Instance,
+                        DialogFlags.Modal | DialogFlags.DestroyWithParent,
+                        MessageType.Question,
+                        ButtonsType.OkCancel,
+                        prompt) {DefaultResponse = ResponseType.Ok};
+                    var input = new Entry
+                    {
+                        Visibility = !isPassword,
+                        InvisibleChar = '*',
+                        ActivatesDefault = true
+                    };
+                    popup.ContentArea.PackEnd(input, true, false, 5);
+                    popup.ShowAll();
+                    if (popup.Run() == (int) ResponseType.Ok)
+                    {
+                        retVal.ResponseType = UserActionResult.ResultType.Accept;
+                        retVal.Result = input.Text;
+                    }
+
+                    popup.Destroy();
+                }
+            });
+            return retVal;
+        }
+
         public CancellableObj<string> GetFolder(string prompt)
         {
-            var retVal = new CancellableObj<string>() {ResponseType = UserActionResult.ResultType.Canceled};
+            var retVal = new CancellableObj<string> {ResponseType = UserActionResult.ResultType.Canceled};
             GuiThread.Go(() =>
             {
                 lock (retVal)
@@ -129,6 +151,11 @@ namespace ConsoleApp1
                 }
             });
             return retVal;
+        }
+
+        public CancellableObj<string> GetPassword()
+        {
+            return GetSingleLineInput("Enter Password", true);
         }
     }
 }

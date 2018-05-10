@@ -16,9 +16,9 @@ namespace ConsoleApp1
         {
             Console.WriteLine("the new not item has been selectd");
             var noteName = GuiManager.Instance.GetNonEmptySingleLineInput("Enter note name");
-            if (noteName.Result != UserActionResult.ResultType.Canceled)
+            if (noteName.ResponseType != UserActionResult.ResultType.Canceled)
             {
-                NewNote(noteName.SingleLineInput);
+                NewNote(noteName.Result);
             }
         }
 

@@ -41,31 +41,7 @@ public class GtkHelloWorld
 
     private static string GetPassword()
     {
-        Console.Write("Enter password: ");
-        var pwd = "";
-        while (true)
-        {
-            var i = Console.ReadKey(true);
-            if (i.Key == ConsoleKey.Enter)
-            {
-                break;
-            }
-
-            if (i.Key == ConsoleKey.Backspace)
-            {
-                if (pwd.Length > 0)
-                {
-                    pwd = pwd.Substring(0, pwd.Length - 1);
-                    Console.Write("\b \b");
-                }
-            }
-            else
-            {
-                pwd += i.KeyChar;
-                Console.Write("*");
-            }
-        }
-
-        return pwd;
+        var password = GuiManager.Instance.GetPassword().Result;
+        return password ?? "";
     }
 }

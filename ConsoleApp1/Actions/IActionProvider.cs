@@ -12,9 +12,7 @@ namespace ConsoleApp1
     public enum InputType
     {
         Single,
-        Multi,
-        FreeTextSingle,
-        FreeTextMulti
+        Multi
     }
     public interface IActionProvider
     {

@@ -28,9 +28,9 @@ namespace ConsoleApp1.BuiltInActions
         private void AddTag(UserActionResult obj)
         {
             var input = GuiManager.Instance.GetNonEmptySingleLineInput("Enter tag");
-            if (input.Result == UserActionResult.ResultType.Accept)
+            if (input.ResponseType == UserActionResult.ResultType.Accept)
             {
-                _note.Tags.Add(input.SingleLineInput);
+                _note.Tags.Add(input.Result);
             }
         }
 
