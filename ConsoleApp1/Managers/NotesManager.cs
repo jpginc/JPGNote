@@ -6,11 +6,13 @@ using System.Runtime.Serialization;
 namespace ConsoleApp1
 {
     [DataContract]
+    [KnownType(typeof(Note))]
+    [KnownType(typeof(LoggedNote))]
     internal class NotesManager
     {
         public static NotesManager Instance { get; set; }
         [DataMember]
-        public List<Note> Notes { get; set; }
+        public List<INote> Notes { get; set; }
 
         public void NewNoteAction(UserActionResult userActionResult)
         {
@@ -25,7 +27,7 @@ namespace ConsoleApp1
         public NotesManager()
         {
             //don't want to change this because i'm doing serialisation stuff
-            Notes = new List<Note>();
+            Notes = new List<INote>();
             Instance = this;
         }
 
@@ -41,7 +43,7 @@ namespace ConsoleApp1
             return Notes.Select(n => new NoteChoice(n));
         }
 
-        public NotesManager Delete(Note note)
+        public NotesManager Delete(INote note)
         {
             Notes.Remove(note);
             return this;
@@ -50,6 +52,13 @@ namespace ConsoleApp1
         public NotesManager Save()
         {
             ProjectSettingsClass.Instance.Save();
+            return this;
+        }
+
+        public NotesManager NewLoggedNote(string fileName)
+        {
+            Notes.Add(new LoggedNote(fileName));
+            Save();
             return this;
         }
     }

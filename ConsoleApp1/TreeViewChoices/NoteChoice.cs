@@ -5,11 +5,11 @@ namespace ConsoleApp1
 {
     internal class NoteChoice : ITreeViewChoice
     {
-        public readonly Note Note;
+        public readonly INote Note;
         public string SortByText => Note.NoteName;
         public string Text => Note.NoteName;
 
-        public NoteChoice(Note note)
+        public NoteChoice(INote note)
         {
             Note = note;
         }
@@ -22,7 +22,7 @@ namespace ConsoleApp1
 
         public bool OnAcceptCallback(UserActionResult choice)
         {
-            JpgActionManager.PushActionContext(new BuiltInActions.NoteAction(Note));
+            JpgActionManager.PushActionContext(new NoteAction(Note));
             MainWindow.Instance.SetInputText(Note.NoteContents);
             return true;
         }

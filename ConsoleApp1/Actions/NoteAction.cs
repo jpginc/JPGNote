@@ -4,9 +4,9 @@ namespace ConsoleApp1.BuiltInActions
 {
     internal class NoteAction : SimpleActionProvider
     {
-        private readonly Note _note;
+        private readonly INote _note;
 
-        public NoteAction(Note note)
+        public NoteAction(INote note)
         {
             _note = note;
         }

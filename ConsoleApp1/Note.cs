@@ -5,9 +5,9 @@ using System.Runtime.Serialization;
 namespace ConsoleApp1
 {
     [DataContract]
-    internal class Note : IComparable<Note>
+    internal class Note : INote
     {
-        [DataMember] public readonly string NoteName;
+        [DataMember] public string NoteName { get; set; }
         [DataMember] private readonly string _uniqueId;
         [DataMember] public string NoteContents { get; set; }
         [DataMember] public DateTime CreateTime { get; set; }
@@ -24,6 +24,11 @@ namespace ConsoleApp1
         public int CompareTo(Note obj)
         {
             return string.Compare(_uniqueId, obj._uniqueId, StringComparison.Ordinal);
+        }
+
+        public int CompareTo(object obj)
+        {
+            return obj.GetType() != this.GetType() ? -1 : CompareTo((Note) obj);
         }
     }
 }
