@@ -13,7 +13,6 @@ namespace ConsoleApp1.BuiltInActions
         //a list of project names and their folders
         [DataMember] private List<ProgramProjectSetting> ProjectSettings { get; set; } = new List<ProgramProjectSetting>();
         //a list of actual projects, they are serialised into their own project folder
-        [IgnoreDataMember] private List<Project> Projects { get; } = new List<Project>();
         [IgnoreDataMember] public static ProjectManager Instance { get; set; }
         public ProjectManager()
         {
@@ -40,8 +39,8 @@ namespace ConsoleApp1.BuiltInActions
             }
 
             ProjectSettings.Add(new ProgramProjectSetting(name.Result, folder.Result));
-            var project = new Project(name.Result, folder.Result, ProgramSettingsClass.Instance.Password, true);
-            Projects.Add(project);
+            //todo make this better
+            new Project(name.Result, folder.Result, ProgramSettingsClass.Instance.Password, true);
             ProgramSettingsClass.Instance.Save();
         }
 
