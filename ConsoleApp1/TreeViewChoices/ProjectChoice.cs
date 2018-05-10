@@ -2,9 +2,9 @@
 {
     internal class ProjectChoice : SimpleTreeViewChoice
     {
-        private readonly Project _project;
+        private readonly ProgramProjectSetting _project;
 
-        public ProjectChoice(Project project) : base("New Project")
+        public ProjectChoice(ProgramProjectSetting project) : base(project.ProjectName)
         {
             _project = project;
             AcceptHandler = ProjectContext;
@@ -12,6 +12,7 @@
 
         private void ProjectContext(UserActionResult obj)
         {
+            //this is where you load an already created 
             JpgActionManager.PushActionContext(new ProjectAction(_project));
         }
     }

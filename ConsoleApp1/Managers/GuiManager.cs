@@ -153,7 +153,7 @@ namespace ConsoleApp1
             {
                 lock (retVal)
                 {
-                    var filechooser = new FileChooserDialog("Select Folder To Save Project Data",
+                    var filechooser = new FileChooserDialog("Select Folder To Save ProgramProjectSetting Data",
                         MainWindow.Instance, FileChooserAction.SelectFolder, "Cancel", ResponseType.Cancel,
                         "Open", ResponseType.Accept);
 

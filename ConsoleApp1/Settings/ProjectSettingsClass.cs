@@ -7,43 +7,38 @@ using System.Text;
 namespace ConsoleApp1
 {
     [DataContract]
-    internal class SettingsClass
+    internal class ProjectSettingsClass
     {
         private static string _fileName;
-        //todo get password from user
-        private static string _password = "password";
-        public static SettingsClass Instance { get; set; }
+        private static string _password;
+        private static string _settingsFileName = "settings.txt";
+        public static ProjectSettingsClass Instance { get; set; }
 
         [DataMember] public NotesManager NotesManager { get; private set; }
 
-        private SettingsClass()
+        private ProjectSettingsClass()
         {
             NotesManager = new NotesManager();
         }
 
-        public static SettingsClass Start(string fileName, string password)
+        public static ProjectSettingsClass Load(string folderName, string password)
         {
-            if (!password.Equals(""))
-            {
-                _password = password;
-            }
+            _password = password;
             StreamReader file = null;
-            _fileName = fileName;
+            _fileName = folderName;
             try
             {
-                file = File.OpenText(fileName);
+                file = File.OpenText(folderName + Path.DirectorySeparatorChar + _settingsFileName);
                 var s = AESThenHMAC.SimpleDecryptWithPassword(file.ReadToEnd(), _password);
                 Console.WriteLine(s);
                 file.Close();
                 var ms = new MemoryStream(Encoding.UTF8.GetBytes(s));
-                var ser = new DataContractJsonSerializer(typeof(SettingsClass));
-                Instance = ser.ReadObject(ms) as SettingsClass;
+                var ser = new DataContractJsonSerializer(typeof(ProjectSettingsClass));
+                Instance = ser.ReadObject(ms) as ProjectSettingsClass;
                 ms.Close();
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.StackTrace);
-                Instance = new SettingsClass();
                 throw e;
             }
             finally
@@ -56,7 +51,7 @@ namespace ConsoleApp1
             return Instance;
         }
 
-        public SettingsClass Save()
+        public ProjectSettingsClass Save()
         {
             var stream1 = new MemoryStream();
             var ser = new DataContractJsonSerializer(this.GetType());
@@ -71,6 +66,15 @@ namespace ConsoleApp1
             writer.Write(AESThenHMAC.SimpleEncryptWithPassword(sr.ReadToEnd(), _password));
             writer.Close();
             return this;
+        }
+
+        public static ProjectSettingsClass Start(string folder, string password)
+        {
+            _fileName = folder + Path.DirectorySeparatorChar + _settingsFileName;
+            _password = password;
+            Instance = new ProjectSettingsClass();
+            Instance.Save();
+            return Instance;
         }
     }
 }

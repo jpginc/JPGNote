@@ -49,7 +49,7 @@ namespace ConsoleApp1
 
         public NotesManager Save()
         {
-            SettingsClass.Instance.Save();
+            ProjectSettingsClass.Instance.Save();
             return this;
         }
     }

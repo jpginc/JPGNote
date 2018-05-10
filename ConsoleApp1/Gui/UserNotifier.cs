@@ -8,7 +8,7 @@ namespace ConsoleApp1
     {
         public static void Error(string message)
         {
-            //new Thread(() => { MainWindow.Instance.Error(message, AcceptCallback); }).Start();
+            //new Thread(() => { MainWindow.Instance.Error(message, AcceptCallback); }).Load();
             MainWindow.Instance.Error(message);
         }
 

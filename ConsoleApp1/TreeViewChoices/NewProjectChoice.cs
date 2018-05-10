@@ -2,7 +2,7 @@
 {
     internal class NewProjectChoice : SimpleTreeViewChoice
     {
-        public NewProjectChoice() : base("New Project")
+        public NewProjectChoice() : base("New ProgramProjectSetting")
         {
             AcceptHandler = ProjectManager.Instance.NewProject;
         }

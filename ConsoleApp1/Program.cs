@@ -36,7 +36,7 @@ public class GtkHelloWorld
 
     private static void InitialiseSettingsClass()
     {
-        SettingsClass.Start(_fileName, GetPassword());
+        ProgramSettingsClass.Start(_fileName, GetPassword());
     }
 
     private static string GetPassword()
