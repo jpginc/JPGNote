@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace ConsoleApp1.BuiltInActions
 {
@@ -28,6 +29,16 @@ namespace ConsoleApp1.BuiltInActions
             _folder = folder;
             _password = password;
             _settings = ProjectSettingsClass.Load(folder, password);
+        }
+
+        public string GetLogFileFullLocation()
+        {
+            return _folder + Path.DirectorySeparatorChar + GetLogFileName();
+        }
+
+        private string GetLogFileName()
+        {
+            return DateTime.Now.ToFileTimeUtc().ToString();
         }
     }
 }

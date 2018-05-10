@@ -15,8 +15,18 @@ namespace ConsoleApp1.BuiltInActions
             //toRun:= ComSpec " /c " this.fixWindowsCommandString(this.sshLocation,
             //["-i", getSetting("vmOutputLocation") "\ssh\" vm "\id_rsa",
             //"user@" ip, " | ", this.teeLocation, logLocation])
+            var logLocation = project.GetLogFileFullLocation();
 
-            RunExe(_cmdLocation, "");
+            var args = " /c \"" + MachineManager.Instance.GetSshCommandLineString() + " | "
+                + GetOuputRedirectionString(logLocation) + "\"";
+            RunExe(_cmdLocation, args);
+            //Gtk.Clipboard clipboard = Gtk.Clipboard.Get(Gdk.Atom.Intern("CLIPBOARD", false));
+            //clipboard.Text = args;
+        }
+
+        private string GetOuputRedirectionString(string logLocation)
+        {
+            return $"\"{_teeLocation}\" \"{logLocation}\"";
         }
 
         private void RunExe(string exeFileName, string args)
