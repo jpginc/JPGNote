@@ -30,7 +30,7 @@ namespace ConsoleApp1
         private bool AcceptCallback()
         {
             //todo fix threads
-            //Thread.Sleep(100);
+            Thread.Sleep(50);
             _waitForCallbackHandle.Set();
             return true;
         }

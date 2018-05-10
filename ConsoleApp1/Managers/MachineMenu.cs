@@ -29,14 +29,19 @@ namespace ConsoleApp1.BuiltInActions
                 }, "IpOrDomainName", _machine.IpOrDomainName),
                 new UpdateSingleLineStringAction(arg =>
                 {
-                    _machine.MACAddress = arg;
+                    _machine.MacAddress = arg;
                     ProgramSettingsClass.Instance.Save();
-                }, "MACAddress", _machine.MACAddress),
+                }, "MACAddress", _machine.MacAddress),
                 new UpdateSingleLineStringAction(arg =>
                 {
                     _machine.SshKeyPassphrase = arg;
                     ProgramSettingsClass.Instance.Save();
                 }, "SshKeyPassphrase", _machine.SshKeyPassphrase),
+                new UpdateSingleLineStringAction(arg =>
+                {
+                    _machine.SshUserName = arg;
+                    ProgramSettingsClass.Instance.Save();
+                }, "SshUserName", _machine.SshUserName),
                 new UpdateMultiLineStringAction(arg =>
                 {
                     _machine.SshKey = arg;

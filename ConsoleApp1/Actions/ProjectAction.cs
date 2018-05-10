@@ -10,7 +10,7 @@ namespace ConsoleApp1.BuiltInActions
         public ProjectAction(Project project)
         {
             _project = project;
-            _myMenu = new ProjectMainMenu();
+            _myMenu = new ProjectMainMenu(_project);
         }
 
         public InputType InputType => _myMenu.InputType;

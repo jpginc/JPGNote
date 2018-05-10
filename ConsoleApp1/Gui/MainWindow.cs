@@ -30,10 +30,14 @@ namespace ConsoleApp1
 
         public MainWindow SetChoices(IEnumerable<ITreeViewChoice> choices, string label)
         {
-            _searchableTreeView.SetChoices(choices);
-            _searchableTreeView.SetLabelText(label);
-            _userActionResult.Result = UserActionResult.ResultType.NoInput;
-            _userActionResult.UserChoices = null;
+            lock (_searchableTreeView)
+            {
+                _searchableTreeView.SetChoices(choices);
+                _searchableTreeView.SetLabelText(label);
+                _userActionResult.Result = UserActionResult.ResultType.NoInput;
+                _userActionResult.UserChoices = null;
+            }
+
             return this;
         }
 
