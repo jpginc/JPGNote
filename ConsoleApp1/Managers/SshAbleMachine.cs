@@ -6,17 +6,17 @@ namespace ConsoleApp1.BuiltInActions
     [DataContract]
     public class SshAbleMachine
     {
-        [DataMember] public string MacAddress { get; set; }
+        [DataMember] public AutoSingleLineString MacAddress { get; set; } = new AutoSingleLineString("");
 
-        [DataMember] public string SshKey { get; set; }
+        [DataMember] public AutoMultiLineString SshKey { get; set; } = new AutoMultiLineString("");
 
-        [DataMember] public string SshKeyPassphrase { get; set; }
+        [DataMember] public AutoSingleLineString SshKeyPassphrase { get; set; } = new AutoSingleLineString("");
 
-        [DataMember] public string IpOrDomainName { get; set; }
+        [DataMember] public AutoSingleLineString IpOrDomainName { get; set; } = new AutoSingleLineString("");
 
         [DataMember] public List<string> Tags { get; set; }
 
-        [DataMember] public string Name { get; set; }
-        [DataMember] public string SshUserName { get; set; }
+        [DataMember] public AutoSingleLineString Name { get; set; } = new AutoSingleLineString("");
+        [DataMember] public AutoSingleLineString SshUserName { get; set; } = new AutoSingleLineString("");
     }
 }

@@ -4,7 +4,7 @@
     {
         private SshAbleMachine _machine;
 
-        public MachineChoice(SshAbleMachine machine ) : base(machine.Name)
+        public MachineChoice(SshAbleMachine machine ) : base(machine.Name.Get())
         {
             _machine = machine;
             AcceptHandler = SetMachineContext;
@@ -12,7 +12,7 @@
 
         private void SetMachineContext(UserActionResult obj)
         {
-            JpgActionManager.PushActionContext(new MachineMenu(_machine));
+            JpgActionManager.PushActionContext(new AutoMenu(_machine));
         }
     }
 }

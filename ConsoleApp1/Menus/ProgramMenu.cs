@@ -12,6 +12,7 @@ namespace ConsoleApp1.BuiltInActions
             {
                 new NewProjectChoice(),
                 new ManageSlaveMachinesChoice(),
+                new ManageUserActionsChoice(),
                 new ExitChoice(),
             };
             return projects.Concat(c);

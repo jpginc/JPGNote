@@ -23,7 +23,7 @@ namespace ConsoleApp1.BuiltInActions
             JpgActionManager.PushActionContext(new MachineManagerMenu());
         }
 
-        public IEnumerable<ITreeViewChoice> GetMachines()
+        public IEnumerable<ITreeViewChoice> GetMachineChoices()
         {
             return sshAbleMachines.Select(m => new MachineChoice(m));
         }
@@ -33,10 +33,10 @@ namespace ConsoleApp1.BuiltInActions
             var machineName = GuiManager.Instance.GetNonEmptySingleLineInput("Set Machine Name");
             if (machineName.ResponseType == UserActionResult.ResultType.Accept)
             {
-                var machine = new SshAbleMachine {Name = machineName.Result};
+                var machine = new SshAbleMachine {Name = new AutoSingleLineString(machineName.Result)};
                 sshAbleMachines.Add(machine);
                 ProgramSettingsClass.Instance.Save();
-                JpgActionManager.PushActionContext(new MachineMenu(machine));
+                JpgActionManager.PushActionContext(new AutoMenu(machine));
             }
         }
 
@@ -51,13 +51,13 @@ namespace ConsoleApp1.BuiltInActions
         private string GetIpOrDomain()
         {
             //todo
-            return CurrentMachine.IpOrDomainName;
+            return CurrentMachine.IpOrDomainName.Get();
         }
 
         private string PutSshKeyInTempLocation()
         {
             var tempLocation = Path.GetTempFileName();
-            File.WriteAllText(tempLocation, CurrentMachine.SshKey);
+            File.WriteAllText(tempLocation, CurrentMachine.SshKey.Get());
             new Timer(DeleteTempFile, tempLocation, 1000, Timeout.Infinite);
             return tempLocation;
         }

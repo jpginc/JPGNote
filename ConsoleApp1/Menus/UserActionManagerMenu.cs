@@ -3,16 +3,16 @@ using System.Linq;
 
 namespace ConsoleApp1.BuiltInActions
 {
-    internal class MachineManagerMenu : SimpleActionProvider
+    internal class UserActionManagerMenu : SimpleActionProvider
     {
         public override IEnumerable<ITreeViewChoice> GetActions()
         {
-            var machines = MachineManager.Instance.GetMachineChoices();
+            var userActions =  UserActionManager.Instance.GetUserActionChoices();
             var c = new List<ITreeViewChoice>
             {
-                new NewMachineChoice()
+                new NewUserActionChoice()
             };
-            return machines.Concat(c);
+            return userActions.Concat(c);
         }
     }
 }
