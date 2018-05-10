@@ -45,13 +45,8 @@ namespace ConsoleApp1
             return GetChoice(true, choices, prompt);
         }
 
-        private UserActionResult GetChoice(bool multiSelect, IEnumerable<ITreeViewChoice> choices, string prompt)
-        {
-            return GetChoice(multiSelect, choices, prompt, true);
-        }
-
         private UserActionResult GetChoice(bool multiSelect, IEnumerable<ITreeViewChoice> choices, string prompt,
-            bool doReset)
+            bool doReset = true)
         {
             _gui.Reset(doReset)
                 .SetChoices(choices, prompt)
@@ -90,6 +85,27 @@ namespace ConsoleApp1
                     return GetChoices(actionManager.GetActions(), prompt);
                 default:
                     throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private UserActionResult GetSingleLineInputFromGui(string prompt, bool resetGui = true)
+        {
+            var choice = new[] {(ITreeViewChoice) new SelectingTriggersAcceptAction("Press enter to finish input")};
+            GetChoice(false, choice, prompt, resetGui);
+            return _gui.GetUserActionResult();
+        }
+
+        public UserActionResult GetNonEmptySingleLineInputFromGui(string prompt, bool resetGui = true)
+        {
+            while (true)
+            {
+                var choice = GetSingleLineInputFromGui(prompt, resetGui);
+                if (choice.Result == UserActionResult.ResultType.Canceled
+                     || choice.Result == UserActionResult.ResultType.Accept && !choice.SingleLineInput.Equals(""))
+                    return choice;
+
+                UserNotifier.Error("Error: Input cannot be an empty string");
+                resetGui = false;
             }
         }
 
