@@ -11,6 +11,7 @@ namespace ConsoleApp1.BuiltInActions
             var c = new List<ITreeViewChoice>
             {
                 new NewProjectChoice(),
+                new ManageSlaveMachinesChoice(),
                 new ExitChoice(),
             };
             return projects.Concat(c);
