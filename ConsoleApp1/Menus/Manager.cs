@@ -1,38 +1,34 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace ConsoleApp1.BuiltInActions
 {
-    internal class Manager : IManager
+    internal abstract class Manager : IManager
     {
-        private IEnumerable<ICreatable _creatable;
+        public abstract string ManageText { get; }
+        public abstract string CreateChoiceText { get; }
+        public abstract string DeleteChoiceText { get; }
+        public abstract List<ICreatable> Creatables { get; set; }
         private readonly ISettingsClass _settings;
 
-        public Manager(ICreatable creatable, ISettingsClass settings)
+        public Manager(ISettingsClass settings)
         {
-            _creatable = creatable;
             _settings = settings;
         }
 
-        public string ManageText => _creatable.CreateChoiceText;
-        public bool AcceptCallback(UserActionResult choice)
-        {
-            throw new System.NotImplementedException();
-        }
 
-        public IEnumerable<BuiltInActions.ICreatable> GetCreatables()
+        public void Save()
         {
-            throw new System.NotImplementedException();
-        }
-
-        public void Save(ICreatable creatable)
-        {
-            
+            _settings.Save();
         }
 
         public void Delete(ICreatable creatable)
         {
-            throw new System.NotImplementedException();
+            Creatables.Remove(creatable);
+            _settings.Save();
         }
+
+        public abstract void New(UserActionResult obj);
     }
 
     internal interface ISettingsClass

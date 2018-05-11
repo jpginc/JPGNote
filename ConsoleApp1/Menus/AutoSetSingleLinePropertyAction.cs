@@ -34,7 +34,7 @@ namespace ConsoleApp1.BuiltInActions
             if (newValue.ResponseType == UserActionResult.ResultType.Accept)
             {
                 _property.SetValue(_obj, newValue.Result);
-                _manager.Save(_obj);
+                _manager.Save();
             }
         }
     }

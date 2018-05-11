@@ -34,12 +34,25 @@ namespace ConsoleApp1.BuiltInActions
         public IEnumerable<ITreeViewChoice> GetActions()
         {
             //not quite right, i need to have a choice that will then set the context to an auto menu
-            return _manager.GetCreatables().Select(c => new AutoAction(c, _manager));
+            //return _manager.GetCreatables().Select(c => new AutoAction(c, _manager));
+
+            IEnumerable<ITreeViewChoice> existingCreatables = _manager.Creatables.Select(c => new AutoAction(c, _manager));
+            ITreeViewChoice createCreatable = new AutoCreate(_manager);
+            //todo delete
+            return existingCreatables;
         }
 
         public ActionProviderResult HandleUserAction(UserActionResult res)
         {
             return ActionProviderResult.PassToTreeViewChoices;
+        }
+    }
+
+    internal class AutoCreate : SimpleTreeViewChoice
+    {
+        public AutoCreate(IManager manager) : base(manager.CreateChoiceText)
+        {
+            AcceptHandler = manager.New;
         }
     }
 

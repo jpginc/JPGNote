@@ -5,6 +5,7 @@ using System.Linq;
 namespace ConsoleApp1.BuiltInActions
 {
     public class AutoSingleLineString : Attribute { }
+    public class Wizard : Attribute { }
     public class AutoMultiLineString : Attribute { }
     internal class AutoMenu : SimpleActionProvider
     {

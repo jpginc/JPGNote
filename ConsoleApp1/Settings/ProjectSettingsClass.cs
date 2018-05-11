@@ -3,11 +3,12 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using ConsoleApp1.BuiltInActions;
 
 namespace ConsoleApp1
 {
     [DataContract]
-    internal class ProjectSettingsClass
+    internal class ProjectSettingsClass : ISettingsClass
     {
         private static string _fileName;
         private static string _password;
@@ -15,10 +16,12 @@ namespace ConsoleApp1
         public static ProjectSettingsClass Instance { get; set; }
 
         [DataMember] public NotesManager NotesManager { get; private set; }
+        [DataMember] public TargetManager TargetManager { get; private set; }
 
         private ProjectSettingsClass()
         {
             NotesManager = new NotesManager();
+            TargetManager = new TargetManager(this);
         }
 
         public static ProjectSettingsClass Load(string folderName, string password)
@@ -46,12 +49,13 @@ namespace ConsoleApp1
                 file?.Close();
             }
 
-            NotesManager.Instance = Instance.NotesManager;
+            NotesManager.Instance = Instance.NotesManager ?? new NotesManager();
+            TargetManager.Instance = Instance.TargetManager ?? new TargetManager(Instance);
 
             return Instance;
         }
 
-        public ProjectSettingsClass Save()
+        public void Save()
         {
             var stream1 = new MemoryStream();
             var ser = new DataContractJsonSerializer(this.GetType());
@@ -65,7 +69,6 @@ namespace ConsoleApp1
             stream1.Position = 0;
             writer.Write(AESThenHMAC.SimpleEncryptWithPassword(sr.ReadToEnd(), _password));
             writer.Close();
-            return this;
         }
 
         public static ProjectSettingsClass Start(string folder, string password)
@@ -76,5 +79,6 @@ namespace ConsoleApp1
             Instance.Save();
             return Instance;
         }
+
     }
 }

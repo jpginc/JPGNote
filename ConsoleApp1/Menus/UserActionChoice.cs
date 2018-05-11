@@ -12,7 +12,7 @@
 
         private void SetContext(UserActionResult obj)
         {
-            JpgActionManager.PushActionContext(new AutoMenu(u));
+            JpgActionManager.PushActionContext(new AutoMenu(u, ProgramSettingsClass.Instance));
         }
     }
 }

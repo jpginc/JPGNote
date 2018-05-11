@@ -22,7 +22,8 @@ namespace ConsoleApp1.BuiltInActions
                 new DeleteNotesAction()
             };
 
-            IEnumerable<ITreeViewChoice> a = new ManageableCreatable(new Manager(_project)).GetActions();
+            //todo this is supposed to be createing a "manage scope" menu
+            IEnumerable<ITreeViewChoice> a = new ManageableCreatable(new TargetManager(ProjectSettingsClass.Instance)).GetActions();
 
             return c.Concat(a.Concat(NotesManager.Instance.GetNoteChoices()));
         }

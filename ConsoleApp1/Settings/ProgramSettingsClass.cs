@@ -7,7 +7,7 @@ using ConsoleApp1;
 using ConsoleApp1.BuiltInActions;
 
 [DataContract]
-internal class ProgramSettingsClass
+internal class ProgramSettingsClass : ISettingsClass
 {
     [IgnoreDataMember] private static string _fileName;
     [IgnoreDataMember] private static string _password;

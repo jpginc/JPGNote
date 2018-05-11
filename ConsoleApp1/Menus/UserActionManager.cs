@@ -29,7 +29,7 @@ namespace ConsoleApp1.BuiltInActions
                 var userAction = new UserAction() {Name = actionName.Result};
                 UserActions.Add(userAction);
                 ProgramSettingsClass.Instance.Save();
-                JpgActionManager.PushActionContext(new AutoMenu(userAction));
+                JpgActionManager.PushActionContext(new AutoMenu(userAction, ProgramSettingsClass.Instance));
             }
         }
     }

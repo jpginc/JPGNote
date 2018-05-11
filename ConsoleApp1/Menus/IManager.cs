@@ -5,15 +5,16 @@ namespace ConsoleApp1.BuiltInActions
     public interface IManager
     {
         string ManageText { get; }
-        IEnumerable<ICreatable> GetCreatables();
-        void Save(ICreatable creatable);
+        string CreateChoiceText { get; }
+        string DeleteChoiceText { get; }
+        List<ICreatable> Creatables { get; set; }
+        void Save();
         void Delete(ICreatable creatable);
+        void New(UserActionResult obj);
     }
 
     public interface ICreatable
     {
         string EditChoiceText { get; }
-        string CreateChoiceText { get; }
-        string DeleteChoiceText { get; }
     }
 }
