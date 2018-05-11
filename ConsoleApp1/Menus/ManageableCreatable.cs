@@ -67,7 +67,7 @@ namespace ConsoleApp1.BuiltInActions
         }
     }
 
-    internal class AutoDeleteMenu : IActionProvider, ITreeViewChoice
+    internal class AutoDeleteMenu : IActionProvider
     {
         private readonly IManager _manager;
 
@@ -98,23 +98,6 @@ namespace ConsoleApp1.BuiltInActions
             }
             JpgActionManager.UnrollActionContext();
             return ActionProviderResult.ProcessingFinished;
-        }
-
-        public string SortByText => _manager.DeleteChoiceText;
-        public string Text => _manager.DeleteChoiceText;
-        public bool OnTreeViewSelectCallback(JpgTreeView jpgTreeView)
-        {
-            return true;
-        }
-
-        public bool OnAcceptCallback(UserActionResult choice)
-        {
-            return true;
-        }
-
-        public bool OnSaveCallback(UserActionResult choice)
-        {
-            return true;
         }
     }
 

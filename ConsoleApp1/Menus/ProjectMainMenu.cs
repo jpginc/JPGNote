@@ -23,9 +23,9 @@ namespace ConsoleApp1.BuiltInActions
                 new DeleteNotesAction()
             };
 
-            var manageTargets = new ManageableCreatable(TargetManager.Instance).GetActions();
-            var targets = TargetManager.Instance.Creatables.Select(t => new AutoAction(t, TargetManager.Instance));
-            var a = targets.Concat(manageTargets);
+            var a = new ManageableCreatable(TargetManager.Instance).GetActions();
+            //var targets = TargetManager.Instance.Creatables.Select(t => new AutoAction(t, TargetManager.Instance));
+            //var a = targets.Concat(manageTargets);
             return c.Concat(a.Concat(NotesManager.Instance.GetNoteChoices()));
         }
     }

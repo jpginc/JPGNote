@@ -36,13 +36,11 @@ namespace ConsoleApp1.BuiltInActions
 
         public void New(UserActionResult obj)
         {
-            //todo wizard 
             var target = new Target();
             if (CreatableWizard.GetRequiredFields(target))
             {
                 Creatables.Add(target);
             }
-            UserNotifier.Error("Not Implemented yet!");
         }
     }
 
