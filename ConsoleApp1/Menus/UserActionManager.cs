@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace ConsoleApp1.BuiltInActions
@@ -17,7 +18,7 @@ namespace ConsoleApp1.BuiltInActions
 
         public IEnumerable<ITreeViewChoice> GetUserActionChoices()
         {
-            throw new System.NotImplementedException();
+            return UserActions.Select(u=> new UserActionChoice(u));
         }
 
         public void CreateNewUserAction(UserActionResult obj)
@@ -25,7 +26,7 @@ namespace ConsoleApp1.BuiltInActions
             var actionName = GuiManager.Instance.GetNonEmptySingleLineInput("Set Action Name");
             if (actionName.ResponseType == UserActionResult.ResultType.Accept)
             {
-                var userAction = new UserAction();
+                var userAction = new UserAction() {Name = actionName.Result};
                 UserActions.Add(userAction);
                 ProgramSettingsClass.Instance.Save();
                 JpgActionManager.PushActionContext(new AutoMenu(userAction));
