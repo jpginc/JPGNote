@@ -78,8 +78,12 @@ namespace ConsoleApp1.BuiltInActions
                     {
                         inputFunc = () => GuiManager.Instance.GetMultiLineInput(prompt, "");
                     }
+                    else if (prop.GetCustomAttributes(typeof(AutoFolderPickerAttribute), false).Any())
+                    {
+                        inputFunc = () => GuiManager.Instance.GetFolder(prompt);
+                    }
 
-                    var result = inputFunc.Invoke();
+                    CancellableObj<string> result = inputFunc.Invoke();
                     if (result.ResponseType == UserActionResult.ResultType.Canceled)
                     {
                         return false;

@@ -14,7 +14,7 @@ internal class ProgramSettingsClass : ISettingsClass
 
     public ProgramSettingsClass()
     {
-        ProjectManager = new ProjectManager();
+        ProjectManager = new ProjectManager() {Settings = this};
         MachineManager = new MachineManager();
         UserActionManager = new UserActionManager() {Settings = this};
     }
@@ -53,6 +53,7 @@ internal class ProgramSettingsClass : ISettingsClass
         }
 
         ProjectManager.Instance = Instance.ProjectManager ?? new ProjectManager();
+        ProjectManager.Instance.Settings = Instance;
         MachineManager.Instance = Instance.MachineManager ?? new MachineManager();
         UserActionManager.Instance = Instance.UserActionManager ?? new UserActionManager();
         UserActionManager.Instance.Settings = Instance;

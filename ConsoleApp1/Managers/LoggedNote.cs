@@ -21,18 +21,27 @@ namespace ConsoleApp1
 
         public string LoadLog()
         {
-            var logFileStream = new FileStream(FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            var logFileReader = new StreamReader(logFileStream);
-            var contents = "";
-
-            while (!logFileReader.EndOfStream)
+            string contents;
+            try
             {
-                contents += logFileReader.ReadLine();
-                contents += Environment.NewLine;
-            }
 
-            logFileReader.Close();
-            logFileStream.Close();
+                var logFileStream = new FileStream(FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                var logFileReader = new StreamReader(logFileStream);
+                contents = "";
+
+                while (!logFileReader.EndOfStream)
+                {
+                    contents += logFileReader.ReadLine();
+                    contents += Environment.NewLine;
+                }
+
+                logFileReader.Close();
+                logFileStream.Close();
+            }
+            catch (Exception e)
+            {
+                contents = "Error opening log file";
+            }
             return contents;
         }
 

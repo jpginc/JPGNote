@@ -1,18 +1,16 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 
 namespace ConsoleApp1.BuiltInActions
 {
     [DataContract]
-    internal class ProgramProjectSetting 
+    internal class ProgramProjectSetting : ICreatable
     {
-        [DataMember]
+        [DataMember, AutoSingleLineString, Wizard]
         public string ProjectName { get; set; }
-        [DataMember]
+        [DataMember, Wizard, AutoFolderPicker]
         public string ProjectFolder { get; set; }
-        public ProgramProjectSetting(string projectName, string projectFolder)
-        {
-            ProjectName = projectName;
-            ProjectFolder = projectFolder;
-        }
+
+        public string EditChoiceText => ProjectName;
     }
 }

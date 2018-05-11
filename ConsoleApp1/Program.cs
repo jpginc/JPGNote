@@ -60,6 +60,6 @@ public class GtkHelloWorld
     {
         //var password = GuiManager.Instance.GetPassword().Result;
         //return password ?? "";
-        return "";
+        return "asdf";
     }
 }

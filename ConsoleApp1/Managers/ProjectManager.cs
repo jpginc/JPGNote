@@ -1,52 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using GLib;
-using Gtk;
 
 namespace ConsoleApp1.BuiltInActions
 {
     [DataContract]
-    internal class ProjectManager
+    internal class ProjectManager : Manager, IManagerAndActionProvider
     {
         //a list of project names and their folders
-        [DataMember] private List<ProgramProjectSetting> ProjectSettings { get; set; } = new List<ProgramProjectSetting>();
-        //a list of actual projects, they are serialised into their own project folder
+        [IgnoreDataMember] public override string ManageText => "Manage Projects";
+        [IgnoreDataMember] public override string CreateChoiceText => "New Project";
+        [IgnoreDataMember] public override string DeleteChoiceText => "Delete Projects";
         [IgnoreDataMember] public static ProjectManager Instance { get; set; }
-        public ProjectManager()
-        {
-            Instance = this;
-        }
-
-
-        public IEnumerable<ITreeViewChoice> GetProjects()
-        {
-            return ProjectSettings.Select(p => new ProjectChoice(p));
-        }
-
         public void NewProject(UserActionResult obj)
         {
-            var name = GuiManager.Instance.GetNonEmptySingleLineInput("Set ProgramProjectSetting Name");
-            if (name.ResponseType != UserActionResult.ResultType.Accept)
+            var proj = new ProgramProjectSetting();
+            if (CreatableWizard.GetRequiredFields(proj))
             {
-                return;
+                Creatables.Add(proj);
+                Save();
+                LoadProject(proj);
+                UserNotifier.Notify("Project Created");
             }
-            var folder = GuiManager.Instance.GetFolder("Select ProgramProjectSetting Folder");
-            if (folder.ResponseType != UserActionResult.ResultType.Accept)
-            {
-                return;
-            }
+        }
 
-            ProjectSettings.Add(new ProgramProjectSetting(name.Result, folder.Result));
-            //todo make this better
-            new Project(name.Result, folder.Result, ProgramSettingsClass.Instance.Password, true);
-            ProgramSettingsClass.Instance.Save();
+        private void LoadProject(ProgramProjectSetting projectSettings)
+        {
+            LoadProject(projectSettings.ProjectFolder, projectSettings.ProjectName);
         }
 
         public Project LoadProject(string folder, string name)
         {
             return new Project(name, folder, ProgramSettingsClass.Instance.Password);
         }
+
+        public InputType InputType => InputType.Single;
+        public IEnumerable<ITreeViewChoice> GetActions()
+        {
+            return Creatables.Select(c =>new ProjectChoice((ProgramProjectSetting)c));
+        }
+
+        public ActionProviderResult HandleUserAction(UserActionResult res)
+        {
+            return ActionProviderResult.PassToTreeViewChoices;
+        }
+
+        public override void New(UserActionResult obj) => NewProject(obj);
     }
 }

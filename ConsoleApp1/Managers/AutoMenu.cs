@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace ConsoleApp1.BuiltInActions
 {
+    internal class AutoFolderPickerAttribute : Attribute { }
     public class AutoSingleLineString : Attribute { }
     public class Wizard : Attribute { }
     public class AutoMultiLineString : Attribute { }

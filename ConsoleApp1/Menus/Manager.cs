@@ -7,6 +7,7 @@ namespace ConsoleApp1.BuiltInActions
     [KnownType(typeof(SshAbleMachine))]
     [KnownType(typeof(Target))]
     [KnownType(typeof(UserAction))]
+    [KnownType(typeof(ProgramProjectSetting))]
     internal abstract class Manager : IManager
     {
         public abstract string ManageText { get; }

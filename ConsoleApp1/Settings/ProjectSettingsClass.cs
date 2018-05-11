@@ -40,9 +40,22 @@ namespace ConsoleApp1
                 Instance = ser.ReadObject(ms) as ProjectSettingsClass;
                 ms.Close();
             }
+            catch (FileNotFoundException e)
+            {
+                if (UserNotifier.Confirm("Project settings file not found, Create new file?"))
+                {
+                    Start();
+                }
+            }
             catch (Exception e)
             {
-                throw e;
+                if (UserNotifier.Confirm("Something went wrong loading the file\n" +
+                                         "Possibly wrong password. Would you like to trash" +
+                                         "the old file and create a new project?"))
+                {
+                    file?.Close();
+                    Start();
+                }
             }
             finally
             {
@@ -72,10 +85,8 @@ namespace ConsoleApp1
             writer.Close();
         }
 
-        public static ProjectSettingsClass Start(string folder, string password)
+        public static ProjectSettingsClass Start()
         {
-            _fileName = folder + Path.DirectorySeparatorChar + _settingsFileName;
-            _password = password;
             Instance = new ProjectSettingsClass();
             Instance.Save();
             return Instance;

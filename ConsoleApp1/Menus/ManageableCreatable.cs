@@ -23,7 +23,7 @@ namespace ConsoleApp1.BuiltInActions
                 new ChoiceToActionProvider(new AutoDeleteMenu(_manager), _manager.DeleteChoiceText)
             };
 
-            IEnumerable<ITreeViewChoice> existingCreatables = _manager.Creatables.Select(c => new AutoAction(c, _manager));
+            IEnumerable<ITreeViewChoice> existingCreatables = _manager.GetActions();
             return existingCreatables.Concat(a);
         }
 

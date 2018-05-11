@@ -3,7 +3,7 @@ using System.IO;
 
 namespace ConsoleApp1.BuiltInActions
 {
-    internal class Project : ICreatable
+    internal class Project
     {
         public string Name { get; private set; }
         private string _folder;
@@ -15,14 +15,6 @@ namespace ConsoleApp1.BuiltInActions
 
         public Project(string name, string folder, string password)
         {
-            Console.WriteLine("main constructor");
-            Initialise(name, folder, password);
-        }
-
-        public Project(string name, string folder, string password, bool v) 
-        {
-            Console.WriteLine("other constructor");
-            _settings = ProjectSettingsClass.Start(folder, password);
             Initialise(name, folder, password);
         }
 
