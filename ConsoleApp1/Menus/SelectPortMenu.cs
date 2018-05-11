@@ -17,7 +17,7 @@ namespace ConsoleApp1.BuiltInActions
         public InputType InputType => InputType.Single;
         public IEnumerable<ITreeViewChoice> GetActions()
         {
-            var ports = TargetManager.Instance.GetActions();
+            var ports = PortManager.Instance.GetActions();
             //todo select all
             //todo regex/grep targets
             //todo use Port's target
