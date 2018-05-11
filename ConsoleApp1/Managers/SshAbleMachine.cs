@@ -20,7 +20,7 @@ namespace ConsoleApp1.BuiltInActions
 
         [AutoSingleLineString, DataMember] public string Name { get; set; } = "";
         [AutoSingleLineString, DataMember] public string SshUserName { get; set; } = "";
-        [IgnoreDataMember]
-        public string EditChoiceText => Name;
+        [IgnoreDataMember] public string EditChoiceText => Name;
+
     }
 }

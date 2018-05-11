@@ -40,6 +40,7 @@ namespace ConsoleApp1.BuiltInActions
                 }
             }
 
+            retList.Add(new AutoDeleteCreatable(_obj, _manager));
             return retList;
         }
     }

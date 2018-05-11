@@ -13,16 +13,11 @@ namespace ConsoleApp1.BuiltInActions
 
         public void OpenSshSession(Project project)
         {
-            //toRun:= ComSpec " /c " this.fixWindowsCommandString(this.sshLocation,
-            //["-i", getSetting("vmOutputLocation") "\ssh\" vm "\id_rsa",
-            //"user@" ip, " | ", this.teeLocation, logLocation])
             var logLocation = project.GetLogFileFullLocation();
 
             var args = " /c \"" + MachineManager.Instance.GetSshCommandLineString() + " | "
                 + GetOuputRedirectionString(logLocation) + "\"";
             RunExe(_cmdLocation, args);
-            //Gtk.Clipboard clipboard = Gtk.Clipboard.Get(Gdk.Atom.Intern("CLIPBOARD", false));
-            //clipboard.Text = args;
         }
 
         private string GetOuputRedirectionString(string logLocation)
@@ -32,12 +27,13 @@ namespace ConsoleApp1.BuiltInActions
 
         private void RunExe(string exeFileName, string args)
         {
-            //todo this probably isn't cross platform...
+            //todo this isn't cross platform...
             var compiler = new Process();
             compiler.StartInfo.FileName = exeFileName;
             compiler.StartInfo.Arguments = args;
             compiler.StartInfo.UseShellExecute = true;
             compiler.StartInfo.RedirectStandardOutput = false;
+            compiler.StartInfo.RedirectStandardError = false;
             compiler.Start();
         }
     }

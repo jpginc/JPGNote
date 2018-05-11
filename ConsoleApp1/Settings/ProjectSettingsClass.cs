@@ -21,7 +21,7 @@ namespace ConsoleApp1
         private ProjectSettingsClass()
         {
             NotesManager = new NotesManager();
-            TargetManager = new TargetManager(this);
+            TargetManager = new TargetManager();
         }
 
         public static ProjectSettingsClass Load(string folderName, string password)
@@ -50,7 +50,8 @@ namespace ConsoleApp1
             }
 
             NotesManager.Instance = Instance.NotesManager ?? new NotesManager();
-            TargetManager.Instance = Instance.TargetManager ?? new TargetManager(Instance);
+            TargetManager.Instance = Instance.TargetManager ?? new TargetManager();
+            TargetManager.Instance.Settings = Instance;
 
             return Instance;
         }

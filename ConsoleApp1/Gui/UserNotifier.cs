@@ -19,5 +19,17 @@ namespace ConsoleApp1
         {
             MainWindow.Instance.UserNotify(message);
         }
+
+        public static bool Confirm(string message)
+        {
+            var popup = new MessageDialog(MainWindow.Instance,
+                DialogFlags.Modal | DialogFlags.DestroyWithParent,
+                MessageType.Warning,
+                ButtonsType.YesNo,
+                message);
+            var resp = popup.Run();
+            popup.Destroy();
+            return resp == (int) ResponseType.Yes;
+        }
     }
 }

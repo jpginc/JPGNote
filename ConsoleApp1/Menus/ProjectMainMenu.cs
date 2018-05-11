@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ConsoleApp1.BuiltInActions
@@ -22,9 +23,9 @@ namespace ConsoleApp1.BuiltInActions
                 new DeleteNotesAction()
             };
 
-            //todo this is supposed to be createing a "manage scope" menu
-            IEnumerable<ITreeViewChoice> a = new ManageableCreatable(new TargetManager(ProjectSettingsClass.Instance)).GetActions();
-
+            var manageTargets = new ManageableCreatable(TargetManager.Instance).GetActions();
+            var targets = TargetManager.Instance.Creatables.Select(t => new AutoAction(t, TargetManager.Instance));
+            var a = targets.Concat(manageTargets);
             return c.Concat(a.Concat(NotesManager.Instance.GetNoteChoices()));
         }
     }
