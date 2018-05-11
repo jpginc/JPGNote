@@ -210,12 +210,6 @@ namespace ConsoleApp1
 
         protected override bool OnKeyPressEvent(EventKey evnt)
         {
-            if (evnt.Key == Key.o && evnt.State == ModifierType.ControlMask)
-            {
-                _multiLineInputWidget.GrabFocus();
-                return true;
-            }
-
             if (evnt.Key == Key.i && evnt.State == ModifierType.ControlMask)
             {
                 _searchableTreeView.FocusInput();

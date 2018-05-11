@@ -91,14 +91,7 @@ namespace ConsoleApp1
 
         public void HandleRotateKeypress(EventKey evnt)
         {
-            if (evnt.Key == Gdk.Key.Down || evnt.Key == Gdk.Key.Up)
-            {
-                RoatateAndUpdateChoices(evnt.Key == Gdk.Key.Down);
-            }
-            else
-            {
-                RoatateAndUpdateChoices(evnt.State == ModifierType.ShiftMask);
-            }
+            RoatateAndUpdateChoices(evnt.State == ModifierType.ShiftMask);
         }
 
         private void RoatateAndUpdateChoices(bool forwardDirection)

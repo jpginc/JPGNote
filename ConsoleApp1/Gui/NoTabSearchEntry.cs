@@ -17,13 +17,11 @@ namespace ConsoleApp1
 
         //this is the only way to capture the up and down keys. doesn't get passed to 
         //the onkeypressevent handler
-        [GLib.ConnectBefore]
         private void MyHandler(object o, KeyPressEventArgs args)
         {
             var evnt = args.Event;
             if (evnt.Key == Key.Down || evnt.Key == Key.Up)
             {
-                _parent.HandleRotateKeypress(evnt);
             }
         }
 
