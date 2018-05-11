@@ -21,7 +21,10 @@ namespace ConsoleApp1.BuiltInActions
                 new ExitChoice(),
                 new DeleteNotesAction()
             };
-            return c.Concat(NotesManager.Instance.GetNoteChoices());
+
+            IEnumerable<ITreeViewChoice> a = new ManageableCreatable(new Manager(_project)).GetActions();
+
+            return c.Concat(a.Concat(NotesManager.Instance.GetNoteChoices()));
         }
     }
 }

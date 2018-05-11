@@ -8,11 +8,13 @@ namespace ConsoleApp1.BuiltInActions
     public class AutoMultiLineString : Attribute { }
     internal class AutoMenu : SimpleActionProvider
     {
-        private readonly object _obj;
+        private readonly ICreatable _obj;
+        private readonly IManager _manager;
 
-        public AutoMenu(object obj)
+        public AutoMenu(ICreatable obj, IManager manager)
         {
             _obj = obj;
+            _manager = manager;
         }
 
         public override IEnumerable<ITreeViewChoice> GetActions()
@@ -28,12 +30,12 @@ namespace ConsoleApp1.BuiltInActions
                 if (prop.GetCustomAttributes(typeof(AutoSingleLineString), false).Any())
                 {
                     retList.Add(
-                        new AutoSetSingleLinePropertyAction(prop, _obj, GuiManager.Instance.GetSingleLineInput));
+                        new AutoSetSingleLinePropertyAction(prop, _obj, GuiManager.Instance.GetSingleLineInput, _manager));
                 }
                 else if (prop.GetCustomAttributes(typeof(AutoMultiLineString), false).Any())
                 {
                     retList.Add(
-                        new AutoSetSingleLinePropertyAction(prop, _obj, GuiManager.Instance.GetMultiLineInput));
+                        new AutoSetSingleLinePropertyAction(prop, _obj, GuiManager.Instance.GetMultiLineInput, _manager));
                 }
             }
 

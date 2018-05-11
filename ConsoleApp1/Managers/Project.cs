@@ -3,12 +3,15 @@ using System.IO;
 
 namespace ConsoleApp1.BuiltInActions
 {
-    internal class Project
+    internal class Project : ICreatable
     {
         public string Name { get; private set; }
         private string _folder;
         private string _password;
         private ProjectSettingsClass _settings;
+        public string EditChoiceText => Name;
+        public string CreateChoiceText => "Create New Project";
+        public string DeleteChoiceText => "Delete Projects";
 
         public Project(string name, string folder, string password)
         {
@@ -42,5 +45,16 @@ namespace ConsoleApp1.BuiltInActions
         {
             return DateTime.Now.ToFileTimeUtc().ToString();
         }
+
+        public void Delete()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Save()
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }
