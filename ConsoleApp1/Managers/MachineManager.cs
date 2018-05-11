@@ -47,7 +47,13 @@ namespace ConsoleApp1.BuiltInActions
         public string GetSshCommandLineString()
         {
             var str =
-                $"\"{_sshLocation}\" \"-i\" \"{PutSshKeyInTempLocation()}\" " +
+                $"\"{_sshLocation}\" " + GetSshCommandLineArgs();
+            return str;
+        }
+
+        public string GetSshCommandLineArgs()
+        {
+            var str = $"\"-i\" \"{PutSshKeyInTempLocation()}\" " +
                 $"\"{CurrentMachine.SshUserName}@{GetIpOrDomain()}\"";
             return str;
         }

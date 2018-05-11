@@ -17,11 +17,13 @@ namespace ConsoleApp1
 
         [DataMember] public NotesManager NotesManager { get; private set; }
         [DataMember] public TargetManager TargetManager { get; private set; }
+        [DataMember] public PortManager PortManager { get; private set; }
 
         private ProjectSettingsClass()
         {
             NotesManager = new NotesManager();
             TargetManager = new TargetManager();
+            PortManager = new PortManager();
         }
 
         public static ProjectSettingsClass Load(string folderName, string password)
@@ -65,6 +67,8 @@ namespace ConsoleApp1
             NotesManager.Instance = Instance.NotesManager ?? new NotesManager();
             TargetManager.Instance = Instance.TargetManager ?? new TargetManager();
             TargetManager.Instance.Settings = Instance;
+            PortManager.Instance = Instance.PortManager ?? new PortManager();
+            PortManager.Instance.Settings = Instance;
 
             return Instance;
         }

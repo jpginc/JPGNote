@@ -15,18 +15,19 @@ namespace ConsoleApp1.BuiltInActions
 
         public override IEnumerable<ITreeViewChoice> GetActions()
         {
-            var c = new List<ITreeViewChoice>
+            var a = new List<ITreeViewChoice>
             {
                 new NewNoteChoice(),
                 new OpenLoggedSshSessionChoice(_project),
                 new ExitChoice(),
-                new DeleteNotesAction()
+                new DeleteNotesAction(),
+                new ChoiceToActionProvider(new SelectCommandToRunMenu(_project), "Run Command")
             };
 
-            var a = new ManageableCreatable(TargetManager.Instance).GetActions();
-            //var targets = TargetManager.Instance.Creatables.Select(t => new AutoAction(t, TargetManager.Instance));
-            //var a = targets.Concat(manageTargets);
-            return c.Concat(a.Concat(NotesManager.Instance.GetNoteChoices()));
+            var b = new ManageableCreatable(TargetManager.Instance).GetActions();
+            var c = NotesManager.Instance.GetNoteChoices();
+            var d = new ManageableCreatable(PortManager.Instance).GetActions();
+            return a.Concat(b.Concat(c.Concat(d)));
         }
     }
 }
