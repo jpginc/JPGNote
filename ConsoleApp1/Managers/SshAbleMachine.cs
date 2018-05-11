@@ -6,7 +6,7 @@ namespace ConsoleApp1.BuiltInActions
 {
 
     [DataContract]
-    public class SshAbleMachine
+    public class SshAbleMachine : ICreatable
     {
         [AutoSingleLineString, DataMember] public string MacAddress { get; set; } = "";
 
@@ -20,5 +20,7 @@ namespace ConsoleApp1.BuiltInActions
 
         [AutoSingleLineString, DataMember] public string Name { get; set; } = "";
         [AutoSingleLineString, DataMember] public string SshUserName { get; set; } = "";
+        [IgnoreDataMember]
+        public string EditChoiceText => Name;
     }
 }

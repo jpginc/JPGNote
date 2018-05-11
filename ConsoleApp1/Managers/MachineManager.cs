@@ -8,15 +8,19 @@ using System.Threading;
 namespace ConsoleApp1.BuiltInActions
 {
     [DataContract]
-    internal class MachineManager
+    [KnownType(typeof(SshAbleMachine))]
+    internal class MachineManager : IManager
     {
+        [IgnoreDataMember]
         private static readonly string _sshLocation = "C:\\Program Files\\Git\\usr\\bin\\ssh.exe";
-
+        [IgnoreDataMember] public string ManageText => "Manage Machines";
+        [IgnoreDataMember] public string CreateChoiceText => "Create Machine";
+        [IgnoreDataMember] public string DeleteChoiceText => "Delete Machines";
+        [DataMember] public List<ICreatable> Creatables { get; set; } = new List<ICreatable>();
         [IgnoreDataMember] public static MachineManager Instance { get; set; } = new MachineManager();
 
-        [DataMember] public List<SshAbleMachine> sshAbleMachines { get; set; } = new List<SshAbleMachine>();
 
-        [IgnoreDataMember] private SshAbleMachine CurrentMachine => sshAbleMachines.First();
+        [IgnoreDataMember] private SshAbleMachine CurrentMachine => (SshAbleMachine) Creatables.First();
 
         public void ManageMachines()
         {
@@ -25,7 +29,7 @@ namespace ConsoleApp1.BuiltInActions
 
         public IEnumerable<ITreeViewChoice> GetMachineChoices()
         {
-            return sshAbleMachines.Select(m => new MachineChoice(m));
+            return Creatables.Select(m => new AutoAction(m, this));
         }
 
         public void CreateNewMachine(UserActionResult obj)
@@ -33,10 +37,10 @@ namespace ConsoleApp1.BuiltInActions
             var machineName = GuiManager.Instance.GetNonEmptySingleLineInput("Set Machine Name");
             if (machineName.ResponseType == UserActionResult.ResultType.Accept)
             {
-                var machine = new SshAbleMachine {Name = machineName.Result};
-                sshAbleMachines.Add(machine);
+                SshAbleMachine machine = new SshAbleMachine {Name = machineName.Result};
+                Creatables.Add(machine);
                 ProgramSettingsClass.Instance.Save();
-                JpgActionManager.PushActionContext(new AutoMenu(machine));
+                JpgActionManager.PushActionContext(new AutoMenu(machine, this));
             }
         }
 
@@ -66,5 +70,18 @@ namespace ConsoleApp1.BuiltInActions
         {
             File.Delete((string)tempFile);
         }
+
+        public void Save()
+        {
+            ProgramSettingsClass.Instance.Save();
+        }
+
+        public void Delete(ICreatable creatable)
+        {
+            Creatables.Remove(creatable);
+            Save();
+        }
+
+        public void New(UserActionResult obj) => CreateNewMachine(obj);
     }
 }
