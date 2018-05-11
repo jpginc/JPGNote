@@ -5,15 +5,13 @@ namespace ConsoleApp1.BuiltInActions
     [DataContract]
     internal class UserAction : ICreatable
     {
-        public UserAction()
-        {
+        [DataMember] [AutoSingleLineString] public string Name { get; set; } = "";
 
-        }
+        [DataMember]
+        [AutoSingleLineString]
+        [Wizard]
+        public string Command { get; set; } = "";
 
-        [DataMember, AutoSingleLineString]
-        public string Name { get; set; }
-
-        [IgnoreDataMember]
-        public string EditChoiceText => Name;
+        [IgnoreDataMember] public string EditChoiceText => Name;
     }
 }
