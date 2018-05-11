@@ -7,7 +7,7 @@ namespace ConsoleApp1.BuiltInActions
 {
     [DataContract]
     [KnownType(typeof(Target))]
-    internal class TargetManager : IManager
+    internal class TargetManager : IManagerAndActionProvider
     {
         [IgnoreDataMember] public ProjectSettingsClass Settings;
 
@@ -40,8 +40,24 @@ namespace ConsoleApp1.BuiltInActions
             if (CreatableWizard.GetRequiredFields(target))
             {
                 Creatables.Add(target);
+                Save();
             }
         }
+
+        public InputType InputType => InputType.Multi;
+        public IEnumerable<ITreeViewChoice> GetActions()
+        {
+            return Creatables.Select(c => new AutoAction(c, this));
+        }
+
+        public ActionProviderResult HandleUserAction(UserActionResult res)
+        {
+            return ActionProviderResult.PassToTreeViewChoices;
+        }
+    }
+
+    internal interface IManagerAndActionProvider : IActionProvider , IManager
+    {
     }
 
     internal static class CreatableWizard

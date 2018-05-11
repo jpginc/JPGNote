@@ -2,7 +2,7 @@
 
 namespace ConsoleApp1.BuiltInActions
 {
-    public interface IManager
+    public interface IManager 
     {
         string ManageText { get; }
         string CreateChoiceText { get; }

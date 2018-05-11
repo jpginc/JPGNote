@@ -5,29 +5,11 @@ namespace ConsoleApp1.BuiltInActions
 {
     internal class ManageableCreatable : IActionProvider
     {
-        private readonly IManager _manager;
+        private readonly IManagerAndActionProvider _manager;
 
-        public ManageableCreatable(IManager manager)
+        public ManageableCreatable(IManagerAndActionProvider manager)
         {
             _manager = manager;
-        }
-
-        public string SortByText => _manager.ManageText;
-        public string Text => _manager.ManageText;
-        public bool OnTreeViewSelectCallback(JpgTreeView jpgTreeView)
-        {
-            return true;
-        }
-
-        public bool OnAcceptCallback(UserActionResult choice)
-        {
-            JpgActionManager.PushActionContext(this);
-            return true;
-        }
-
-        public bool OnSaveCallback(UserActionResult choice)
-        {
-            return true;
         }
 
         public InputType InputType => InputType.Single;
@@ -36,7 +18,7 @@ namespace ConsoleApp1.BuiltInActions
             //not quite right, i need to have a choice that will then set the context to an auto menu
             var a = new List<ITreeViewChoice>
             {
-                new AutoManage(_manager),
+                new ChoiceToActionProvider(_manager, _manager.ManageText),
                 new AutoCreateCreatable(_manager),
                 new ChoiceToActionProvider(new AutoDeleteMenu(_manager), _manager.DeleteChoiceText)
             };
@@ -53,9 +35,9 @@ namespace ConsoleApp1.BuiltInActions
 
     internal class ChoiceToActionProvider : SimpleTreeViewChoice
     {
-        private readonly AutoDeleteMenu _autoDeleteMenu;
+        private readonly IActionProvider _autoDeleteMenu;
 
-        public ChoiceToActionProvider(AutoDeleteMenu autoDeleteMenu, string text) : base(text)
+        public ChoiceToActionProvider(IActionProvider autoDeleteMenu, string text) : base(text)
         {
             _autoDeleteMenu = autoDeleteMenu;
             AcceptHandler = SetContext;
@@ -84,7 +66,6 @@ namespace ConsoleApp1.BuiltInActions
 
         public ActionProviderResult HandleUserAction(UserActionResult choice)
         {
-            //todo can't be both 
             if (choice.Result == UserActionResult.ResultType.Accept && choice.UserChoices.Count() != 0)
             {
                 if (UserNotifier.Confirm(
@@ -98,23 +79,6 @@ namespace ConsoleApp1.BuiltInActions
             }
             JpgActionManager.UnrollActionContext();
             return ActionProviderResult.ProcessingFinished;
-        }
-    }
-
-    internal class AutoManage : SimpleTreeViewChoice
-    {
-        private readonly IManager _manager;
-
-        public AutoManage(IManager manager) : base(manager.ManageText)
-        {
-            _manager = manager;
-            AcceptHandler = SetContext;
-        }
-
-        private void SetContext(UserActionResult obj)
-        {
-            UserNotifier.Error("Not implemented yet!");
-            //JpgActionManager.PushActionContext(_manager);
         }
     }
 
