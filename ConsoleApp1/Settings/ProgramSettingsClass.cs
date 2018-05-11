@@ -16,7 +16,7 @@ internal class ProgramSettingsClass : ISettingsClass
     {
         ProjectManager = new ProjectManager();
         MachineManager = new MachineManager();
-        UserActionManager = new UserActionManager();
+        UserActionManager = new UserActionManager() {Settings = this};
     }
 
     [IgnoreDataMember] public static ProgramSettingsClass Instance { get; set; }
@@ -52,24 +52,10 @@ internal class ProgramSettingsClass : ISettingsClass
             file?.Close();
         }
 
-        if (Instance.ProjectManager == null)
-        {
-            Instance.ProjectManager = new ProjectManager();
-        }
-
-        if (Instance.MachineManager == null)
-            {
-            Instance.MachineManager = new MachineManager();
-        }
-
-        if (Instance.UserActionManager == null)
-        {
-            Instance.UserActionManager = new UserActionManager();
-        }
-
-        ProjectManager.Instance = Instance.ProjectManager;
-        MachineManager.Instance = Instance.MachineManager;
-        UserActionManager.Instance = Instance.UserActionManager;
+        ProjectManager.Instance = Instance.ProjectManager ?? new ProjectManager();
+        MachineManager.Instance = Instance.MachineManager ?? new MachineManager();
+        UserActionManager.Instance = Instance.UserActionManager ?? new UserActionManager();
+        UserActionManager.Instance.Settings = Instance;
 
         return Instance;
     }

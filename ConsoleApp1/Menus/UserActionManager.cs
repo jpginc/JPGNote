@@ -6,11 +6,12 @@ namespace ConsoleApp1.BuiltInActions
 {
     [DataContract]
     [KnownType(typeof(UserAction))]
-    internal class UserActionManager : IManager
+    internal class UserActionManager : Manager
     {
-        [IgnoreDataMember]
-        public static UserActionManager Instance { get; set; } = new UserActionManager();
-        [DataMember] public List<ICreatable> Creatables { get; set; } = new List<ICreatable>();
+        [IgnoreDataMember] public static UserActionManager Instance { get; set; }
+        [IgnoreDataMember] public override string ManageText => "Manage Actions";
+        [IgnoreDataMember] public override string CreateChoiceText => "Create New Action";
+        [IgnoreDataMember] public override string DeleteChoiceText => "Delete Actions";
 
         public void ManageUserActions()
         {
@@ -19,7 +20,7 @@ namespace ConsoleApp1.BuiltInActions
 
         public IEnumerable<ITreeViewChoice> GetUserActionChoices()
         {
-            return Creatables.Select(u=> new AutoAction(u,this));
+            return Creatables.Select(u => new AutoAction(u, this));
         }
 
         public void CreateNewUserAction(UserActionResult obj)
@@ -28,28 +29,16 @@ namespace ConsoleApp1.BuiltInActions
             var actionName = GuiManager.Instance.GetNonEmptySingleLineInput("Set Action Name");
             if (actionName.ResponseType == UserActionResult.ResultType.Accept)
             {
-                var userAction = new UserAction() {Name = actionName.Result};
+                var userAction = new UserAction {Name = actionName.Result};
                 Creatables.Add(userAction);
-                ProgramSettingsClass.Instance.Save();
+                Settings.Save();
                 JpgActionManager.PushActionContext(new AutoMenu(userAction, this));
             }
         }
 
-        [IgnoreDataMember] public string ManageText => "Manage Actions";
-        [IgnoreDataMember] public string CreateChoiceText => "Create New Action";
-        [IgnoreDataMember]
-        public string DeleteChoiceText => "Delete Actions";
-        public void Save()
+        public override void New(UserActionResult obj)
         {
-            ProgramSettingsClass.Instance.Save();
+            CreateNewUserAction(obj);
         }
-
-        public void Delete(ICreatable creatable)
-        {
-            Creatables.Remove(creatable);
-            Save();
-        }
-
-        public void New(UserActionResult obj) => CreateNewUserAction(obj);
     }
 }

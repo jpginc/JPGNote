@@ -3,29 +3,28 @@ using System.Runtime.Serialization;
 
 namespace ConsoleApp1.BuiltInActions
 {
+    [DataContract]
+    [KnownType(typeof(SshAbleMachine))]
+    [KnownType(typeof(Target))]
+    [KnownType(typeof(UserAction))]
     internal abstract class Manager : IManager
     {
         public abstract string ManageText { get; }
         public abstract string CreateChoiceText { get; }
         public abstract string DeleteChoiceText { get; }
-        public abstract List<ICreatable> Creatables { get; set; }
-        private readonly ISettingsClass _settings;
-
-        public Manager(ISettingsClass settings)
-        {
-            _settings = settings;
-        }
-
+        [DataMember]
+        public List<ICreatable> Creatables { get; set; } = new List<ICreatable>();
+        public ISettingsClass Settings { get; set; }
 
         public void Save()
         {
-            _settings.Save();
+            Settings.Save();
         }
 
         public void Delete(ICreatable creatable)
         {
             Creatables.Remove(creatable);
-            _settings.Save();
+            Settings.Save();
         }
 
         public abstract void New(UserActionResult obj);
