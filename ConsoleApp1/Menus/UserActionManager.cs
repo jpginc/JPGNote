@@ -25,13 +25,11 @@ namespace ConsoleApp1.BuiltInActions
 
         public void CreateNewUserAction(UserActionResult obj)
         {
-            //todo wizard
-            var actionName = GuiManager.Instance.GetNonEmptySingleLineInput("Set Action Name");
-            if (actionName.ResponseType == UserActionResult.ResultType.Accept)
+            var userAction = new UserAction();
+            if (CreatableWizard.GetRequiredFields(userAction))
             {
-                var userAction = new UserAction {Name = actionName.Result};
                 Creatables.Add(userAction);
-                Settings.Save();
+                Save();
                 JpgActionManager.PushActionContext(new AutoMenu(userAction, this));
             }
         }
