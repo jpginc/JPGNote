@@ -14,7 +14,7 @@ namespace ConsoleApp1.BuiltInActions
             _loggedCommand = loggedCommand;
         }
 
-        public InputType InputType => InputType.Single;
+        public InputType InputType => InputType.Multi;
         public IEnumerable<ITreeViewChoice> GetActions()
         {
             var targets = TargetManager.Instance.GetActions();

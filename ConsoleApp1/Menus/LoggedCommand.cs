@@ -20,23 +20,46 @@ namespace ConsoleApp1.BuiltInActions
 
         public bool Run()
         {
-            var commandString = CreateCommandString();
-            CommandManager.Instance.RunCommand(commandString, _project, _userAction);
+            if (NeedsTarget() && NeedsPort())
+            {
+                foreach (var target in _targets)
+                {
+                    foreach (var port in _ports)
+                    {
+                        var commandString = CreateCommandString(target.IpOrDomain, port.PortNumber);
+                        CommandManager.Instance.RunCommand(commandString, _project, _userAction);
+                    }
+                }
+
+            } else if (NeedsPort())
+            {
+                foreach (var port in _ports)
+                {
+                    var commandString = CreateCommandString("", port.PortNumber);
+                    CommandManager.Instance.RunCommand(commandString, _project, _userAction);
+                }
+            } else if (NeedsTarget())
+            {
+                foreach (var target in _targets)
+                {
+                    var commandString = CreateCommandString(target.IpOrDomain, "");
+                    CommandManager.Instance.RunCommand(commandString, _project, _userAction);
+                }
+            }
+            else
+            {
+                var commandString = CreateCommandString("", "");
+                CommandManager.Instance.RunCommand(commandString, _project, _userAction);
+            }
+
             return true;
         }
 
-        private string CreateCommandString()
+        private string CreateCommandString(string target, string port)
         {
             var command = _userAction.Command;
-            if (NeedsPort())
-            {
-                command = command.Replace(portMarker, _ports.First().PortNumber);
-            }
-
-            if (NeedsTarget())
-            {
-                command = command.Replace(targetMarker, _targets.First().IpOrDomain);
-            }
+            command = command.Replace(portMarker, port);
+            command = command.Replace(targetMarker, target);
             return command;
         }
 
