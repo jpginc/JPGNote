@@ -47,16 +47,17 @@ namespace ConsoleApp1.BuiltInActions
             p.Start();
         }
 
-        public void RunCommand(string commandString, Project project, UserAction userAction, string target)
+        public void RunCommand(string commandString, Project project, 
+            UserAction userAction, string target, Port port)
         {
             var logLocation = project.GetLogFileFullLocation(userAction, target);
 
             var args = MachineManager.Instance.GetSshCommandLineArgs() + $" \"{commandString}\"";
-            RunExeToFile(_sshLocation, args, logLocation, userAction, target);
+            RunExeToFile(_sshLocation, args, logLocation, userAction, target, port);
         }
 
         private void RunExeToFile(string exeFileName, string args, string logLocation, UserAction userAction,
-            string target)
+            string target, Port port)
         {
             new Thread(() =>
             {
@@ -104,6 +105,10 @@ namespace ConsoleApp1.BuiltInActions
                 //file.Write(Encoding.UTF8.GetBytes(remaining), 0, remaining.Length);
                 //file.Close();
                 p.Close();
+                if (port != null)
+                {
+                    port.Notes += "\n" + output;
+                }
                 ParseOutput(logLocation, userAction, target);
             }).Start();
         }

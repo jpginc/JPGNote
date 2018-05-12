@@ -25,20 +25,20 @@ namespace ConsoleApp1.BuiltInActions
                 foreach (var port in _ports)
                 {
                     var commandString = CreateCommandString(port.Target, port.PortNumber);
-                    CommandManager.Instance.RunCommand(commandString, _project, _userAction, port.Target);
+                    CommandManager.Instance.RunCommand(commandString, _project, _userAction, port.Target, port);
                 }
             } else if (NeedsTarget())
             {
                 foreach (var target in _targets)
                 {
                     var commandString = CreateCommandString(target.IpOrDomain, "");
-                    CommandManager.Instance.RunCommand(commandString, _project, _userAction, target.IpOrDomain);
+                    CommandManager.Instance.RunCommand(commandString, _project, _userAction, target.IpOrDomain, null);
                 }
             }
             else
             {
                 var commandString = CreateCommandString("", "");
-                CommandManager.Instance.RunCommand(commandString, _project, _userAction, "");
+                CommandManager.Instance.RunCommand(commandString, _project, _userAction, "", null);
             }
 
             JpgActionManager.UnrollActionContext();
