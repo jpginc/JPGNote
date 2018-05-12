@@ -41,6 +41,7 @@ namespace ConsoleApp1.BuiltInActions
                 CommandManager.Instance.RunCommand(commandString, _project, _userAction, "");
             }
 
+            JpgActionManager.UnrollActionContext();
             return true;
         }
 
