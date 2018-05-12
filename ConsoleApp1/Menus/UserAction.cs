@@ -15,6 +15,8 @@ namespace ConsoleApp1.BuiltInActions
         [Wizard]
         public string Command { get; set; } = "";
 
+        [DataMember] [AutoFilePicker] public string ParsingCodeLocation { get; set; } = "";
+
         [IgnoreDataMember] public string EditChoiceText => Name;
     }
 }

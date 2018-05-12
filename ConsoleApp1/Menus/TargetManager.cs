@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
@@ -58,42 +57,6 @@ namespace ConsoleApp1.BuiltInActions
 
     internal interface IManagerAndActionProvider : IActionProvider , IManager
     {
-    }
-
-    internal static class CreatableWizard
-    {
-        public static bool GetRequiredFields(ICreatable obj)
-        {
-            foreach (var prop in obj.GetType().GetProperties())
-            {
-                if (prop.GetCustomAttributes(typeof(Wizard), false).Any())
-                {
-                    Func<CancellableObj<string>> inputFunc = null;
-                    var prompt = "Enter value for " + prop.Name;
-                    if (prop.GetCustomAttributes(typeof(AutoSingleLineString), false).Any())
-                    {
-                        inputFunc = () => GuiManager.Instance.GetSingleLineInput(prompt, "");
-                    }
-                    else if (prop.GetCustomAttributes(typeof(AutoMultiLineString), false).Any())
-                    {
-                        inputFunc = () => GuiManager.Instance.GetMultiLineInput(prompt, "");
-                    }
-                    else if (prop.GetCustomAttributes(typeof(AutoFolderPickerAttribute), false).Any())
-                    {
-                        inputFunc = () => GuiManager.Instance.GetFolder(prompt);
-                    }
-
-                    CancellableObj<string> result = inputFunc.Invoke();
-                    if (result.ResponseType == UserActionResult.ResultType.Canceled)
-                    {
-                        return false;
-                    }
-
-                    prop.SetValue(obj, result.Result);
-                }
-            }
-            return true;
-        }
     }
 
     [DataContract]

@@ -7,11 +7,11 @@ namespace ConsoleApp1.BuiltInActions
     {
         private readonly PropertyInfo _property;
         private readonly ICreatable _obj;
-        private Func<string, string, CancellableObj<string>> _getInputFunction;
+        private readonly Func<CancellableObj<string>> _getInputFunction;
         private readonly IManager _manager;
 
         public AutoSetSingleLinePropertyAction(PropertyInfo property, ICreatable obj,
-            Func<string, string, CancellableObj<string>> getSingleLineInput, IManager manager) 
+            Func<CancellableObj<string>> getSingleLineInput, IManager manager) 
             : base("Set " + property.Name)
         {
             _property = property;
@@ -29,8 +29,7 @@ namespace ConsoleApp1.BuiltInActions
 
         private void Set(UserActionResult obj)
         {
-            var newValue = _getInputFunction("Set New Value", 
-                ((string)_property.GetValue(_obj)) ?? "");
+            var newValue = _getInputFunction.Invoke();
             if (newValue.ResponseType == UserActionResult.ResultType.Accept)
             {
                 _property.SetValue(_obj, newValue.Result);

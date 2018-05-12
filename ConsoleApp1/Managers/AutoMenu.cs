@@ -4,7 +4,8 @@ using System.Linq;
 
 namespace ConsoleApp1.BuiltInActions
 {
-    internal class AutoFolderPickerAttribute : Attribute { }
+    internal class AutoFolderPicker : Attribute { }
+    internal class AutoFilePicker : Attribute { }
     public class AutoSingleLineString : Attribute { }
     public class Wizard : Attribute { }
     public class AutoMultiLineString : Attribute { }
@@ -24,20 +25,10 @@ namespace ConsoleApp1.BuiltInActions
             var retList = new List<ITreeViewChoice>();
             foreach (var prop in _obj.GetType().GetProperties())
             {
-                if (prop.PropertyType != typeof(string))
+                Func<CancellableObj<string>> setValueFunction = CreatableWizard.GetInputFunction(prop, "Set " + prop.Name);
+                if (setValueFunction != null)
                 {
-                    continue;
-                }
-
-                if (prop.GetCustomAttributes(typeof(AutoSingleLineString), false).Any())
-                {
-                    retList.Add(
-                        new AutoSetSingleLinePropertyAction(prop, _obj, GuiManager.Instance.GetSingleLineInput, _manager));
-                }
-                else if (prop.GetCustomAttributes(typeof(AutoMultiLineString), false).Any())
-                {
-                    retList.Add(
-                        new AutoSetSingleLinePropertyAction(prop, _obj, GuiManager.Instance.GetMultiLineInput, _manager));
+                    retList.Add(new AutoSetSingleLinePropertyAction(prop, _obj, setValueFunction, _manager));
                 }
             }
 

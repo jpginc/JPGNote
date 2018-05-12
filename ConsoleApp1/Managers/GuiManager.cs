@@ -181,5 +181,22 @@ namespace ConsoleApp1
             _gui.UserActionCallback = AcceptCallback;
             GetChoice(false, jpgActionManager.GetActions(), prompt, false);
         }
+
+        public CancellableObj<string> GetFile(string prompt)
+        {
+             var retVal = new CancellableObj<string> {ResponseType = UserActionResult.ResultType.Canceled};
+            var filechooser = new FileChooserDialog(prompt,
+                MainWindow.Instance, FileChooserAction.Open, "Cancel", ResponseType.Cancel,
+                "Open", ResponseType.Accept);
+
+            if (filechooser.Run() == (int) ResponseType.Accept)
+            {
+                retVal.ResponseType = UserActionResult.ResultType.Accept;
+                retVal.Result = filechooser.Filename;
+            }
+
+            filechooser.Destroy();
+            return retVal;
+        }
     }
 }
