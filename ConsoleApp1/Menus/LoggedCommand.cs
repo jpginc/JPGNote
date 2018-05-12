@@ -21,7 +21,7 @@ namespace ConsoleApp1.BuiltInActions
         public bool Run()
         {
             var commandString = CreateCommandString();
-            CommandManager.Instance.RunCommand(commandString, _project);
+            CommandManager.Instance.RunCommand(commandString, _project, _userAction);
             return true;
         }
 

@@ -29,7 +29,10 @@ namespace ConsoleApp1.BuiltInActions
 
         public void Delete(ICreatable creatable)
         {
-            Creatables.Remove(creatable);
+            lock (Creatables)
+            {
+                Creatables.Remove(creatable);
+            }
             Save();
         }
 
@@ -38,8 +41,12 @@ namespace ConsoleApp1.BuiltInActions
             var target = new Target();
             if (CreatableWizard.GetRequiredFields(target))
             {
-                Creatables.Add(target);
-                Save();
+                lock (Creatables)
+                {
+                    Creatables.Add(target);
+                    Save();
+                }
+
             }
         }
 
