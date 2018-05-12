@@ -33,7 +33,20 @@ namespace ConsoleApp1
             HeadersVisible = false;
             RemoveDefaultSearchPopup();
             SetupVisibleColumn();
+            //SetupTheSortingColumn();
             SetupClickHandler();
+        }
+
+        private void SetupTheSortingColumn()
+        {
+            var sortingColumn = new TreeViewColumn
+            {
+                SortColumnId = (int) Column.SortValue
+            };
+            AppendColumn(sortingColumn);
+            var sortColumnRenderer = new CellRendererText();
+            sortingColumn.PackStart(sortColumnRenderer, false);
+            sortingColumn.AddAttribute(sortColumnRenderer, "text", (int) Column.SortValue);
         }
 
         private void SetupClickHandler()
@@ -48,7 +61,7 @@ namespace ConsoleApp1
             AppendColumn(valueColumn);
             var visisbleColumnTextRenderer = new CellRendererText();
             valueColumn.PackStart(visisbleColumnTextRenderer, true);
-            valueColumn.AddAttribute(visisbleColumnTextRenderer, "text", (int)Column.Text);
+            valueColumn.AddAttribute(visisbleColumnTextRenderer, "text", (int) Column.Text);
             SetupSortingFunction();
         }
 
@@ -60,11 +73,11 @@ namespace ConsoleApp1
         private void SetupSortingFunction()
         {
             _sortedModel = new TreeModelSort(_store);
-            _sortedModel.SetSortColumnId((int)Column.SortValue, SortType.Descending);
-            _sortedModel.SetSortFunc((int)Column.SortValue, (model, a, b) =>
+            _sortedModel.SetSortColumnId((int) Column.SortValue, SortType.Descending);
+            _sortedModel.SetSortFunc((int) Column.SortValue, (model, a, b) =>
             {
-                var aval = (int)model.GetValue(a, (int)Column.SortValue);
-                var bval = (int)model.GetValue(b, (int)Column.SortValue);
+                var aval = (int) model.GetValue(a, (int) Column.SortValue);
+                var bval = (int) model.GetValue(b, (int) Column.SortValue);
                 return aval.CompareTo(bval);
             });
             Model = _sortedModel;
@@ -75,10 +88,11 @@ namespace ConsoleApp1
             return (ITreeViewChoice) _sortedModel.GetValue(item, (int) Column.Value);
         }
 
-        private bool CheckForDoubleClickOrDoubleReturn(TreeIter item)
+        private bool CheckForDoubleClickOrDoubleReturn(TreeIter sortedRow)
         {
-            var clickedItem = GetSortedRowValue(item);
-            var isDoubleClick = (DateTime.Now - _lastClick).Milliseconds < DoubleClickInterval && Equals(_lastClickedItem, clickedItem);
+            var clickedItem = GetSortedRowValue(sortedRow);
+            var isDoubleClick = (DateTime.Now - _lastClick).Milliseconds < DoubleClickInterval
+                                && Equals(_lastClickedItem, clickedItem);
             _lastClick = DateTime.Now;
             _lastClickedItem = clickedItem;
             return isDoubleClick;
@@ -89,23 +103,22 @@ namespace ConsoleApp1
             _sortedModel.GetIter(out var clickedRow, args.Path);
             if (CheckForDoubleClickOrDoubleReturn(clickedRow))
             {
-                SetSelected(clickedRow, true);
+                SelectSortedRow(clickedRow, true);
                 MainWindow.Instance.Accept();
             }
             else
             {
-                Console.WriteLine("Clicked");
-                SetSelected(clickedRow, true);
+                SelectSortedRow(clickedRow, true);
                 _search.GrabFocusWithoutSelecting();
             }
         }
 
-        private void SetSelected(TreeIter item, bool selected)
+        private void SelectSortedRow(TreeIter item, bool selected)
         {
             if (selected)
             {
                 Selection.SelectIter(item);
-                NotifyOfSelect(item);
+                NotifyOfSortedRowSelect(item);
             }
             else
             {
@@ -114,53 +127,55 @@ namespace ConsoleApp1
         }
 
 
-        private void ToggleSelect(TreeIter item)
+        private void ToggleSelectSortedRow(TreeIter sortedRow)
         {
-            SetSelected(item, !Selection.IterIsSelected(item));
+            SelectSortedRow(sortedRow, !Selection.IterIsSelected(sortedRow));
         }
 
 
         public JpgTreeView SetChoices(IEnumerable<ITreeViewChoice> choices)
         {
-            Console.WriteLine("setting a new choice list");
             _store.Clear();
-            foreach (var choice in choices)
-            {
-                _store.AppendValues(choice.Text, 0, choice);
-            }
+            foreach (var choice in choices) _store.AppendValues(choice.Text, 0, choice);
 
             return this;
         }
 
         public JpgTreeView HandleSearchReturnKey()
         {
-            var item = GetSortedFirstRowItem();
-            //_sortedModel.GetIterFirst(out var item);
-            Console.WriteLine("return key give me " + GetSortedRowValue(item)?.Text);
-            if (CheckForDoubleClickOrDoubleReturn(item))
+            var sortedFirstRow = GetSortedFirstRow();
+            //Console.WriteLine("return key give me " + GetSortedRowValue(sortedFirstRow)?.Text);
+            if (CheckForDoubleClickOrDoubleReturn(sortedFirstRow))
             {
-                SetSelected(item, true);
+                SelectSortedRow(sortedFirstRow, true);
                 MainWindow.Instance.Accept();
             }
             else
             {
-                ToggleSelect(item);
+                ToggleSelectSortedRow(sortedFirstRow);
             }
 
             return this;
         }
 
-        private TreeIter GetSortedFirstRowItem()
+        private TreeIter GetSortedFirstRow()
         {
             var x = _sortedModel.GetIterFirst(out var iter);
-            Console.WriteLine("GetIterFirst returened " + x);
-
+            //Console.WriteLine("GetIterFirst returened " + x);
             return iter;
         }
 
-        private void NotifyOfSelect(TreeIter item)
+        private TreeIter GetUnsortedFirstRow()
         {
-            GetSortedRowValue(item)?.OnTreeViewSelectCallback(this);
+            var x = _store.GetIterFirst(out var iter);
+            //Console.WriteLine("GetIterFirst returened " + x);
+            return iter;
+        }
+
+
+        private void NotifyOfSortedRowSelect(TreeIter sortedRow)
+        {
+            GetSortedRowValue(sortedRow)?.OnTreeViewSelectCallback(this);
         }
 
         public IEnumerable<ITreeViewChoice> GetSelectedItems()
@@ -176,59 +191,53 @@ namespace ConsoleApp1
 
         public void UpdateOrder(string searchText)
         {
-            _store.GetIterFirst(out var iter);
-            var temp = GetSortedRowValue(iter);
-            Console.WriteLine("the first item i'm updating is " + temp?.Text);
+            var unsortedRow = GetUnsortedFirstRow();
+            //var temp = GetSortedRowValue(unsortedRow);
+            //Console.WriteLine("the first sortedRow i'm updating is " + temp?.Text);
             for (var i = 0; i < _store.IterNChildren(); i++)
             {
-                ITreeViewChoice item = GetValueFromStoreIter(iter);
-                _store.SetValue(iter, (int) Column.SortValue, JoshSort.GetJoshScore(item.Text, searchText));
-                _store.IterNext(ref iter);
+                var item = GetValueFromUnsortedRow(unsortedRow);
+                _store.SetValue(unsortedRow, (int) Column.SortValue, JoshSort.GetJoshScore(item.Text, searchText));
+                _store.IterNext(ref unsortedRow);
             }
         }
 
-        private ITreeViewChoice GetValueFromStoreIter(TreeIter item)
+        private ITreeViewChoice GetValueFromUnsortedRow(TreeIter item)
         {
             return (ITreeViewChoice) _store.GetValue(item, (int) Column.Value);
         }
 
-        private IEnumerable<SortableRowWithValue> GetAllItemsWrappedWithTheRow()
-        {
-            var retVal = new List<SortableRowWithValue>();
-            _sortedModel.GetIterFirst(out var iter);
-            for (var i = 0; i < _sortedModel.IterNChildren(); i++)
-            {
-                retVal.Add(new SortableRowWithValue(iter, GetSortedRowValue(iter)));
-                _sortedModel.IterNext(ref iter);
-            }
-
-            return retVal;
-        }
-
         public void RotateItems(bool forwardDirection)
         {
-            Console.WriteLine("trying to rotate");
-            var first = GetSortedFirstRowItem();
-            var last = GetLastRow();
-            //if (forwardDirection)
-            //{
-                int firstVal = (int) _sortedModel.GetValue(first, (int) Column.SortValue);
-                Console.WriteLine("First value is " + firstVal);
-                Console.WriteLine("the iter is valid? " + _sortedModel.IterIsValid(last));
-                Console.WriteLine("the iter is valid? " + _store.IterIsValid(last));
-                _store.SetValue(last, (int) Column.SortValue, firstVal - 1);
-            /*}
+            var firstValue = GetSortedRowValue(GetSortedFirstRow());
+            var lastValue = GetSortedRowValue(GetLastSortedRow());
+            var firstRowInStore = GetStoreRowFromValue(firstValue);
+            var lastRowInStore = GetStoreRowFromValue(lastValue);
+            if (forwardDirection)
+            {
+                var firstVal = (int) _store.GetValue(firstRowInStore, (int) Column.SortValue);
+                _store.SetValue(lastRowInStore, (int) Column.SortValue, firstVal + 1);
+            }
             else
             {
-                var lastVal = (int) _sortedModel.GetValue(last, (int) Column.SortValue);
-                Console.WriteLine("last value is " + lastVal);
-                _sortedModel.Model.SetValue(first, (int) Column.SortValue, lastVal + 1);
+                var lastVal = (int) _store.GetValue(lastRowInStore, (int) Column.SortValue);
+                _store.SetValue(firstRowInStore, (int) Column.SortValue, lastVal - 1);
             }
-            */
-
         }
 
-        private TreeIter GetLastRow()
+        private TreeIter GetStoreRowFromValue(ITreeViewChoice value)
+        {
+            _store.GetIterFirst(out var iter);
+            for (var i = 0; i < _store.IterNChildren() - 1; i++)
+            {
+                if (GetValueFromUnsortedRow(iter) == value) return iter;
+                _store.IterNext(ref iter);
+            }
+
+            return iter;
+        }
+
+        private TreeIter GetLastSortedRow()
         {
             _sortedModel.GetIterFirst(out var iter);
             for (var i = 0; i < _sortedModel.IterNChildren() - 1; i++) _sortedModel.IterNext(ref iter);
