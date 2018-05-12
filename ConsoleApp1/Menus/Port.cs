@@ -9,7 +9,6 @@ namespace ConsoleApp1.BuiltInActions
 
         [DataMember, Wizard, AutoSingleLineString]
         public string PortNumber { get; set; } = "";
-
         [DataMember, AutoSingleLineString] public string Target { get; set; } = "";
         [DataMember, AutoSingleLineString] public string Notes { get; set; } = "";
     }

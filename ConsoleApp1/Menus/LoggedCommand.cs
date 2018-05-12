@@ -20,36 +20,25 @@ namespace ConsoleApp1.BuiltInActions
 
         public bool Run()
         {
-            if (NeedsTarget() && NeedsPort())
-            {
-                foreach (var target in _targets)
-                {
-                    foreach (var port in _ports)
-                    {
-                        var commandString = CreateCommandString(target.IpOrDomain, port.PortNumber);
-                        CommandManager.Instance.RunCommand(commandString, _project, _userAction);
-                    }
-                }
-
-            } else if (NeedsPort())
+            if (NeedsPort())
             {
                 foreach (var port in _ports)
                 {
-                    var commandString = CreateCommandString("", port.PortNumber);
-                    CommandManager.Instance.RunCommand(commandString, _project, _userAction);
+                    var commandString = CreateCommandString(port.Target, port.PortNumber);
+                    CommandManager.Instance.RunCommand(commandString, _project, _userAction, port.Target);
                 }
             } else if (NeedsTarget())
             {
                 foreach (var target in _targets)
                 {
                     var commandString = CreateCommandString(target.IpOrDomain, "");
-                    CommandManager.Instance.RunCommand(commandString, _project, _userAction);
+                    CommandManager.Instance.RunCommand(commandString, _project, _userAction, target.IpOrDomain);
                 }
             }
             else
             {
                 var commandString = CreateCommandString("", "");
-                CommandManager.Instance.RunCommand(commandString, _project, _userAction);
+                CommandManager.Instance.RunCommand(commandString, _project, _userAction, "");
             }
 
             return true;
@@ -65,7 +54,7 @@ namespace ConsoleApp1.BuiltInActions
 
         public bool NeedsTarget()
         {
-            return _userAction.Command.Contains("{{TARGET}}");
+            return _userAction.Command.Contains("{{TARGET}}") && ! NeedsPort();
         }
 
         public bool NeedsPort()

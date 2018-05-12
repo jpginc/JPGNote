@@ -47,15 +47,16 @@ namespace ConsoleApp1.BuiltInActions
             p.Start();
         }
 
-        public void RunCommand(string commandString, Project project, UserAction userAction)
+        public void RunCommand(string commandString, Project project, UserAction userAction, string target)
         {
             var logLocation = project.GetLogFileFullLocation();
 
             var args = MachineManager.Instance.GetSshCommandLineArgs() + $" \"{commandString}\"";
-            RunExeToFile(_sshLocation, args, logLocation, userAction);
+            RunExeToFile(_sshLocation, args, logLocation, userAction, target);
         }
 
-        private void RunExeToFile(string exeFileName, string args, string logLocation, UserAction userAction)
+        private void RunExeToFile(string exeFileName, string args, string logLocation, UserAction userAction,
+            string target)
         {
             new Thread(() =>
             {
@@ -103,11 +104,11 @@ namespace ConsoleApp1.BuiltInActions
                 //file.Write(Encoding.UTF8.GetBytes(remaining), 0, remaining.Length);
                 //file.Close();
                 p.Close();
-                ParseOutput(logLocation, userAction);
+                ParseOutput(logLocation, userAction, target);
             }).Start();
         }
 
-        private void ParseOutput(string outputLocation, UserAction userAction)
+        private void ParseOutput(string outputLocation, UserAction userAction, string target)
         {
             if (File.Exists(userAction.ParsingCodeLocation))
             {
@@ -125,12 +126,12 @@ namespace ConsoleApp1.BuiltInActions
                 p.Start();
                 string output = p.StandardOutput.ReadToEnd();
                 p.WaitForExit();
-                ParseOutput(output);
+                ParseOutput(output, target);
                 p.Close();
             }
         }
 
-        private void ParseOutput(string output)
+        private void ParseOutput(string output, string target)
         {
             using (StringReader sr = new StringReader(output))
             {
@@ -139,20 +140,23 @@ namespace ConsoleApp1.BuiltInActions
                 {
                     if (line.Equals("Target"))
                     {
-                        var target = sr.ReadLine();
-                        if (target != null)
+                        var discoveredTarget = sr.ReadLine();
+                        if (discoveredTarget != null)
                         {
                             lock (TargetManager.Instance.Creatables)
                             {
-                                TargetManager.Instance.Creatables.Add(new Target() {IpOrDomain = target});
+                                TargetManager.Instance.Creatables.Add(new Target() {IpOrDomain = discoveredTarget});
                             }
                             TargetManager.Instance.Save();
                         }
                     } else if (line.Equals("Port"))
                     {
                         var portNumber = sr.ReadLine();
-                        var port = new Port();
-                        port.PortNumber = portNumber;
+                        var port = new Port
+                        {
+                            PortNumber = portNumber,
+                            Target = target
+                        };
                         var notes = "";
                         while(! (line = sr.ReadLine()).Equals("Done"))
                         {
