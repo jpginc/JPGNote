@@ -120,6 +120,21 @@ namespace ConsoleApp1.BuiltInActions
             Creatable = creatable;
             _manager = manager;
             AcceptHandler = SetContext;
+            SelectHandler = PreviewValues;
+        }
+
+        private void PreviewValues(JpgTreeView obj)
+        {
+            string val = "";
+            foreach (var prop in Creatable.GetType().GetProperties())
+            {
+                if (prop.PropertyType == typeof(string))
+                {
+                    val += prop.Name + ": " + (prop.GetValue(Creatable) ?? "") + "\n";
+                }
+            }
+
+            MainWindow.Instance.SetInputText(val);
         }
 
         private void SetContext(UserActionResult obj)
