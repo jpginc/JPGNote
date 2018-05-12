@@ -49,10 +49,10 @@ namespace ConsoleApp1
         public string NoteName { get; set; }
         [DataMember]
         public List<string> Tags { get; set; }
-        public LoggedNote(string fileName)
+        public LoggedNote(string fileName, string noteName)
         {
             FileName = fileName;
-            NoteName = "Logged Session " + DateTime.Now.ToLongDateString();
+            NoteName = noteName;
             CreateTime = DateTime.Now;
         }
         public int CompareTo(object obj)

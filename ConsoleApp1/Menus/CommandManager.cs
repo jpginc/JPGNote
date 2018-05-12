@@ -49,7 +49,7 @@ namespace ConsoleApp1.BuiltInActions
 
         public void RunCommand(string commandString, Project project, UserAction userAction, string target)
         {
-            var logLocation = project.GetLogFileFullLocation();
+            var logLocation = project.GetLogFileFullLocation(userAction, target);
 
             var args = MachineManager.Instance.GetSshCommandLineArgs() + $" \"{commandString}\"";
             RunExeToFile(_sshLocation, args, logLocation, userAction, target);

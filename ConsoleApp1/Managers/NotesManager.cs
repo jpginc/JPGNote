@@ -55,9 +55,9 @@ namespace ConsoleApp1
             return this;
         }
 
-        public NotesManager NewLoggedNote(string fileName)
+        public NotesManager NewLoggedNote(string fileName, string noteName)
         {
-            Notes.Add(new LoggedNote(fileName));
+            Notes.Add(new LoggedNote(fileName, noteName));
             Save();
             return this;
         }

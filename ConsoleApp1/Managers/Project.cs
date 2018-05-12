@@ -29,7 +29,7 @@ namespace ConsoleApp1.BuiltInActions
         public string GetLogFileFullLocation()
         {
             var fileName = _folder + Path.DirectorySeparatorChar + GetLogFileName();
-            _settings.NotesManager.NewLoggedNote(fileName);
+            _settings.NotesManager.NewLoggedNote(fileName, "SSH Session " + DateTime.Now.ToLocalTime());
             return fileName;
         }
 
@@ -48,5 +48,11 @@ namespace ConsoleApp1.BuiltInActions
             throw new NotImplementedException();
         }
 
+        public string GetLogFileFullLocation(UserAction userAction, string target)
+        {
+            var fileName = _folder + Path.DirectorySeparatorChar + GetLogFileName();
+            _settings.NotesManager.NewLoggedNote(fileName, userAction.Name + " " + (target ?? ""));
+            return fileName;
+        }
     }
 }
