@@ -143,10 +143,7 @@ namespace ConsoleApp1.BuiltInActions
                         var discoveredTarget = sr.ReadLine();
                         if (discoveredTarget != null)
                         {
-                            lock (TargetManager.Instance.Creatables)
-                            {
-                                TargetManager.Instance.Creatables.Add(new Target() {IpOrDomain = discoveredTarget});
-                            }
+                            TargetManager.Instance.AddPremade(new Target() {IpOrDomain = discoveredTarget});
                             TargetManager.Instance.Save();
                         }
                     } else if (line.Equals("Port"))
@@ -164,7 +161,7 @@ namespace ConsoleApp1.BuiltInActions
                         }
                         port.Notes = notes;
                         Console.WriteLine("Adding port " + port);
-                        PortManager.Instance.Creatables.Add(port);
+                        PortManager.Instance.AddPremade(port);
                         PortManager.Instance.Save();
                     }
                 }

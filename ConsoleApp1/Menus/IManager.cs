@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ConsoleApp1.BuiltInActions
 {
@@ -13,7 +14,7 @@ namespace ConsoleApp1.BuiltInActions
         void New(UserActionResult obj);
     }
 
-    public interface ICreatable
+    public interface ICreatable 
     {
         string EditChoiceText { get; }
     }

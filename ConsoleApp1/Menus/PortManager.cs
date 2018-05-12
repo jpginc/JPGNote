@@ -31,5 +31,18 @@ namespace ConsoleApp1.BuiltInActions
         {
             return ActionProviderResult.PassToTreeViewChoices;
         }
+
+        public void AddPremade(Port port)
+        {
+            var existing = Creatables.FirstOrDefault(p => ((Port)p).Equals(port));
+            if (existing == null)
+            {
+                Creatables.Add(port);
+            }
+            else
+            {
+                ((Port) existing).Notes += "\n" + port.Notes;
+            }
+        }
     }
 }

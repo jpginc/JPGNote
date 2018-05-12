@@ -60,6 +60,14 @@ namespace ConsoleApp1.BuiltInActions
         {
             return ActionProviderResult.PassToTreeViewChoices;
         }
+
+        public void AddPremade(Target target)
+        {
+            if (! Creatables.Any(p => ((Target) p).IpOrDomain.Equals(target.IpOrDomain)))
+            {
+                Creatables.Add(target);
+            }
+        }
     }
 
     internal interface IManagerAndActionProvider : IActionProvider , IManager
