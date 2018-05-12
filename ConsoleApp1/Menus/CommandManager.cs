@@ -148,6 +148,20 @@ namespace ConsoleApp1.BuiltInActions
                             }
                             TargetManager.Instance.Save();
                         }
+                    } else if (line.Equals("Port"))
+                    {
+                        var portNumber = sr.ReadLine();
+                        var port = new Port();
+                        port.PortNumber = portNumber;
+                        var notes = "";
+                        while(! (line = sr.ReadLine()).Equals("Done"))
+                        {
+                            notes += line + " ";
+                        }
+                        port.Notes = notes;
+                        Console.WriteLine("Adding port " + port);
+                        PortManager.Instance.Creatables.Add(port);
+                        PortManager.Instance.Save();
                     }
                 }
             }

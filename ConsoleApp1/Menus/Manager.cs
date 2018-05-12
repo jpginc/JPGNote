@@ -25,7 +25,11 @@ namespace ConsoleApp1.BuiltInActions
 
         public void Delete(ICreatable creatable)
         {
-            Creatables.Remove(creatable);
+            lock (Creatables)
+            {
+                Creatables.Remove(creatable);
+            }
+
             Settings.Save();
         }
 

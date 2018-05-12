@@ -6,7 +6,11 @@ namespace ConsoleApp1.BuiltInActions
     internal class Port : ICreatable
     {
         [IgnoreDataMember] public string EditChoiceText => PortNumber;
-        [DataMember, Wizard, AutoSingleLineString] public string PortNumber { get; set; }
-        [DataMember, AutoSingleLineString] public string Target { get; set; }
+
+        [DataMember, Wizard, AutoSingleLineString]
+        public string PortNumber { get; set; } = "";
+
+        [DataMember, AutoSingleLineString] public string Target { get; set; } = "";
+        [DataMember, AutoSingleLineString] public string Notes { get; set; } = "";
     }
 }
