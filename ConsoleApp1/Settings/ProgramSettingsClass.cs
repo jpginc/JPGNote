@@ -34,7 +34,7 @@ internal class ProgramSettingsClass : ISettingsClass
         {
             file = File.OpenText(_fileName);
             var s = AESThenHMAC.SimpleDecryptWithPassword(file.ReadToEnd(), _password);
-            Console.WriteLine(s);
+            //Console.WriteLine(s);
             file.Close();
             var ms = new MemoryStream(Encoding.UTF8.GetBytes(s));
             var ser = new DataContractJsonSerializer(typeof(ProgramSettingsClass));

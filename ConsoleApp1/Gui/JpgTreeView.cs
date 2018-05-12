@@ -34,7 +34,7 @@ namespace ConsoleApp1
             RemoveDefaultSearchPopup();
             SetupVisibleColumn();
             //SetupTheSortingColumn();
-            SetupClickHandler();
+            SetupHandlers();
         }
 
         private void SetupTheSortingColumn()
@@ -49,10 +49,23 @@ namespace ConsoleApp1
             sortingColumn.AddAttribute(sortColumnRenderer, "text", (int) Column.SortValue);
         }
 
-        private void SetupClickHandler()
+        private void SetupHandlers()
         {
             ActivateOnSingleClick = true;
+            KeyReleaseEvent += HandleUpAndDown;
             RowActivated += ClickHandler;
+        }
+
+        private void HandleUpAndDown(object o, KeyReleaseEventArgs args)
+        {
+            var evnt = args.Event;
+            if (evnt.Key == Gdk.Key.Down || evnt.Key == Gdk.Key.Up)
+            {
+                foreach (ITreeViewChoice item in GetSelectedItems())
+                {
+                    item.OnTreeViewSelectCallback(this);
+                }
+            }
         }
 
         private void SetupVisibleColumn()
