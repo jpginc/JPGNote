@@ -13,7 +13,7 @@ namespace ConsoleApp1.BuiltInActions
                 if (prop.GetCustomAttributes(typeof(Wizard), false).Any())
                 {
                     var prompt = "Enter value for " + prop.Name;
-                    var inputFunc = GetInputFunction(prop, prompt);
+                    var inputFunc = GetInputFunction(prop, prompt, (string) prop.GetValue(obj));
 
                     CancellableObj<string> result = inputFunc.Invoke();
                     if (result.ResponseType == UserActionResult.ResultType.Canceled)
@@ -27,16 +27,18 @@ namespace ConsoleApp1.BuiltInActions
             return true;
         }
 
-        public static Func<CancellableObj<string>> GetInputFunction(PropertyInfo prop, string prompt)
+        public static Func<CancellableObj<string>> GetInputFunction(PropertyInfo prop, string prompt, 
+            string currentValue)
         {
             Func<CancellableObj<string>> inputFunc = null;
+            currentValue = currentValue ?? "";
             if (prop.GetCustomAttributes(typeof(AutoSingleLineString), false).Any())
             {
-                inputFunc = () => GuiManager.Instance.GetSingleLineInput(prompt, "");
+                inputFunc = () => GuiManager.Instance.GetSingleLineInput(prompt, currentValue);
             }
             else if (prop.GetCustomAttributes(typeof(AutoMultiLineString), false).Any())
             {
-                inputFunc = () => GuiManager.Instance.GetMultiLineInput(prompt, "");
+                inputFunc = () => GuiManager.Instance.GetMultiLineInput(prompt, currentValue);
             }
             else if (prop.GetCustomAttributes(typeof(AutoFolderPicker), false).Any())
             {

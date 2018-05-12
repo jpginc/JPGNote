@@ -25,7 +25,8 @@ namespace ConsoleApp1.BuiltInActions
             var retList = new List<ITreeViewChoice>();
             foreach (var prop in _obj.GetType().GetProperties())
             {
-                Func<CancellableObj<string>> setValueFunction = CreatableWizard.GetInputFunction(prop, "Set " + prop.Name);
+                Func<CancellableObj<string>> setValueFunction = 
+                    CreatableWizard.GetInputFunction(prop, "Set " + prop.Name, (string) prop.GetValue(_obj));
                 if (setValueFunction != null)
                 {
                     retList.Add(new AutoSetSingleLinePropertyAction(prop, _obj, setValueFunction, _manager));
