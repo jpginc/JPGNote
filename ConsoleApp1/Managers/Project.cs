@@ -51,7 +51,8 @@ namespace ConsoleApp1.BuiltInActions
         public string GetLogFileFullLocation(UserAction userAction, string target)
         {
             var fileName = _folder + Path.DirectorySeparatorChar + GetLogFileName();
-            _settings.NotesManager.NewLoggedNote(fileName, userAction.Name + " " + (target ?? ""));
+            _settings.NotesManager.NewLoggedNote(fileName, userAction.Name + " " + (target ?? "") + 
+                DateTime.Now.ToLocalTime());
             return fileName;
         }
     }
