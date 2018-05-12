@@ -122,7 +122,7 @@ namespace ConsoleApp1
             _store.Clear();
             foreach (var choice in choices)
             {
-                _store.AppendValues(choice.Text, choice);
+                _store.AppendValues(choice.Text, 0, choice);
             }
 
             return this;
