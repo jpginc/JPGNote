@@ -18,12 +18,9 @@ namespace ConsoleApp1
                 this.score = score;
             }
         }
-        public static IEnumerable<string> sort(string sortBy, IEnumerable<string> todo)
+        public static IEnumerable<SortableRowWithValue> Sort(string sortBy, IEnumerable<SortableRowWithValue> todo)
         {
-            var sorted = todo.Select(s => new JoshScore(s, GetJoshScore(s, sortBy))).ToList();
-            sorted.Sort((s1, s2) => s1.score.CompareTo(s2.score));
-            
-            return sorted.Select(s => s.str).ToList();
+            return todo.OrderByDescending(js => GetJoshScore(js.SortByText, sortBy));
         }
 
         /*

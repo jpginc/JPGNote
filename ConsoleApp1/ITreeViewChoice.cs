@@ -2,15 +2,51 @@
 
 namespace ConsoleApp1
 {
-    internal interface ITreeViewChoice : IComparable<ITreeViewChoice>
+    public interface ITreeViewChoice : IJoshSortable
     {
-        string GetChoiceText();
-        ITreeViewChoice CalculateScore(string s);
-        int GetScore();
-        bool IsSelected();
-        ITreeViewChoice SetSelected(bool selected);
+        string Text { get; }
         bool OnTreeViewSelectCallback(JpgTreeView jpgTreeView);
         bool OnAcceptCallback(UserActionResult choice);
         bool OnSaveCallback(UserActionResult choice);
     }
+    internal class SimpleTreeViewChoice : ITreeViewChoice
+    {
+
+        public SimpleTreeViewChoice(string choiceText)
+        {
+            Text = choiceText;
+        }
+
+        public string Text { get; set; }
+
+        public bool OnTreeViewSelectCallback(JpgTreeView jpgTreeView)
+        {
+            SelectHandler(jpgTreeView);
+            return true;
+        }
+
+
+        public bool OnAcceptCallback(UserActionResult choice)
+        {
+            AcceptHandler(choice);
+            return true;
+        }
+
+        public bool OnSaveCallback(UserActionResult choice)
+        {
+            SaveHandler(choice);
+            return true;
+        }
+        public Action<JpgTreeView> SelectHandler { get; set; } = DoNothingHandler;
+
+        public Action<UserActionResult> AcceptHandler { get; set; } = DoNothingHandler;
+        public Action<UserActionResult> SaveHandler { get; set; } = DoNothingHandler;
+
+        private static void DoNothingHandler(object obj)
+        {
+        }
+
+        public string SortByText => Text;
+    }
+
 }
