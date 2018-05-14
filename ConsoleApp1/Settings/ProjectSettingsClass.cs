@@ -10,6 +10,7 @@ namespace ConsoleApp1
     [DataContract]
     internal class ProjectSettingsClass : ISettingsClass
     {
+        private String _lock = "";
         private static string _fileName;
         private static string _password;
         private static string _settingsFileName = "settings.txt";
@@ -75,18 +76,21 @@ namespace ConsoleApp1
 
         public void Save()
         {
-            var stream1 = new MemoryStream();
-            var ser = new DataContractJsonSerializer(this.GetType());
-            ser.WriteObject(stream1, this);
-            stream1.Position = 0;
-            var sr = new StreamReader(stream1);
-            //Console.Write("JSON form of Note object: ");
-            //Console.WriteLine(sr.ReadToEnd());
-            StreamWriter writer = new StreamWriter(_fileName);
-            // Rewrite the entire value of s to the file
-            stream1.Position = 0;
-            writer.Write(AESThenHMAC.SimpleEncryptWithPassword(sr.ReadToEnd(), _password));
-            writer.Close();
+            lock (_lock)
+            {
+                var stream1 = new MemoryStream();
+                var ser = new DataContractJsonSerializer(this.GetType());
+                ser.WriteObject(stream1, this);
+                stream1.Position = 0;
+                var sr = new StreamReader(stream1);
+                //Console.Write("JSON form of Note object: ");
+                //Console.WriteLine(sr.ReadToEnd());
+                StreamWriter writer = new StreamWriter(_fileName);
+                // Rewrite the entire value of s to the file
+                stream1.Position = 0;
+                writer.Write(AESThenHMAC.SimpleEncryptWithPassword(sr.ReadToEnd(), _password));
+                writer.Close();
+            }
         }
 
         public static ProjectSettingsClass Start()

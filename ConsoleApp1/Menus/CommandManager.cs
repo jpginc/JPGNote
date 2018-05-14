@@ -100,8 +100,10 @@ namespace ConsoleApp1.BuiltInActions
                 //output += p.StandardError.ReadToEnd();
                 //File.WriteAllText(logLocation, output);
                 var remaining = p.StandardOutput.ReadToEnd();
+                output += remaining;
                 file.Write(Encoding.UTF8.GetBytes(remaining), 0, remaining.Length);
                 remaining = p.StandardError.ReadToEnd();
+                output += remaining;
                 file.Write(Encoding.UTF8.GetBytes(remaining), 0, remaining.Length);
                 file.Close();
                 p.Close();

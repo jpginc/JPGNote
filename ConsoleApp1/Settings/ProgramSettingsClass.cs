@@ -11,6 +11,7 @@ internal class ProgramSettingsClass : ISettingsClass
 {
     [IgnoreDataMember] private static string _fileName;
     [IgnoreDataMember] private static string _password;
+    private string _lock = "";
 
     public ProgramSettingsClass()
     {
@@ -63,17 +64,20 @@ internal class ProgramSettingsClass : ISettingsClass
 
     public void Save()
     {
-        var stream1 = new MemoryStream();
-        var ser = new DataContractJsonSerializer(GetType());
-        ser.WriteObject(stream1, this);
-        stream1.Position = 0;
-        var sr = new StreamReader(stream1);
-        Console.Write("JSON form of Note object: ");
-        Console.WriteLine(sr.ReadToEnd());
-        var writer = new StreamWriter(_fileName);
-        // Rewrite the entire value of s to the file
-        stream1.Position = 0;
-        writer.Write(AESThenHMAC.SimpleEncryptWithPassword(sr.ReadToEnd(), _password));
-        writer.Close();
+        lock (_lock)
+        {
+            var stream1 = new MemoryStream();
+            var ser = new DataContractJsonSerializer(GetType());
+            ser.WriteObject(stream1, this);
+            stream1.Position = 0;
+            var sr = new StreamReader(stream1);
+            Console.Write("JSON form of Note object: ");
+            Console.WriteLine(sr.ReadToEnd());
+            var writer = new StreamWriter(_fileName);
+            // Rewrite the entire value of s to the file
+            stream1.Position = 0;
+            writer.Write(AESThenHMAC.SimpleEncryptWithPassword(sr.ReadToEnd(), _password));
+            writer.Close();
+        }
     }
 }
