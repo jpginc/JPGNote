@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using Gtk;
@@ -10,16 +11,17 @@ using Action = System.Action;
 
 namespace ConsoleApp1.BuiltInActions
 {
+    [DataContract]
     internal class CommandManager
     {
-        public static CommandManager Instance { get; } = new CommandManager();
+        [DataMember] private List<JobDetails> _queue = new List<JobDetails>();
 
-        private static string _sshLocation = "C:\\Program Files\\Git\\usr\\bin\\ssh.exe";
-        private static string _teeLocation = "C:\\Program Files\\Git\\usr\\bin\\tee.exe";
-        private static string _autohotkeyLocation = "C:\\Program Files\\AutoHotkey\\AutoHotkey.exe";
-        private static readonly string _cmdLocation = "C:\\Windows\\System32\\cmd.exe";
-        private List<Action> _queue = new List<Action>();
-        private int _running = 0;
+        [IgnoreDataMember] public static CommandManager Instance { get; } = new CommandManager();
+        [IgnoreDataMember] private static readonly string _sshLocation = "C:\\Program Files\\Git\\usr\\bin\\ssh.exe";
+        [IgnoreDataMember] private static readonly string _teeLocation = "C:\\Program Files\\Git\\usr\\bin\\tee.exe";
+        [IgnoreDataMember] private static readonly string _autohotkeyLocation = "C:\\Program Files\\AutoHotkey\\AutoHotkey.exe";
+        [IgnoreDataMember] private static readonly string _cmdLocation = "C:\\Windows\\System32\\cmd.exe";
+        [IgnoreDataMember] private int _running;
 
 
         public void OpenSshSession(Project project)
@@ -27,7 +29,7 @@ namespace ConsoleApp1.BuiltInActions
             var logLocation = project.GetLogFileFullLocation();
 
             var args = " /c \"" + MachineManager.Instance.GetSshCommandLineString() + " | "
-                + GetOuputRedirectionString(logLocation) + "\"";
+                       + GetOuputRedirectionString(logLocation) + "\"";
             RunRedirectedShell(_cmdLocation, args);
         }
 
@@ -53,16 +55,13 @@ namespace ConsoleApp1.BuiltInActions
             p.Start();
         }
 
-        public void RunCommand(string commandString, Project project, 
+        public void RunCommand(string commandString, Project project,
             UserAction userAction, string target, Port port)
         {
             var logLocation = project.GetLogFileFullLocation(userAction, target);
+            var jobDetails = new JobDetails(commandString, logLocation, target, port, userAction);
 
-            _queue.Add(() =>
-            {
-                var args = MachineManager.Instance.GetSshCommandLineArgs() + $" \"{commandString}\"";
-                RunExeToFile(_sshLocation, args, logLocation, userAction, target, port);
-            });
+            _queue.Add(jobDetails);
             QueueMove();
         }
 
@@ -81,7 +80,8 @@ namespace ConsoleApp1.BuiltInActions
                 {
                     _running++;
                     _queue = _queue.Skip(1).ToList();
-                    toRun.Invoke();
+                    var args = MachineManager.Instance.GetSshCommandLineArgs() + $" \"{toRun.CommandString}\"";
+                    RunExeToFile(_sshLocation, args, toRun.LogLocation, toRun.UserAction, toRun.Target, toRun.Port);
                 }
             }
         }
@@ -91,7 +91,6 @@ namespace ConsoleApp1.BuiltInActions
         {
             new Thread(() =>
             {
-
                 var p = new Process
                 {
                     StartInfo =
@@ -109,13 +108,14 @@ namespace ConsoleApp1.BuiltInActions
                 var output = "";
                 while (!p.HasExited)
                 {
-                    int nextChar; 
+                    int nextChar;
                     if (p.StandardOutput.Peek() > -1)
                     {
                         nextChar = p.StandardOutput.Read();
                         file.WriteByte((byte) nextChar);
                         output += (char) nextChar;
                     }
+
                     if (p.StandardError.Peek() > -1)
                     {
                         nextChar = p.StandardError.Read();
@@ -137,10 +137,7 @@ namespace ConsoleApp1.BuiltInActions
                 file.Write(Encoding.UTF8.GetBytes(remaining), 0, remaining.Length);
                 file.Close();
                 p.Close();
-                if (port != null)
-                {
-                    port.Notes += "\n" + output;
-                }
+                if (port != null) port.Notes += "\n" + output;
                 ParseOutput(logLocation, userAction, target);
             }).Start();
         }
@@ -155,13 +152,13 @@ namespace ConsoleApp1.BuiltInActions
                     {
                         FileName = _autohotkeyLocation,
                         Arguments = "\"" + userAction.ParsingCodeLocation + "\""
-                            + " \"" + outputLocation + "\"",
+                                    + " \"" + outputLocation + "\"",
                         UseShellExecute = false,
                         RedirectStandardOutput = true
                     }
                 };
                 p.Start();
-                string output = p.StandardOutput.ReadToEnd();
+                var output = p.StandardOutput.ReadToEnd();
                 p.WaitForExit();
                 ParseOutput(output, target);
                 p.Close();
@@ -174,17 +171,16 @@ namespace ConsoleApp1.BuiltInActions
         {
             Application.Invoke((a, b) =>
             {
-                using (StringReader sr = new StringReader(output))
+                using (var sr = new StringReader(output))
                 {
                     string line;
                     while ((line = sr.ReadLine()) != null)
-                    {
                         if (line.Equals("Target"))
                         {
                             var discoveredTarget = sr.ReadLine();
                             if (discoveredTarget != null)
                             {
-                                TargetManager.Instance.AddPremade(new Target() {IpOrDomain = discoveredTarget});
+                                TargetManager.Instance.AddPremade(new Target {IpOrDomain = discoveredTarget});
                                 TargetManager.Instance.Save();
                             }
                         }
@@ -197,19 +193,35 @@ namespace ConsoleApp1.BuiltInActions
                                 Target = target
                             };
                             var notes = "";
-                            while (!(line = sr.ReadLine()).Equals("Done"))
-                            {
-                                notes += line + " ";
-                            }
+                            while (!(line = sr.ReadLine()).Equals("Done")) notes += line + " ";
 
                             port.Notes = notes;
                             Console.WriteLine("Adding port " + port);
                             PortManager.Instance.AddPremade(port);
                             PortManager.Instance.Save();
                         }
-                    }
                 }
             });
+        }
+    }
+
+    [DataContract]
+    internal class JobDetails
+    {
+        [DataMember] public readonly UserAction UserAction;
+        [DataMember] public string CommandString { get; }
+        [DataMember] public string LogLocation { get; }
+        [DataMember] public string Target { get; }
+        [DataMember] public Port Port { get; }
+
+        public JobDetails(string commandString, string logLocation, string target, Port port,
+            UserAction userAction)
+        {
+            UserAction = userAction;
+            CommandString = commandString;
+            LogLocation = logLocation;
+            Target = target;
+            Port = port;
         }
     }
 }
