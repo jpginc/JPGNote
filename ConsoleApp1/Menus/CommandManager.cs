@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using Gtk;
+using Action = System.Action;
 
 namespace ConsoleApp1.BuiltInActions
 {
@@ -15,6 +18,8 @@ namespace ConsoleApp1.BuiltInActions
         private static string _teeLocation = "C:\\Program Files\\Git\\usr\\bin\\tee.exe";
         private static string _autohotkeyLocation = "C:\\Program Files\\AutoHotkey\\AutoHotkey.exe";
         private static readonly string _cmdLocation = "C:\\Windows\\System32\\cmd.exe";
+        private List<Action> _queue = new List<Action>();
+        private int _running = 0;
 
 
         public void OpenSshSession(Project project)
@@ -53,8 +58,32 @@ namespace ConsoleApp1.BuiltInActions
         {
             var logLocation = project.GetLogFileFullLocation(userAction, target);
 
-            var args = MachineManager.Instance.GetSshCommandLineArgs() + $" \"{commandString}\"";
-            RunExeToFile(_sshLocation, args, logLocation, userAction, target, port);
+            _queue.Add(() =>
+            {
+                var args = MachineManager.Instance.GetSshCommandLineArgs() + $" \"{commandString}\"";
+                RunExeToFile(_sshLocation, args, logLocation, userAction, target, port);
+            });
+            QueueMove();
+        }
+
+        private void QueueDone()
+        {
+            _running--;
+            QueueMove();
+        }
+
+        private void QueueMove()
+        {
+            if (_running < 15)
+            {
+                var toRun = _queue.FirstOrDefault();
+                if (toRun != null)
+                {
+                    _running++;
+                    _queue = _queue.Skip(1).ToList();
+                    toRun.Invoke();
+                }
+            }
         }
 
         private void RunExeToFile(string exeFileName, string args, string logLocation, UserAction userAction,
@@ -137,6 +166,8 @@ namespace ConsoleApp1.BuiltInActions
                 ParseOutput(output, target);
                 p.Close();
             }
+
+            Application.Invoke((a, b) => QueueDone());
         }
 
         private void ParseOutput(string output, string target)
