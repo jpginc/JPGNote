@@ -218,6 +218,11 @@ namespace ConsoleApp1
 
         public void UpdateOrder(string searchText)
         {
+            if (searchText.Equals("*"))
+            {
+                SortByTextColumn();
+                return;
+            }
             var unsortedRow = GetUnsortedFirstRow();
             //var temp = GetSortedRowValue(unsortedRow);
             //Console.WriteLine("the first sortedRow i'm updating is " + temp?.Text);
@@ -227,6 +232,18 @@ namespace ConsoleApp1
                 _store.SetValue(unsortedRow, (int) Column.SortValue, JoshSort.GetJoshScore(item.Text, searchText));
                 _store.IterNext(ref unsortedRow);
             }
+        }
+
+        private void SortByTextColumn()
+        {
+            List<ITreeViewChoice> allItems = new List<ITreeViewChoice>();
+            _store.GetIterFirst(out var row);
+            for (var i = 0; i < _store.IterNChildren(); i++)
+            {
+                allItems.Add(GetValueFromUnsortedRow(row));
+                _store.IterNext(ref row);
+            }
+            SetChoices(allItems.OrderBy(i => i.Text));
         }
 
         private ITreeViewChoice GetValueFromUnsortedRow(TreeIter item)
