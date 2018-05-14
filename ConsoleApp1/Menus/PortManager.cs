@@ -44,5 +44,10 @@ namespace ConsoleApp1.BuiltInActions
                 ((Port) existing).Notes += "\n" + port.Notes;
             }
         }
+
+        public IEnumerable<ICreatable> GetChildren(Target target)
+        {
+            return Creatables.Where(c => ((Port) c).Target.Equals(target.IpOrDomain));
+        }
     }
 }

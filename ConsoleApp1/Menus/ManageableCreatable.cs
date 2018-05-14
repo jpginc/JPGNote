@@ -13,6 +13,7 @@ namespace ConsoleApp1.BuiltInActions
         }
 
         public InputType InputType => InputType.Single;
+
         public IEnumerable<ITreeViewChoice> GetActions()
         {
             //not quite right, i need to have a choice that will then set the context to an auto menu
@@ -23,7 +24,7 @@ namespace ConsoleApp1.BuiltInActions
                 new ChoiceToActionProvider(new AutoDeleteMenu(_manager), _manager.DeleteChoiceText)
             };
 
-            IEnumerable<ITreeViewChoice> existingCreatables = _manager.GetActions();
+            var existingCreatables = _manager.GetActions();
             return existingCreatables.Concat(a);
         }
 
@@ -59,6 +60,7 @@ namespace ConsoleApp1.BuiltInActions
         }
 
         public InputType InputType => InputType.Multi;
+
         public IEnumerable<ITreeViewChoice> GetActions()
         {
             return _manager.Creatables.Select(c => new AutoAction(c, _manager));
@@ -67,16 +69,10 @@ namespace ConsoleApp1.BuiltInActions
         public ActionProviderResult HandleUserAction(UserActionResult choice)
         {
             if (choice.Result == UserActionResult.ResultType.Accept && choice.UserChoices.Count() != 0)
-            {
                 if (UserNotifier.Confirm(
                     $"Are you sure you want to delete these {choice.UserChoices.Count()} items?"))
-                {
-                    foreach (ITreeViewChoice item in choice.UserChoices)
-                    {
-                        _manager.Delete(((AutoAction)item).Creatable);
-                    }
-                }
-            }
+                    foreach (var item in choice.UserChoices)
+                        _manager.Delete(((AutoAction) item).Creatable);
             JpgActionManager.UnrollActionContext();
             return ActionProviderResult.ProcessingFinished;
         }
@@ -87,7 +83,7 @@ namespace ConsoleApp1.BuiltInActions
         private readonly ICreatable _creatable;
         private readonly IManager _manager;
 
-        public AutoDeleteCreatable(ICreatable creatable, IManager manager) 
+        public AutoDeleteCreatable(ICreatable creatable, IManager manager)
             : base("Delete " + creatable.EditChoiceText)
         {
             _creatable = creatable;
@@ -125,16 +121,32 @@ namespace ConsoleApp1.BuiltInActions
 
         private void PreviewValues(JpgTreeView obj)
         {
-            string val = "";
-            foreach (var prop in Creatable.GetType().GetProperties())
+            var val = "";
+            val += GetPreviewFromObject(Creatable);
+            MainWindow.Instance.SetInputText(val);
+        }
+
+        private string GetPreviewFromObject(ICreatable obj)
+        {
+            var val = "";
+            var propertyInfos = obj.GetType().GetProperties();
+            foreach (var prop in propertyInfos)
             {
                 if (prop.PropertyType == typeof(string))
                 {
-                    val += prop.Name + ": " + (prop.GetValue(Creatable) ?? "") + "\n";
+                    val += prop.Name + ": " + (prop.GetValue(obj) ?? "") + "\n";
+                }
+
+                if (prop.PropertyType == typeof(IEnumerable<ICreatable>))
+                {
+                    foreach (var subThing in (IEnumerable<ICreatable>) prop.GetValue(obj))
+                    {
+                        val += GetPreviewFromObject(subThing);
+                    }
                 }
             }
 
-            MainWindow.Instance.SetInputText(val);
+            return val;
         }
 
         private void SetContext(UserActionResult obj)

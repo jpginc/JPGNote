@@ -68,6 +68,11 @@ namespace ConsoleApp1.BuiltInActions
                 Creatables.Add(target);
             }
         }
+
+        public IEnumerable<ICreatable> GetChildren(Target target)
+        {
+            return PortManager.Instance.GetChildren(target);
+        }
     }
 
     internal interface IManagerAndActionProvider : IActionProvider , IManager
@@ -83,5 +88,6 @@ namespace ConsoleApp1.BuiltInActions
         public string IpOrDomain { get; set; }
 
         [IgnoreDataMember] public string EditChoiceText => IpOrDomain;
+        [IgnoreDataMember] public IEnumerable<ICreatable> ChildPorts => TargetManager.Instance.GetChildren(this);
     }
 }

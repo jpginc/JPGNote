@@ -25,6 +25,10 @@ namespace ConsoleApp1.BuiltInActions
             var retList = new List<ITreeViewChoice>();
             foreach (var prop in _obj.GetType().GetProperties())
             {
+                if (prop.PropertyType != typeof(string))
+                {
+                    continue;
+                }
                 Func<CancellableObj<string>> setValueFunction = 
                     CreatableWizard.GetInputFunction(prop, "Set " + prop.Name, (string) prop.GetValue(_obj));
                 if (setValueFunction != null)

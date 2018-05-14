@@ -69,8 +69,8 @@ internal class ProgramSettingsClass : ISettingsClass
             ser.WriteObject(stream1, this);
             stream1.Position = 0;
             var sr = new StreamReader(stream1);
-            Console.Write("JSON form of Note object: ");
-            Console.WriteLine(sr.ReadToEnd());
+            //Console.Write("JSON form of Note object: ");
+            //Console.WriteLine(sr.ReadToEnd());
             var writer = new StreamWriter(_fileName);
             // Rewrite the entire value of s to the file
             stream1.Position = 0;
