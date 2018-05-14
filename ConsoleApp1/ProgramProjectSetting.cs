@@ -12,5 +12,6 @@ namespace ConsoleApp1.BuiltInActions
         public string ProjectFolder { get; set; }
 
         public string EditChoiceText => ProjectName;
+        public IManager Manager => ProjectManager.Instance;
     }
 }

@@ -30,7 +30,7 @@ namespace ConsoleApp1.BuiltInActions
             {
                 Creatables.Add(userAction);
                 Save();
-                JpgActionManager.PushActionContext(new AutoMenu(userAction, this));
+                JpgActionManager.PushActionContext(new AutoMenu(userAction));
             }
         }
 

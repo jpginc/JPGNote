@@ -17,5 +17,6 @@ namespace ConsoleApp1.BuiltInActions
     public interface ICreatable 
     {
         string EditChoiceText { get; }
+        IManager Manager { get; }
     }
 }

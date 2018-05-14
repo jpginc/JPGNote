@@ -40,7 +40,7 @@ namespace ConsoleApp1.BuiltInActions
                 SshAbleMachine machine = new SshAbleMachine {Name = machineName.Result};
                 Creatables.Add(machine);
                 ProgramSettingsClass.Instance.Save();
-                JpgActionManager.PushActionContext(new AutoMenu(machine, this));
+                JpgActionManager.PushActionContext(new AutoMenu(machine));
             }
         }
 

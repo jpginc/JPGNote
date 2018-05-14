@@ -18,5 +18,6 @@ namespace ConsoleApp1.BuiltInActions
         [DataMember] [AutoFilePicker] public string ParsingCodeLocation { get; set; } = "";
 
         [IgnoreDataMember] public string EditChoiceText => Name;
+        public IManager Manager => MachineManager.Instance;
     }
 }

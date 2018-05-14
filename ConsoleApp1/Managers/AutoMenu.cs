@@ -14,10 +14,10 @@ namespace ConsoleApp1.BuiltInActions
         private readonly ICreatable _obj;
         private readonly IManager _manager;
 
-        public AutoMenu(ICreatable obj, IManager manager)
+        public AutoMenu(ICreatable obj)
         {
             _obj = obj;
-            _manager = manager;
+            _manager = obj.Manager;
         }
 
         public override IEnumerable<ITreeViewChoice> GetActions()
@@ -25,15 +25,19 @@ namespace ConsoleApp1.BuiltInActions
             var retList = new List<ITreeViewChoice>();
             foreach (var prop in _obj.GetType().GetProperties())
             {
-                if (prop.PropertyType != typeof(string))
+                if (prop.PropertyType == typeof(string))
                 {
-                    continue;
-                }
-                Func<CancellableObj<string>> setValueFunction = 
-                    CreatableWizard.GetInputFunction(prop, "Set " + prop.Name, (string) prop.GetValue(_obj));
-                if (setValueFunction != null)
+                    Func<CancellableObj<string>> setValueFunction =
+                        CreatableWizard.GetInputFunction(prop, "Set " + prop.Name, (string) prop.GetValue(_obj));
+                    if (setValueFunction != null)
+                    {
+                        retList.Add(new AutoSetSingleLinePropertyAction(prop, _obj, setValueFunction, _manager));
+                    }
+                } else if (prop.PropertyType == typeof(IEnumerable<ICreatable>))
                 {
-                    retList.Add(new AutoSetSingleLinePropertyAction(prop, _obj, setValueFunction, _manager));
+                    //todo is the _manager correct?
+                    var val = (IEnumerable<ICreatable>) prop.GetValue(_obj);
+                    retList.AddRange(val.Select(v => new AutoAction(v, v.Manager)));
                 }
             }
 

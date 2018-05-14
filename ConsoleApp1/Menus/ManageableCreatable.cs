@@ -151,7 +151,7 @@ namespace ConsoleApp1.BuiltInActions
 
         private void SetContext(UserActionResult obj)
         {
-            JpgActionManager.PushActionContext(new AutoMenu(Creatable, _manager));
+            JpgActionManager.PushActionContext(new AutoMenu(Creatable));
         }
     }
 }

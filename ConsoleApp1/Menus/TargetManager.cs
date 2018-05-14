@@ -88,6 +88,7 @@ namespace ConsoleApp1.BuiltInActions
         public string IpOrDomain { get; set; }
 
         [IgnoreDataMember] public string EditChoiceText => IpOrDomain;
+        public IManager Manager => TargetManager.Instance;
         [IgnoreDataMember] public IEnumerable<ICreatable> ChildPorts => TargetManager.Instance.GetChildren(this);
     }
 }
