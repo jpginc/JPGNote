@@ -74,8 +74,8 @@ namespace ConsoleApp1.BuiltInActions
                     }
                 };
                 p.Start();
-                File.WriteAllText(logLocation, "Command not complete yet.\nit may never finish");
-                //var file = File.Open(logLocation, FileMode.Create, FileAccess.Write, FileShare.Read);
+                //File.WriteAllText(logLocation, "Command not complete yet.\nit may never finish");
+                var file = File.Open(logLocation, FileMode.Create, FileAccess.Write, FileShare.Read);
                 var output = "";
                 while (!p.HasExited)
                 {
@@ -83,27 +83,27 @@ namespace ConsoleApp1.BuiltInActions
                     if (p.StandardOutput.Peek() > -1)
                     {
                         nextChar = p.StandardOutput.Read();
-                        //file.WriteByte((byte) nextChar);
+                        file.WriteByte((byte) nextChar);
                         output += (char) nextChar;
                     }
                     if (p.StandardError.Peek() > -1)
                     {
                         nextChar = p.StandardError.Read();
-                        //file.WriteByte((byte) nextChar);
+                        file.WriteByte((byte) nextChar);
                         output += (char) nextChar;
                     }
 
                     Thread.Sleep(0);
                 }
 
-                //var remaining = p.StandardOutput.ReadToEnd();
-                output += p.StandardOutput.ReadToEnd();
-                //file.Write(Encoding.UTF8.GetBytes(remaining), 0, remaining.Length);
-                //remaining = p.StandardError.ReadToEnd();
-                output += p.StandardError.ReadToEnd();
-                File.WriteAllText(logLocation, output);
-                //file.Write(Encoding.UTF8.GetBytes(remaining), 0, remaining.Length);
-                //file.Close();
+                //output += p.StandardOutput.ReadToEnd();
+                //output += p.StandardError.ReadToEnd();
+                //File.WriteAllText(logLocation, output);
+                var remaining = p.StandardOutput.ReadToEnd();
+                file.Write(Encoding.UTF8.GetBytes(remaining), 0, remaining.Length);
+                remaining = p.StandardError.ReadToEnd();
+                file.Write(Encoding.UTF8.GetBytes(remaining), 0, remaining.Length);
+                file.Close();
                 p.Close();
                 if (port != null)
                 {
