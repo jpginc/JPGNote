@@ -35,9 +35,8 @@ namespace ConsoleApp1.BuiltInActions
                     }
                 } else if (prop.PropertyType == typeof(IEnumerable<ICreatable>))
                 {
-                    //todo is the _manager correct?
                     var val = (IEnumerable<ICreatable>) prop.GetValue(_obj);
-                    retList.AddRange(val.Select(v => new AutoAction(v, v.Manager)));
+                    retList.AddRange(val.Select(v => new AutoAction(v)));
                 }
             }
 

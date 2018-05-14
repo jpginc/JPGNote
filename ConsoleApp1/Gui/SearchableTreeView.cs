@@ -98,5 +98,10 @@ namespace ConsoleApp1
         {
             _treeview.RotateItems(forwardDirection);
         }
+
+        public void HandleDone()
+        {
+            _treeview.HandleDone();
+        }
     }
 }

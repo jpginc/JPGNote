@@ -8,6 +8,7 @@ namespace ConsoleApp1
         bool OnTreeViewSelectCallback(JpgTreeView jpgTreeView);
         bool OnAcceptCallback(UserActionResult choice);
         bool OnSaveCallback(UserActionResult choice);
+        void OnTreeViewDoneCallback(JpgTreeView jpgTreeView);
     }
     internal class SimpleTreeViewChoice : ITreeViewChoice
     {
@@ -37,12 +38,21 @@ namespace ConsoleApp1
             SaveHandler(choice);
             return true;
         }
+
+        public void OnTreeViewDoneCallback(JpgTreeView jpgTreeView)
+        {
+            DoneHandler(jpgTreeView);
+        }
+
+
         public Action<JpgTreeView> SelectHandler { get; set; } = DoNothingHandler;
+        public Action<JpgTreeView> DoneHandler { get; set; } = DoNothingHandler;
 
         public Action<UserActionResult> AcceptHandler { get; set; } = DoNothingHandler;
         public Action<UserActionResult> SaveHandler { get; set; } = DoNothingHandler;
 
-        private static void DoNothingHandler(object obj)
+
+        public static void DoNothingHandler(object obj) 
         {
         }
 

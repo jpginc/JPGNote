@@ -35,5 +35,8 @@ namespace ConsoleApp1
             return true;
         }
 
+        public void OnTreeViewDoneCallback(JpgTreeView jpgTreeView)
+        {
+        }
     }
 }

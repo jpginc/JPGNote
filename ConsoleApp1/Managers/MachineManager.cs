@@ -29,7 +29,7 @@ namespace ConsoleApp1.BuiltInActions
 
         public IEnumerable<ITreeViewChoice> GetMachineChoices()
         {
-            return Creatables.Select(m => new AutoAction(m, this));
+            return Creatables.Select(m => new AutoAction(m));
         }
 
         public void CreateNewMachine(UserActionResult obj)

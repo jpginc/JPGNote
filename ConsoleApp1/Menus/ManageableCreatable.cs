@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ConsoleApp1.BuiltInActions
@@ -63,7 +64,7 @@ namespace ConsoleApp1.BuiltInActions
 
         public IEnumerable<ITreeViewChoice> GetActions()
         {
-            return _manager.Creatables.Select(c => new AutoAction(c, _manager));
+            return _manager.Creatables.Select(c => new AutoAction(c));
         }
 
         public ActionProviderResult HandleUserAction(UserActionResult choice)
@@ -109,14 +110,23 @@ namespace ConsoleApp1.BuiltInActions
     internal class AutoAction : SimpleTreeViewChoice
     {
         public readonly ICreatable Creatable;
-        private readonly IManager _manager;
 
-        public AutoAction(ICreatable creatable, IManager manager) : base(creatable.EditChoiceText)
+        public AutoAction(ICreatable creatable) : base(creatable.EditChoiceText)
         {
             Creatable = creatable;
-            _manager = manager;
             AcceptHandler = SetContext;
             SelectHandler = PreviewValues;
+            DoneHandler = MarkScanItemAsDone;
+            
+        }
+
+        private void MarkScanItemAsDone(JpgTreeView obj)
+        {
+            if (Creatable is IDoneable doneable)
+            {
+                Console.WriteLine("Marking something done");
+                doneable.ScanItemStatus = ScanItemState.Done;
+            }
         }
 
         private void PreviewValues(JpgTreeView obj)

@@ -53,7 +53,7 @@ namespace ConsoleApp1.BuiltInActions
         public InputType InputType => InputType.Multi;
         public IEnumerable<ITreeViewChoice> GetActions()
         {
-            return Creatables.Select(c => new AutoAction(c, this));
+            return Creatables.Select(c => new AutoAction(c));
         }
 
         public ActionProviderResult HandleUserAction(UserActionResult res)

@@ -56,7 +56,7 @@ namespace ConsoleApp1
             RowActivated += ClickHandler;
         }
 
-        private void HandleUpAndDown(object o, KeyReleaseEventArgs args)
+        public void HandleUpAndDown(object o, KeyReleaseEventArgs args)
         {
             var evnt = args.Event;
             if (evnt.Key == Gdk.Key.Down || evnt.Key == Gdk.Key.Up)
@@ -65,6 +65,20 @@ namespace ConsoleApp1
                 {
                     item.OnTreeViewSelectCallback(this);
                 }
+            }
+
+            if (evnt.Key == Gdk.Key.d && args.Event.State == Gdk.ModifierType.Mod1Mask)
+            {
+                HandleDone();
+            }
+
+        }
+
+        public void HandleDone()
+        {
+            foreach (ITreeViewChoice item in GetSelectedItems())
+            {
+                item.OnTreeViewDoneCallback(this);
             }
         }
 

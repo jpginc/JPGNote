@@ -20,7 +20,7 @@ namespace ConsoleApp1.BuiltInActions
 
         public IEnumerable<ITreeViewChoice> GetUserActionChoices()
         {
-            return Creatables.Select(u => new AutoAction(u, this));
+            return Creatables.Select(u => new AutoAction(u));
         }
 
         public void CreateNewUserAction(UserActionResult obj)
