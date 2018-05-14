@@ -3,17 +3,21 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Threading;
 using ConsoleApp1.BuiltInActions;
+using Gtk;
 
 namespace ConsoleApp1
 {
     [DataContract]
     internal class ProjectSettingsClass : ISettingsClass
     {
-        private String _lock = "";
+        private string _lock = "";
         private static string _fileName;
         private static string _password;
-        private static string _settingsFileName = "settings.txt";
+        private static readonly string _settingsFileName = "settings.txt";
+        private static bool _stuffToSave = false;
+        private static Timer _timer =new Timer(DoSave, null, 5000, Timeout.Infinite); 
         public static ProjectSettingsClass Instance { get; set; }
 
         [DataMember] public NotesManager NotesManager { get; private set; }
@@ -45,10 +49,7 @@ namespace ConsoleApp1
             }
             catch (FileNotFoundException e)
             {
-                if (UserNotifier.Confirm("Project settings file not found, Create new file?"))
-                {
-                    Start();
-                }
+                if (UserNotifier.Confirm("Project settings file not found, Create new file?")) Start();
             }
             catch (Exception e)
             {
@@ -76,18 +77,36 @@ namespace ConsoleApp1
 
         public void Save()
         {
-                var stream1 = new MemoryStream();
-                var ser = new DataContractJsonSerializer(this.GetType());
-                ser.WriteObject(stream1, this);
-                stream1.Position = 0;
-                var sr = new StreamReader(stream1);
-                //Console.Write("JSON form of Note object: ");
-                //Console.WriteLine(sr.ReadToEnd());
-                StreamWriter writer = new StreamWriter(_fileName);
-                // Rewrite the entire value of s to the file
-                stream1.Position = 0;
-                writer.Write(AESThenHMAC.SimpleEncryptWithPassword(sr.ReadToEnd(), _password));
-                writer.Close();
+            _stuffToSave = true;
+        }
+
+        private static void DoSave(object state)
+        {
+            Application.Invoke((a, b) =>
+            {
+                if (_stuffToSave)
+                {
+                    _stuffToSave = false;
+                    var stream1 = new MemoryStream();
+                    var ser = new DataContractJsonSerializer(ProjectSettingsClass.Instance.GetType());
+                    ser.WriteObject(stream1, ProjectSettingsClass.Instance);
+                    stream1.Position = 0;
+                    var sr = new StreamReader(stream1);
+                    //Console.Write("JSON form of Note object: ");
+                    //Console.WriteLine(sr.ReadToEnd());
+                    var writer = new StreamWriter(_fileName);
+                    // Rewrite the entire value of s to the file
+                    stream1.Position = 0;
+                    writer.Write(AESThenHMAC.SimpleEncryptWithPassword(sr.ReadToEnd(), _password));
+                    writer.Close();
+                    Console.WriteLine("saved");
+                }
+                else
+                {
+                    Console.WriteLine("don't need to save");
+                }
+                _timer = new Timer(DoSave, null, 5000, Timeout.Infinite);
+            });
         }
 
         public static ProjectSettingsClass Start()
@@ -96,6 +115,5 @@ namespace ConsoleApp1
             Instance.Save();
             return Instance;
         }
-
     }
 }
