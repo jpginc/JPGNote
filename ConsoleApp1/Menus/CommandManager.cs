@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
+using Gtk;
 
 namespace ConsoleApp1.BuiltInActions
 {
@@ -140,39 +141,44 @@ namespace ConsoleApp1.BuiltInActions
 
         private void ParseOutput(string output, string target)
         {
-            using (StringReader sr = new StringReader(output))
+            Application.Invoke((a, b) =>
             {
-                string line;
-                while ((line = sr.ReadLine()) != null)
+                using (StringReader sr = new StringReader(output))
                 {
-                    if (line.Equals("Target"))
+                    string line;
+                    while ((line = sr.ReadLine()) != null)
                     {
-                        var discoveredTarget = sr.ReadLine();
-                        if (discoveredTarget != null)
+                        if (line.Equals("Target"))
                         {
-                            TargetManager.Instance.AddPremade(new Target() {IpOrDomain = discoveredTarget});
-                            TargetManager.Instance.Save();
+                            var discoveredTarget = sr.ReadLine();
+                            if (discoveredTarget != null)
+                            {
+                                TargetManager.Instance.AddPremade(new Target() {IpOrDomain = discoveredTarget});
+                                TargetManager.Instance.Save();
+                            }
                         }
-                    } else if (line.Equals("Port"))
-                    {
-                        var portNumber = sr.ReadLine();
-                        var port = new Port
+                        else if (line.Equals("Port"))
                         {
-                            PortNumber = portNumber,
-                            Target = target
-                        };
-                        var notes = "";
-                        while(! (line = sr.ReadLine()).Equals("Done"))
-                        {
-                            notes += line + " ";
+                            var portNumber = sr.ReadLine();
+                            var port = new Port
+                            {
+                                PortNumber = portNumber,
+                                Target = target
+                            };
+                            var notes = "";
+                            while (!(line = sr.ReadLine()).Equals("Done"))
+                            {
+                                notes += line + " ";
+                            }
+
+                            port.Notes = notes;
+                            Console.WriteLine("Adding port " + port);
+                            PortManager.Instance.AddPremade(port);
+                            PortManager.Instance.Save();
                         }
-                        port.Notes = notes;
-                        Console.WriteLine("Adding port " + port);
-                        PortManager.Instance.AddPremade(port);
-                        PortManager.Instance.Save();
                     }
                 }
-            }
+            });
         }
     }
 }

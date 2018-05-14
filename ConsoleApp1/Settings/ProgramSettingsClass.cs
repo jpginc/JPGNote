@@ -64,8 +64,6 @@ internal class ProgramSettingsClass : ISettingsClass
 
     public void Save()
     {
-        lock (_lock)
-        {
             var stream1 = new MemoryStream();
             var ser = new DataContractJsonSerializer(GetType());
             ser.WriteObject(stream1, this);
@@ -78,6 +76,5 @@ internal class ProgramSettingsClass : ISettingsClass
             stream1.Position = 0;
             writer.Write(AESThenHMAC.SimpleEncryptWithPassword(sr.ReadToEnd(), _password));
             writer.Close();
-        }
     }
 }

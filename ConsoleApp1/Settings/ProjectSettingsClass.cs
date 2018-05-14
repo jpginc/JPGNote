@@ -76,8 +76,6 @@ namespace ConsoleApp1
 
         public void Save()
         {
-            lock (_lock)
-            {
                 var stream1 = new MemoryStream();
                 var ser = new DataContractJsonSerializer(this.GetType());
                 ser.WriteObject(stream1, this);
@@ -90,7 +88,6 @@ namespace ConsoleApp1
                 stream1.Position = 0;
                 writer.Write(AESThenHMAC.SimpleEncryptWithPassword(sr.ReadToEnd(), _password));
                 writer.Close();
-            }
         }
 
         public static ProjectSettingsClass Start()
