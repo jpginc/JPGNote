@@ -9,6 +9,7 @@ namespace ConsoleApp1.BuiltInActions
         private string _folder;
         private string _password;
         private ProjectSettingsClass _settings;
+
         public string EditChoiceText => Name;
         public string CreateChoiceText => "Create New Project";
         public string DeleteChoiceText => "Delete Projects";
@@ -45,7 +46,7 @@ namespace ConsoleApp1.BuiltInActions
 
         public void Save()
         {
-            throw new NotImplementedException();
+                _settings.Save();
         }
 
         public string GetLogFileFullLocation(UserAction userAction, string target)

@@ -24,6 +24,13 @@ namespace ConsoleApp1
         [DataMember] public TargetManager TargetManager { get; private set; }
         [DataMember] public PortManager PortManager { get; private set; }
 
+        public ProjectSettingsClass(NotesManager notesManager, TargetManager targetManager, 
+            PortManager portManager)
+        {
+            NotesManager = notesManager;
+            TargetManager = targetManager;
+            PortManager = portManager;
+        }
         private ProjectSettingsClass()
         {
             NotesManager = new NotesManager();
