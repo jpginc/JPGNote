@@ -10,10 +10,9 @@ namespace ConsoleApp1
     [KnownType(typeof(LoggedNote))]
     internal class NotesManager
     {
-        public ProjectPersistence Settings { get; set; }
-        public static NotesManager Instance { get; set; }
-        [DataMember]
-        public List<INote> Notes { get; set; }
+        [IgnoreDataMember] public ProjectPersistence Settings { get; set; }
+        [IgnoreDataMember] public static NotesManager Instance { get; set; }
+        [DataMember] public List<INote> Notes { get; set; }
 
         public void NewNoteAction(UserActionResult userActionResult)
         {
@@ -29,7 +28,6 @@ namespace ConsoleApp1
         {
             //don't want to change this because i'm doing serialisation stuff
             Notes = new List<INote>();
-            Instance = this;
         }
 
         public NotesManager NewNote(string noteName)

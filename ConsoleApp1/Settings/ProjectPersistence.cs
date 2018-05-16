@@ -93,6 +93,7 @@ namespace ConsoleApp1
 
                 NotesManager = instance.NotesManager;
                 NotesManager.Settings = this;
+                NotesManager.Instance = NotesManager;
                 TargetManager = instance.TargetManager;
                 TargetManager.Settings = this;
                 PortManager = instance.PortManager;
@@ -169,6 +170,7 @@ namespace ConsoleApp1
         private bool StartNew()
         {
             NotesManager = new NotesManager() {Settings = this};
+            NotesManager.Instance = NotesManager;
             TargetManager = new TargetManager(){ Settings = this };
             PortManager = new PortManager(){ Settings = this };
             return Persist();

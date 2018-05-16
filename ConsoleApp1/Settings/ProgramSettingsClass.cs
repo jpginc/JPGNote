@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
@@ -16,7 +17,7 @@ internal class ProgramSettingsClass : ISettingsClass
 
     public ProgramSettingsClass()
     {
-        ProjectManager = new ProjectManager() {Settings = this};
+        ProjectManager = new ProjectManager() {Settings = this, _loadedProjects = new List<ProjectPersistence>() };
         MachineManager = new MachineManager();
         UserActionManager = new UserActionManager() {Settings = this};
     }
@@ -57,6 +58,7 @@ internal class ProgramSettingsClass : ISettingsClass
 
         ProjectManager.Instance = Instance.ProjectManager ?? new ProjectManager();
         ProjectManager.Instance.Settings = Instance;
+        ProjectManager.Instance._loadedProjects = new List<ProjectPersistence>();
         MachineManager.Instance = Instance.MachineManager ?? new MachineManager();
         UserActionManager.Instance = Instance.UserActionManager ?? new UserActionManager();
         UserActionManager.Instance.Settings = Instance;

@@ -5,6 +5,7 @@ namespace ConsoleApp1.BuiltInActions
 {
     internal class LoggedCommand
     {
+        private const string userInputMarker = "{{USERINPUT}}";
         private readonly UserAction _userAction;
         private Project _project;
         private IEnumerable<Target> _targets;
@@ -20,24 +21,25 @@ namespace ConsoleApp1.BuiltInActions
 
         public bool Run()
         {
+            string commandString = ReplaceUserInput(_userAction.Command);
             if (NeedsPort())
             {
                 foreach (var port in _ports)
                 {
-                    var commandString = CreateCommandString(port.Target, port.PortNumber);
+                    commandString = CreateCommandString(commandString, port.Target, port.PortNumber);
                     CommandManager.Instance.RunCommand(commandString, _project, _userAction, port.Target, port);
                 }
             } else if (NeedsTarget())
             {
                 foreach (var target in _targets)
                 {
-                    var commandString = CreateCommandString(target.IpOrDomain, "");
+                    commandString = CreateCommandString(commandString, target.IpOrDomain, "");
                     CommandManager.Instance.RunCommand(commandString, _project, _userAction, target.IpOrDomain, null);
                 }
             }
             else
             {
-                var commandString = CreateCommandString("", "");
+                commandString = CreateCommandString(commandString, "", "");
                 CommandManager.Instance.RunCommand(commandString, _project, _userAction, "", null);
             }
 
@@ -45,12 +47,24 @@ namespace ConsoleApp1.BuiltInActions
             return true;
         }
 
-        private string CreateCommandString(string target, string port)
+        private string CreateCommandString(string command, string target, string port)
         {
-            var command = _userAction.Command;
             command = command.Replace(portMarker, port);
             command = command.Replace(targetMarker, target);
             return command;
+        }
+
+        private string ReplaceUserInput(string command)
+        {
+            if (command.Contains(userInputMarker))
+            {
+                var input = GuiManager.Instance.GetNonEmptySingleLineInput("Provide input for " + command);
+                if (input.ResponseType == UserActionResult.ResultType.Accept)
+                {
+                    return command.Replace(userInputMarker, input.Result);
+                }
+            }
+            return null;
         }
 
         public bool NeedsTarget()

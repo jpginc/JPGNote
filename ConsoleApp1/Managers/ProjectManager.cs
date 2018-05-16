@@ -7,7 +7,7 @@ namespace ConsoleApp1.BuiltInActions
     [DataContract]
     internal class ProjectManager : Manager, IManagerAndActionProvider
     {
-        [IgnoreDataMember] private readonly List<ProjectPersistence> _loadedProjects = new List<ProjectPersistence>();
+        [IgnoreDataMember] public List<ProjectPersistence> _loadedProjects { get; set; }
 
         //a list of project names and their folders
         [IgnoreDataMember] public override string ManageText => "Manage Projects";
