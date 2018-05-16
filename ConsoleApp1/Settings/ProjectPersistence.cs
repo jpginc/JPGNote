@@ -102,7 +102,7 @@ namespace ConsoleApp1
                 PortManager = instance.PortManager;
                 PortManager.Settings = this;
                 //must be last
-                CommandQueue = instance.CommandQueue;
+                CommandQueue = instance.CommandQueue ?? new CommandQueue();
             }
             catch (FileNotFoundException e)
             {
@@ -145,9 +145,18 @@ namespace ConsoleApp1
                 {
                     _isSaving = true;
                     _stuffToSave = false;
-                    Persist();
-                    _timer = new Timer(SaveAsync, null, SaveTimerInterval, Timeout.Infinite);
-                    _isSaving = false;
+                    new Thread(() =>
+                    {
+                        Persist();
+                        Application.Invoke((c,d) => 
+                        {
+                            _isSaving = false;
+                            if (_stuffToSave)
+                            {
+                                StartSaveTimer();
+                            }
+                        });
+                    }).Start();
                 }
             });
         }
