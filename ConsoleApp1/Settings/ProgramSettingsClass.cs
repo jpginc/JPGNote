@@ -9,9 +9,10 @@ using ConsoleApp1.BuiltInActions;
 [DataContract]
 internal class ProgramSettingsClass : ISettingsClass
 {
-    [IgnoreDataMember] private static string _fileName;
+    [IgnoreDataMember] public static string FileName;
     [IgnoreDataMember] private static string _password;
     private string _lock = "";
+    [IgnoreDataMember] public static string FolderName;
 
     public ProgramSettingsClass()
     {
@@ -26,14 +27,15 @@ internal class ProgramSettingsClass : ISettingsClass
     [DataMember] public UserActionManager UserActionManager { get; private set; }
     public string Password => _password;
 
-    public static ProgramSettingsClass Start(string fileName, string password)
+    public static ProgramSettingsClass Start(string folderName, string fileName, string password)
     {
+        FolderName = folderName;
         _password = password;
         StreamReader file = null;
-        _fileName = fileName;
+        FileName = folderName + Path.DirectorySeparatorChar + fileName;
         try
         {
-            file = File.OpenText(_fileName);
+            file = File.OpenText(FileName);
             var s = AESThenHMAC.SimpleDecryptWithPassword(file.ReadToEnd(), _password);
             //Console.WriteLine(s);
             file.Close();
@@ -71,7 +73,7 @@ internal class ProgramSettingsClass : ISettingsClass
             var sr = new StreamReader(stream1);
             //Console.Write("JSON form of Note object: ");
             //Console.WriteLine(sr.ReadToEnd());
-            var writer = new StreamWriter(_fileName);
+            var writer = new StreamWriter(FileName);
             // Rewrite the entire value of s to the file
             stream1.Position = 0;
             writer.Write(AESThenHMAC.SimpleEncryptWithPassword(sr.ReadToEnd(), _password));

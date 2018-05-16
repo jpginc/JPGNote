@@ -123,7 +123,7 @@ namespace ConsoleApp1
         public CancellableObj<string> GetFolder(string prompt)
         {
             var retVal = new CancellableObj<string> {ResponseType = UserActionResult.ResultType.Canceled};
-            var filechooser = new FileChooserDialog("Select Folder To Save ProgramProjectSetting Data",
+            var filechooser = new FileChooserDialog("Select ProjectFolder To Save ProgramProjectSetting Data",
                 MainWindow.Instance, FileChooserAction.SelectFolder, "Cancel", ResponseType.Cancel,
                 "Open", ResponseType.Accept);
 

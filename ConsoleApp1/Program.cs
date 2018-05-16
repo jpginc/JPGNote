@@ -3,7 +3,8 @@ using ConsoleApp1;
 
 public class GtkHelloWorld
 {
-    private static readonly string _fileName = "c:\\jpgtree\\settings.txt";
+    private static readonly string _fileName = "settings.txt";
+    private static readonly string _folderName = "c:\\jpgtree";
     private static JpgActionManager _jpgActionManager;
 
     public static void Main()
@@ -53,7 +54,7 @@ public class GtkHelloWorld
 
     private static void InitialiseSettingsClass()
     {
-        ProgramSettingsClass.Start(_fileName, GetPassword());
+        ProgramSettingsClass.Start(_folderName, _fileName, GetPassword());
     }
 
     private static string GetPassword()

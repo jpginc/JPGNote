@@ -7,6 +7,8 @@ namespace ConsoleApp1.BuiltInActions
     [DataContract]
     internal class ProjectManager : Manager, IManagerAndActionProvider
     {
+        [IgnoreDataMember] private readonly List<ProjectPersistence> _loadedProjects = new List<ProjectPersistence>();
+
         //a list of project names and their folders
         [IgnoreDataMember] public override string ManageText => "Manage Projects";
         [IgnoreDataMember] public override string CreateChoiceText => "New Project";
@@ -17,27 +19,54 @@ namespace ConsoleApp1.BuiltInActions
             var proj = new ProgramProjectSetting();
             if (CreatableWizard.GetRequiredFields(proj))
             {
-                Creatables.Add(proj);
-                Save();
-                LoadProject(proj);
+                if (CreateProject(proj))
+                {
+                    Creatables.Add(proj);
+                    Save();
+                }
                 UserNotifier.Notify("Project Created");
             }
         }
 
-        private void LoadProject(ProgramProjectSetting projectSettings)
+        private bool CreateProject(ProgramProjectSetting proj)
         {
-            LoadProject(projectSettings.ProjectFolder, projectSettings.ProjectName);
+            var folder = ProgramSettingsClass.FolderName;
+            var password = ProgramSettingsClass.Instance.Password;
+            var projectData = new ProjectPersistence();
+            if (projectData.Create(folder, proj.ProjectName, password))
+            {
+                _loadedProjects.Add(projectData);
+                return true;
+            }
+            return false;
         }
 
-        public Project LoadProject(string folder, string name)
+        public ProjectPersistence GetProjectPersistence(ProgramProjectSetting proj)
         {
-            return new Project(name, folder, ProgramSettingsClass.Instance.Password);
+            ProjectPersistence projectData = GetLoadedProject(proj);
+            if (projectData == null)
+            {
+                var folder = ProgramSettingsClass.FolderName;
+                var password = ProgramSettingsClass.Instance.Password;
+                projectData = new ProjectPersistence();
+                if (projectData.Load(folder, proj.ProjectName, password))
+                {
+                    _loadedProjects.Add(projectData);
+                }                
+            }
+
+            return projectData;
+        }
+
+        private ProjectPersistence GetLoadedProject(ProgramProjectSetting projectSettings)
+        {
+            return _loadedProjects.FirstOrDefault(p => p.ProjectName.Equals(projectSettings.ProjectName));
         }
 
         public InputType InputType => InputType.Single;
         public IEnumerable<ITreeViewChoice> GetActions()
         {
-            return Creatables.Select(c =>new ProjectChoice((ProgramProjectSetting)c));
+            return Creatables.Select(c =>new ProjectChoice((ProgramProjectSetting)c, this));
         }
 
         public ActionProviderResult HandleUserAction(UserActionResult res)

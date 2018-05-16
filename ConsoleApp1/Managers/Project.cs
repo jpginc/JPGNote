@@ -5,31 +5,19 @@ namespace ConsoleApp1.BuiltInActions
 {
     internal class Project
     {
-        public string Name { get; private set; }
-        private string _folder;
-        private string _password;
-        private ProjectSettingsClass _settings;
+        private readonly ProjectPersistence _settings;
 
-        public string EditChoiceText => Name;
-        public string CreateChoiceText => "Create New Project";
-        public string DeleteChoiceText => "Delete Projects";
-
-        public Project(string name, string folder, string password)
+        public Project(ProjectPersistence settings)
         {
-            Initialise(name, folder, password);
+            _settings = settings;
         }
 
-        private void Initialise(string name, string folder, string password)
-        {
-            Name = name;
-            _folder = folder;
-            _password = password;
-            _settings = ProjectSettingsClass.Load(folder, password);
-        }
+        public TargetManager TargetManager => _settings.TargetManager;
+        public PortManager PortManager => _settings.PortManager;
 
         public string GetLogFileFullLocation()
         {
-            var fileName = _folder + Path.DirectorySeparatorChar + GetLogFileName();
+            var fileName = _settings.ProjectFolder + Path.DirectorySeparatorChar + GetLogFileName();
             _settings.NotesManager.NewLoggedNote(fileName, "SSH Session " + DateTime.Now.ToLocalTime());
             return fileName;
         }
@@ -51,7 +39,7 @@ namespace ConsoleApp1.BuiltInActions
 
         public string GetLogFileFullLocation(UserAction userAction, string target)
         {
-            var fileName = _folder + Path.DirectorySeparatorChar + GetLogFileName();
+            var fileName = _settings.ProjectFolder + Path.DirectorySeparatorChar + GetLogFileName();
             _settings.NotesManager.NewLoggedNote(fileName, userAction.Name + " " + (target ?? "") + 
                 DateTime.Now.ToLocalTime());
             return fileName;

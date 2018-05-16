@@ -8,7 +8,7 @@ namespace ConsoleApp1.BuiltInActions
     [KnownType(typeof(Target))]
     internal class TargetManager : IManagerAndActionProvider
     {
-        [IgnoreDataMember] public ProjectSettingsClass Settings;
+        [IgnoreDataMember] public ProjectPersistence Settings;
 
         [IgnoreDataMember] public string ManageText => "Manage Targets";
         [IgnoreDataMember] public string CreateChoiceText => "Create Target";

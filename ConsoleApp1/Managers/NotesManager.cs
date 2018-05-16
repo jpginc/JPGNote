@@ -10,6 +10,7 @@ namespace ConsoleApp1
     [KnownType(typeof(LoggedNote))]
     internal class NotesManager
     {
+        public ProjectPersistence Settings { get; set; }
         public static NotesManager Instance { get; set; }
         [DataMember]
         public List<INote> Notes { get; set; }
@@ -51,7 +52,7 @@ namespace ConsoleApp1
 
         public NotesManager Save()
         {
-            ProjectSettingsClass.Instance.Save();
+            Settings.Save();
             return this;
         }
 
