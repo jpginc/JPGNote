@@ -14,6 +14,7 @@ namespace ConsoleApp1.BuiltInActions
     [DataContract]
     internal class CommandManager
     {
+        [IgnoreDataMember] private const int SimultaniousScans = 15;
         [DataMember] private List<JobDetails> _queue = new List<JobDetails>();
 
         [IgnoreDataMember] public static CommandManager Instance { get; } = new CommandManager();
@@ -81,7 +82,7 @@ namespace ConsoleApp1.BuiltInActions
         private void QueueMove()
         {
             Console.WriteLine($"Progressing queue. {_running} running. Total{_queue.Count}");
-            if (_running < 15)
+            if (_running < SimultaniousScans)
             {
                 var toRun = _queue.FirstOrDefault();
                 if (toRun != null)

@@ -19,6 +19,7 @@ namespace ConsoleApp1
 
         private static readonly string _settingsFileName = "settings.txt";
         public string ProjectName;
+        private bool _isSaving = false;
 
         private string SettingFileName => ProjectFolder + Path.DirectorySeparatorChar + ProjectName 
                                    + Path.DirectorySeparatorChar + _settingsFileName;
@@ -131,19 +132,16 @@ namespace ConsoleApp1
         private void SaveAsync(object o) => SaveAsync();
         private void SaveAsync()
         {
-            Application.Invoke((a, b) =>
+            if(_stuffToSave && !_isSaving)
             {
-                if (_stuffToSave)
+                _isSaving = true;
+                _stuffToSave = false;
+                Application.Invoke((a, b) =>
                 {
-                    _stuffToSave = false;
                     Persist();
-                }
-                else
-                {
-                    Console.WriteLine("don't need to save");
-                }
-                _timer = new Timer(SaveAsync, null, 5000, Timeout.Infinite);
-            });
+                    _timer = new Timer(SaveAsync, null, SaveTimerInterval, Timeout.Infinite);
+                });
+            }
         }
 
         private bool Persist()
@@ -160,7 +158,7 @@ namespace ConsoleApp1
                 stream1.Position = 0;
                 writer.Write(AESThenHMAC.SimpleEncryptWithPassword(sr.ReadToEnd(), _password));
                 writer.Close();
-                Console.WriteLine("saved");
+                //Console.WriteLine("saved");
                 return true;
             }
             catch (Exception e)
