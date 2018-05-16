@@ -158,11 +158,19 @@ namespace ConsoleApp1
             {
                 DefaultResponse = ResponseType.Ok,
                 DefaultHeight = 500,
-                DefaultWidth = 600
+                DefaultWidth = 600,
+                Expand = false
             };
             var input = new TextView {Buffer = {Text = currentValue}};
-            popup.ContentArea.PackEnd(input, false, true, 15);
+            var container = new ScrolledWindow
+            {
+                ShadowType = ShadowType.EtchedIn,
+                Expand = true
+            };
+            container.Add(input);
+            popup.ContentArea.PackEnd(container, true, true, 15);
             popup.ShowAll();
+            input.SetSizeRequest(600, 500);
             if (popup.Run() == (int) ResponseType.Ok)
             {
                 retVal.ResponseType = UserActionResult.ResultType.Accept;

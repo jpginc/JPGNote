@@ -3,7 +3,7 @@
 namespace ConsoleApp1.BuiltInActions
 {
     [DataContract]
-    internal class UserAction : ICreatable
+    public class UserAction : ICreatable
     {
         [DataMember]
         [AutoSingleLineString]
@@ -18,6 +18,5 @@ namespace ConsoleApp1.BuiltInActions
         [DataMember] [AutoFilePicker] public string ParsingCodeLocation { get; set; } = "";
 
         [IgnoreDataMember] public string EditChoiceText => Name;
-        public IManager Manager => MachineManager.Instance;
     }
 }

@@ -8,7 +8,7 @@ namespace ConsoleApp1
     [DataContract]
     [KnownType(typeof(Note))]
     [KnownType(typeof(LoggedNote))]
-    internal class NotesManager
+    public class NotesManager
     {
         [IgnoreDataMember] public ProjectPersistence Settings { get; set; }
         [IgnoreDataMember] public static NotesManager Instance { get; set; }

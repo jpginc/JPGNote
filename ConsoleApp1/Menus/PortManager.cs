@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace ConsoleApp1.BuiltInActions
 {
     [DataContract]
-    internal class PortManager : Manager, IManagerAndActionProvider 
+    public class PortManager : Manager, IManagerAndActionProvider 
     {
         [IgnoreDataMember] public override string ManageText => "Manage Ports";
         [IgnoreDataMember] public override string CreateChoiceText => "New Port";
@@ -48,6 +48,11 @@ namespace ConsoleApp1.BuiltInActions
         public IEnumerable<ICreatable> GetChildren(Target target)
         {
             return Creatables.Where(c => ((Port) c).Target.Equals(target.IpOrDomain));
+        }
+
+        public Port GetPort(string portNumber)
+        {
+            return (Port) Creatables.FirstOrDefault(c => ((Port) c).PortNumber.Equals(portNumber));
         }
     }
 }

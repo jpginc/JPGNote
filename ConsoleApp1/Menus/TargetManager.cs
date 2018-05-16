@@ -6,7 +6,7 @@ namespace ConsoleApp1.BuiltInActions
 {
     [DataContract]
     [KnownType(typeof(Target))]
-    internal class TargetManager : IManagerAndActionProvider
+    public class TargetManager : IManagerAndActionProvider
     {
         [IgnoreDataMember] public ProjectPersistence Settings;
 
@@ -93,7 +93,7 @@ namespace ConsoleApp1.BuiltInActions
     }
 
     [DataContract]
-    internal class Target : ICreatable
+    public class Target : ICreatable
     {
         [DataMember]
         [AutoSingleLineString]

@@ -3,17 +3,19 @@ using System.IO;
 
 namespace ConsoleApp1.BuiltInActions
 {
-    internal class Project
+    public class Project
     {
         private readonly ProjectPersistence _settings;
 
         public Project(ProjectPersistence settings)
         {
             _settings = settings;
+            _settings.ResumeCommands(this);
         }
 
         public TargetManager TargetManager => _settings.TargetManager;
         public PortManager PortManager => _settings.PortManager;
+        public CommandQueue CommandQueue => _settings.CommandQueue;
 
         public string GetLogFileFullLocation()
         {
@@ -43,6 +45,16 @@ namespace ConsoleApp1.BuiltInActions
             _settings.NotesManager.NewLoggedNote(fileName, userAction.Name + " " + (target ?? "") + 
                 DateTime.Now.ToLocalTime());
             return fileName;
+        }
+
+        public void CommandDone(JobDetails job)
+        {
+            CommandQueue.Remove(job);
+        }
+
+        public void CommandQueued(JobDetails jobDetails)
+        {
+            CommandQueue.Add(jobDetails);
         }
     }
 }

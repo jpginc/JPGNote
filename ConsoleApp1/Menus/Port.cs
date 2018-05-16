@@ -11,7 +11,7 @@ namespace ConsoleApp1.BuiltInActions
         Vulnerable
     }
     [DataContract]
-    internal class Port : ICreatable, IComparable<Port>, IDoneable
+    public class Port : ICreatable, IComparable<Port>, IDoneable
     {
         [IgnoreDataMember] public string EditChoiceText => PortNumber;
 

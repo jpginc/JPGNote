@@ -10,7 +10,7 @@ using Gtk;
 namespace ConsoleApp1
 {
     [DataContract]
-    internal class ProjectPersistence : ISettingsClass
+    public class ProjectPersistence : ISettingsClass
     {
         private const int SaveTimerInterval = 1000;
         private static bool _stuffToSave = false;
@@ -26,6 +26,7 @@ namespace ConsoleApp1
         [DataMember] public NotesManager NotesManager { get; private set; }
         [DataMember] public TargetManager TargetManager { get; private set; }
         [DataMember] public PortManager PortManager { get; private set; }
+        [DataMember] public CommandQueue CommandQueue { get; private set;}
 
         public string ProjectFolder { get; private set; }
 
@@ -98,6 +99,8 @@ namespace ConsoleApp1
                 TargetManager.Settings = this;
                 PortManager = instance.PortManager;
                 PortManager.Settings = this;
+                //must be last
+                CommandQueue = instance.CommandQueue;
             }
             catch (FileNotFoundException e)
             {
@@ -174,6 +177,15 @@ namespace ConsoleApp1
             TargetManager = new TargetManager(){ Settings = this };
             PortManager = new PortManager(){ Settings = this };
             return Persist();
+        }
+
+        public void ResumeCommands(Project project)
+        {
+            if (CommandQueue == null)
+            {
+                CommandQueue = new CommandQueue();
+            }
+            CommandQueue.Revive(project);
         }
     }
 }

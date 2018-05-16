@@ -10,7 +10,7 @@ namespace ConsoleApp1.BuiltInActions
     [KnownType(typeof(UserAction))]
     [KnownType(typeof(ProgramProjectSetting))]
     [KnownType(typeof(Port))]
-    internal abstract class Manager : IManager
+    public abstract class Manager : IManager
     {
         public abstract string ManageText { get; }
         public abstract string CreateChoiceText { get; }
@@ -46,7 +46,7 @@ namespace ConsoleApp1.BuiltInActions
         }
     }
 
-    internal interface ISettingsClass
+    public interface ISettingsClass
     {
         void Save();
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
@@ -37,6 +38,17 @@ namespace ConsoleApp1.BuiltInActions
         public override void New(UserActionResult obj)
         {
             CreateNewUserAction(obj);
+        }
+
+        public UserAction GetAction(string name)
+        {
+            foreach (var a in Creatables)
+            {
+                //Console.WriteLine("Here " + a.EditChoiceText + " and " + name);
+                if(((UserAction) a).Name.Equals(name))
+                    return (UserAction)a;
+            }
+            return null;
         }
     }
 }

@@ -62,17 +62,21 @@ namespace ConsoleApp1.BuiltInActions
             var jobDetails = new JobDetails(commandString, logLocation, target, port, userAction, project);
 
             _queue.Add(jobDetails);
+            project.CommandQueued(jobDetails);
             QueueMove();
         }
 
-        private void QueueDone()
+        private void QueueDone(JobDetails job)
         {
+            job.Project.CommandDone(job);
             _running--;
             QueueMove();
         }
 
         private void QueueMove()
         {
+            Console.WriteLine($"Progressing queue. {_running} running. Total size " +
+                              $"(including running) {_queue.Count}");
             if (_running < 15)
             {
                 var toRun = _queue.FirstOrDefault();
@@ -81,14 +85,12 @@ namespace ConsoleApp1.BuiltInActions
                     _running++;
                     _queue = _queue.Skip(1).ToList();
                     var args = MachineManager.Instance.GetSshCommandLineArgs() + $" \"{toRun.CommandString}\"";
-                    RunExeToFile(_sshLocation, args, toRun.LogLocation, toRun.UserAction, toRun.Target, 
-                        toRun.Port, toRun.Project);
+                    RunExeToFile(_sshLocation, args, toRun);
                 }
             }
         }
 
-        private void RunExeToFile(string exeFileName, string args, string logLocation, UserAction userAction,
-            string target, Port port, Project project)
+        private void RunExeToFile(string exeFileName, string args, JobDetails job)
         {
             new Thread(() =>
             {
@@ -105,7 +107,7 @@ namespace ConsoleApp1.BuiltInActions
                 };
                 p.Start();
                 //File.WriteAllText(logLocation, "Command not complete yet.\nit may never finish");
-                var file = File.Open(logLocation, FileMode.Create, FileAccess.Write, FileShare.Read);
+                var file = File.Open(job.LogLocation, FileMode.Create, FileAccess.Write, FileShare.Read);
                 var output = "";
                 while (!p.HasExited)
                 {
@@ -138,22 +140,22 @@ namespace ConsoleApp1.BuiltInActions
                 file.Write(Encoding.UTF8.GetBytes(remaining), 0, remaining.Length);
                 file.Close();
                 p.Close();
-                if (port != null) port.Notes += "\n" + output;
-                ParseOutput(logLocation, userAction, target, project);
+                if (job.Port != null) job.Port.Notes += "\n" + output;
+                ParseOutput(job);
             }).Start();
         }
 
-        private void ParseOutput(string outputLocation, UserAction userAction, string target, Project project)
+        private void ParseOutput(JobDetails job)
         {
-            if (File.Exists(userAction.ParsingCodeLocation))
+            if (File.Exists(job.UserAction.ParsingCodeLocation))
             {
                 var p = new Process
                 {
                     StartInfo =
                     {
                         FileName = _autohotkeyLocation,
-                        Arguments = "\"" + userAction.ParsingCodeLocation + "\""
-                                    + " \"" + outputLocation + "\"",
+                        Arguments = "\"" + job.UserAction.ParsingCodeLocation + "\""
+                                    + " \"" + job.LogLocation + "\"",
                         UseShellExecute = false,
                         RedirectStandardOutput = true
                     }
@@ -161,14 +163,14 @@ namespace ConsoleApp1.BuiltInActions
                 p.Start();
                 var output = p.StandardOutput.ReadToEnd();
                 p.WaitForExit();
-                ParseOutput(output, target, project);
+                ParseOutput(output, job);
                 p.Close();
             }
 
-            Application.Invoke((a, b) => QueueDone());
+            Application.Invoke((a, b) => QueueDone(job));
         }
 
-        private void ParseOutput(string output, string target, Project project)
+        private void ParseOutput(string output, JobDetails job)
         {
             Application.Invoke((a, b) =>
             {
@@ -181,8 +183,8 @@ namespace ConsoleApp1.BuiltInActions
                             var discoveredTarget = sr.ReadLine();
                             if (discoveredTarget != null)
                             {
-                                project.TargetManager.AddPremade(new Target {IpOrDomain = discoveredTarget});
-                                project.TargetManager.Save();
+                                job.Project.TargetManager.AddPremade(new Target {IpOrDomain = discoveredTarget});
+                                job.Project.TargetManager.Save();
                             }
                         }
                         else if (line.Equals("Port"))
@@ -191,29 +193,28 @@ namespace ConsoleApp1.BuiltInActions
                             var port = new Port
                             {
                                 PortNumber = portNumber,
-                                Target = target
+                                Target = job.Target
                             };
                             var notes = "";
                             while (!(line = sr.ReadLine()).Equals("Done")) notes += line + " ";
 
                             port.Notes = notes;
                             Console.WriteLine("Adding port " + port);
-                            project.PortManager.AddPremade(port);
-                            project.PortManager.Save();
+                            job.Project.PortManager.AddPremade(port);
+                            job.Project.PortManager.Save();
                         }
                 }
             });
         }
     }
 
-    [DataContract]
-    internal class JobDetails
+    public class JobDetails
     {
-        [DataMember] public readonly UserAction UserAction;
-        [DataMember] public string CommandString { get; }
-        [DataMember] public string LogLocation { get; }
-        [DataMember] public string Target { get; }
-        [DataMember] public Port Port { get; }
+        public readonly UserAction UserAction;
+        public string CommandString { get; }
+        public string LogLocation { get; }
+        public string Target { get; }
+        public Port Port { get; }
         public Project Project { get; }
 
         public JobDetails(string commandString, string logLocation, string target, Port port,

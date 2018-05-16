@@ -3,7 +3,7 @@ using ConsoleApp1.BuiltInActions;
 
 namespace ConsoleApp1
 {
-    internal class NoteChoice : ITreeViewChoice
+    public class NoteChoice : ITreeViewChoice
     {
         public readonly INote Note;
         public string SortByText => Note.NoteName;
