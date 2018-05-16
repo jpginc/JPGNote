@@ -23,6 +23,8 @@ namespace ConsoleApp1.BuiltInActions
                 {
                     _project.TargetManager.AddPremade(new Target {IpOrDomain = line});
                 }
+
+                _project.Save();
             }
         }
     }
