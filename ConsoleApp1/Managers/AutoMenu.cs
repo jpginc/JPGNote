@@ -14,10 +14,10 @@ namespace ConsoleApp1.BuiltInActions
         private readonly ICreatable _obj;
         private readonly IManager _manager;
 
-        public AutoMenu(ICreatable obj)
+        public AutoMenu(ICreatable obj, IManager manager)
         {
             _obj = obj;
-            _manager = obj.Manager;
+            _manager = manager;
         }
 
         public override IEnumerable<ITreeViewChoice> GetActions()
@@ -36,7 +36,7 @@ namespace ConsoleApp1.BuiltInActions
                 } else if (prop.PropertyType == typeof(IEnumerable<ICreatable>))
                 {
                     var val = (IEnumerable<ICreatable>) prop.GetValue(_obj);
-                    retList.AddRange(val.Select(v => new AutoAction(v)));
+                    retList.AddRange(val.Select(v => new AutoAction(v, _manager)));
                 }
             }
 

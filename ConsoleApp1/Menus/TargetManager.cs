@@ -16,7 +16,6 @@ namespace ConsoleApp1.BuiltInActions
         [IgnoreDataMember] public string DeleteChoiceText => "Delete Targets";
 
         [DataMember] public List<ICreatable> Creatables { get; set; } = new List<ICreatable>();
-        [IgnoreDataMember] public static TargetManager Instance { get; set; }
 
         public TargetManager()
         {
@@ -53,7 +52,7 @@ namespace ConsoleApp1.BuiltInActions
         public InputType InputType => InputType.Multi;
         public IEnumerable<ITreeViewChoice> GetActions()
         {
-            return Creatables.Select(c => new AutoAction(c));
+            return Creatables.Select(c => new AutoAction(c, this));
         }
 
         public ActionProviderResult HandleUserAction(UserActionResult res)
@@ -71,7 +70,7 @@ namespace ConsoleApp1.BuiltInActions
 
         public IEnumerable<ICreatable> GetChildren(Target target)
         {
-            return PortManager.Instance.GetChildren(target);
+            return Settings.PortManager.GetChildren(target);
         }
     }
 
@@ -86,9 +85,7 @@ namespace ConsoleApp1.BuiltInActions
         [AutoSingleLineString]
         [Wizard]
         public string IpOrDomain { get; set; }
-
         [IgnoreDataMember] public string EditChoiceText => IpOrDomain;
-        public IManager Manager => TargetManager.Instance;
-        [IgnoreDataMember] public IEnumerable<ICreatable> ChildPorts => TargetManager.Instance.GetChildren(this);
+
     }
 }

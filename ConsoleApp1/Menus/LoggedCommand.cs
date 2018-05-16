@@ -22,6 +22,11 @@ namespace ConsoleApp1.BuiltInActions
         public bool Run()
         {
             string commandString = ReplaceUserInput(_userAction.Command);
+            if (commandString == null)
+            {
+                return false;
+
+            }
             if (NeedsPort())
             {
                 foreach (var port in _ports)
@@ -63,8 +68,9 @@ namespace ConsoleApp1.BuiltInActions
                 {
                     return command.Replace(userInputMarker, input.Result);
                 }
+                return null;
             }
-            return null;
+            return command;
         }
 
         public bool NeedsTarget()

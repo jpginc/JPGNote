@@ -29,7 +29,7 @@ namespace ConsoleApp1.BuiltInActions
 
         public IEnumerable<ITreeViewChoice> GetMachineChoices()
         {
-            return Creatables.Select(m => new AutoAction(m));
+            return Creatables.Select(m => new AutoAction(m, this));
         }
 
         public void CreateNewMachine(UserActionResult obj)
@@ -40,7 +40,7 @@ namespace ConsoleApp1.BuiltInActions
                 SshAbleMachine machine = new SshAbleMachine {Name = machineName.Result};
                 Creatables.Add(machine);
                 ProgramSettingsClass.Instance.Save();
-                JpgActionManager.PushActionContext(new AutoMenu(machine));
+                JpgActionManager.PushActionContext(new AutoMenu(machine, this));
             }
         }
 

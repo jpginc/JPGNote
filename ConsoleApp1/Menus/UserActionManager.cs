@@ -20,7 +20,7 @@ namespace ConsoleApp1.BuiltInActions
 
         public IEnumerable<ITreeViewChoice> GetUserActionChoices()
         {
-            return Creatables.Select(u => new AutoAction(u));
+            return Creatables.Select(u => new AutoAction(u, this));
         }
 
         public void CreateNewUserAction(UserActionResult obj)
@@ -30,7 +30,7 @@ namespace ConsoleApp1.BuiltInActions
             {
                 Creatables.Add(userAction);
                 Save();
-                JpgActionManager.PushActionContext(new AutoMenu(userAction));
+                JpgActionManager.PushActionContext(new AutoMenu(userAction, this));
             }
         }
 

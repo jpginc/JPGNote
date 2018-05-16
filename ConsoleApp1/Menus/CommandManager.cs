@@ -59,7 +59,7 @@ namespace ConsoleApp1.BuiltInActions
             UserAction userAction, string target, Port port)
         {
             var logLocation = project.GetLogFileFullLocation(userAction, target);
-            var jobDetails = new JobDetails(commandString, logLocation, target, port, userAction);
+            var jobDetails = new JobDetails(commandString, logLocation, target, port, userAction, project);
 
             _queue.Add(jobDetails);
             QueueMove();
@@ -81,13 +81,14 @@ namespace ConsoleApp1.BuiltInActions
                     _running++;
                     _queue = _queue.Skip(1).ToList();
                     var args = MachineManager.Instance.GetSshCommandLineArgs() + $" \"{toRun.CommandString}\"";
-                    RunExeToFile(_sshLocation, args, toRun.LogLocation, toRun.UserAction, toRun.Target, toRun.Port);
+                    RunExeToFile(_sshLocation, args, toRun.LogLocation, toRun.UserAction, toRun.Target, 
+                        toRun.Port, toRun.Project);
                 }
             }
         }
 
         private void RunExeToFile(string exeFileName, string args, string logLocation, UserAction userAction,
-            string target, Port port)
+            string target, Port port, Project project)
         {
             new Thread(() =>
             {
@@ -138,11 +139,11 @@ namespace ConsoleApp1.BuiltInActions
                 file.Close();
                 p.Close();
                 if (port != null) port.Notes += "\n" + output;
-                ParseOutput(logLocation, userAction, target);
+                ParseOutput(logLocation, userAction, target, project);
             }).Start();
         }
 
-        private void ParseOutput(string outputLocation, UserAction userAction, string target)
+        private void ParseOutput(string outputLocation, UserAction userAction, string target, Project project)
         {
             if (File.Exists(userAction.ParsingCodeLocation))
             {
@@ -160,14 +161,14 @@ namespace ConsoleApp1.BuiltInActions
                 p.Start();
                 var output = p.StandardOutput.ReadToEnd();
                 p.WaitForExit();
-                ParseOutput(output, target);
+                ParseOutput(output, target, project);
                 p.Close();
             }
 
             Application.Invoke((a, b) => QueueDone());
         }
 
-        private void ParseOutput(string output, string target)
+        private void ParseOutput(string output, string target, Project project)
         {
             Application.Invoke((a, b) =>
             {
@@ -180,8 +181,8 @@ namespace ConsoleApp1.BuiltInActions
                             var discoveredTarget = sr.ReadLine();
                             if (discoveredTarget != null)
                             {
-                                TargetManager.Instance.AddPremade(new Target {IpOrDomain = discoveredTarget});
-                                TargetManager.Instance.Save();
+                                project.TargetManager.AddPremade(new Target {IpOrDomain = discoveredTarget});
+                                project.TargetManager.Save();
                             }
                         }
                         else if (line.Equals("Port"))
@@ -197,8 +198,8 @@ namespace ConsoleApp1.BuiltInActions
 
                             port.Notes = notes;
                             Console.WriteLine("Adding port " + port);
-                            PortManager.Instance.AddPremade(port);
-                            PortManager.Instance.Save();
+                            project.PortManager.AddPremade(port);
+                            project.PortManager.Save();
                         }
                 }
             });
@@ -213,15 +214,17 @@ namespace ConsoleApp1.BuiltInActions
         [DataMember] public string LogLocation { get; }
         [DataMember] public string Target { get; }
         [DataMember] public Port Port { get; }
+        public Project Project { get; }
 
         public JobDetails(string commandString, string logLocation, string target, Port port,
-            UserAction userAction)
+            UserAction userAction, Project project)
         {
             UserAction = userAction;
             CommandString = commandString;
             LogLocation = logLocation;
             Target = target;
             Port = port;
+            Project = project;
         }
     }
 }

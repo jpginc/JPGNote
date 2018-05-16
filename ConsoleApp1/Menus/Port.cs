@@ -14,7 +14,6 @@ namespace ConsoleApp1.BuiltInActions
     internal class Port : ICreatable, IComparable<Port>, IDoneable
     {
         [IgnoreDataMember] public string EditChoiceText => PortNumber;
-        public IManager Manager => PortManager.Instance;
 
         [DataMember, Wizard, AutoSingleLineString]
         public string PortNumber { get; set; } = "";
