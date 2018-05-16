@@ -16,7 +16,7 @@ namespace ConsoleApp1
 
         public override void New(UserActionResult obj)
         {
-            var userNote = new UserNote();
+            var userNote = new Note();
             if (CreatableWizard.GetRequiredFields(userNote))
             {
                 Creatables.Add(userNote);

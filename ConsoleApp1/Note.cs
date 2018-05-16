@@ -6,9 +6,7 @@ using ConsoleApp1.BuiltInActions;
 namespace ConsoleApp1
 {
     [DataContract]
-    [KnownType(typeof(UserNote))]
-    [KnownType(typeof(LoggedNote))]
-    internal abstract class Note : ICreatable, IComparable<Note>
+    internal class Note : ICreatable, IComparable<Note>
     {
         [IgnoreDataMember] public string EditChoiceText => NoteName;
         [DataMember, AutoSingleLineString, Wizard] public string NoteName { get; set; }

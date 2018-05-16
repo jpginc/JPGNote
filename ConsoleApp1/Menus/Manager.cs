@@ -7,6 +7,8 @@ namespace ConsoleApp1.BuiltInActions
     [DataContract]
     [KnownType(typeof(SshAbleMachine))]
     [KnownType(typeof(Target))]
+    [KnownType(typeof(Note))]
+    [KnownType(typeof(LoggedNote))]
     [KnownType(typeof(UserAction))]
     [KnownType(typeof(ProgramProjectSetting))]
     [KnownType(typeof(Port))]

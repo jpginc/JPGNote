@@ -13,21 +13,21 @@ namespace ConsoleApp1
     public class ProjectPersistence : ISettingsClass
     {
         private const int SaveTimerInterval = 1000;
-        private static bool _stuffToSave = false;
+        private static bool _stuffToSave;
         private Timer _timer;
         private static string _password;
 
         private static readonly string _settingsFileName = "settings.txt";
         public string ProjectName;
-        private bool _isSaving = false;
+        private bool _isSaving;
 
-        private string SettingFileName => ProjectFolder + Path.DirectorySeparatorChar + ProjectName 
-                                   + Path.DirectorySeparatorChar + _settingsFileName;
+        private string SettingFileName => ProjectFolder + Path.DirectorySeparatorChar + ProjectName
+                                          + Path.DirectorySeparatorChar + _settingsFileName;
 
         [DataMember] public NotesManager NotesManager { get; private set; }
         [DataMember] public TargetManager TargetManager { get; private set; }
         [DataMember] public PortManager PortManager { get; private set; }
-        [DataMember] public CommandQueue CommandQueue { get; private set;}
+        [DataMember] public CommandQueue CommandQueue { get; private set; }
 
         public string ProjectFolder { get; private set; }
 
@@ -42,12 +42,13 @@ namespace ConsoleApp1
                 StartSaveTimer();
                 return true;
             }
+
             return false;
         }
 
         private void StartSaveTimer()
         {
-            _timer = new Timer((b) => SaveAsync(), null, SaveTimerInterval, Timeout.Infinite);
+            _timer = new Timer(b => SaveAsync(), null, SaveTimerInterval, Timeout.Infinite);
         }
 
         public bool Load(string folderName, string projectName, string password)
@@ -55,11 +56,12 @@ namespace ConsoleApp1
             _password = password;
             ProjectName = projectName;
             ProjectFolder = folderName;
-            if(Load())
+            if (Load())
             {
                 StartSaveTimer();
                 return true;
             }
+
             return false;
         }
 
@@ -120,31 +122,39 @@ namespace ConsoleApp1
             {
                 file?.Close();
             }
+
             return true;
         }
 
         public void Save()
         {
             _stuffToSave = true;
+            StartSaveTimer();
         }
 
-        private void SaveAsync(object o) => SaveAsync();
+        private void SaveAsync(object o)
+        {
+            SaveAsync();
+        }
+
         private void SaveAsync()
         {
-            if(_stuffToSave && !_isSaving)
+            Application.Invoke((a, b) =>
             {
-                _isSaving = true;
-                _stuffToSave = false;
-                Application.Invoke((a, b) =>
+                if (_stuffToSave && !_isSaving)
                 {
+                    _isSaving = true;
+                    _stuffToSave = false;
                     Persist();
                     _timer = new Timer(SaveAsync, null, SaveTimerInterval, Timeout.Infinite);
-                });
-            }
+                    _isSaving = false;
+                }
+            });
         }
 
         private bool Persist()
         {
+            Console.WriteLine("saving project");
             try
             {
                 var stream1 = new MemoryStream();
@@ -169,18 +179,15 @@ namespace ConsoleApp1
 
         private bool StartNew()
         {
-            NotesManager = new NotesManager() {Settings = this};
-            TargetManager = new TargetManager(){ Settings = this };
-            PortManager = new PortManager(){ Settings = this };
+            NotesManager = new NotesManager {Settings = this};
+            TargetManager = new TargetManager {Settings = this};
+            PortManager = new PortManager {Settings = this};
             return Persist();
         }
 
         public void ResumeCommands(Project project)
         {
-            if (CommandQueue == null)
-            {
-                CommandQueue = new CommandQueue();
-            }
+            if (CommandQueue == null) CommandQueue = new CommandQueue();
             CommandQueue.Revive(project);
         }
     }
