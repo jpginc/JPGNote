@@ -22,6 +22,7 @@ namespace ConsoleApp1.BuiltInActions
                 new ExitChoice(),
                 new DeleteNotesAction(),
                 new ImportTargetsAction(_project),
+                new ResumeQueueAction(_project),
                 new ChoiceToActionProvider(new SelectCommandToRunMenu(_project), "Run Command")
             };
 

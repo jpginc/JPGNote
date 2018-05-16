@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using ConsoleApp1.BuiltInActions;
 
@@ -8,13 +9,17 @@ namespace ConsoleApp1
     [DataContract]
     public class CommandQueue
     {
-        [DataMember]
-        public List<SerialisableJob> JobDetails = new List<SerialisableJob>();
+        [DataMember] public List<SerialisableJob> JobDetails = new List<SerialisableJob>();
+        [IgnoreDataMember] private List<SerialisableJob> _seperateFromNewQueue;
 
         [IgnoreDataMember] private bool _haveAlreadyRevived = false;
 
         public void Add(JobDetails job)
         {
+            if (!_haveAlreadyRevived)
+            {
+                _seperateFromNewQueue = JobDetails.Select(a => a).ToList();
+            }
             JobDetails.Add(new SerialisableJob(job));
             job.Project.Save();
         }
@@ -37,7 +42,7 @@ namespace ConsoleApp1
                 JobDetails = new List<SerialisableJob>();
             }
 
-            var enumerated = JobDetails.ToArray();
+            var enumerated = _seperateFromNewQueue?.ToArray() ?? JobDetails.ToArray();
             foreach (var j in enumerated)
             {
                 var userAction = UserActionManager.Instance.GetAction(j.UserActionName);
