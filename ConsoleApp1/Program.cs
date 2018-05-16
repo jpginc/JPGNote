@@ -59,6 +59,6 @@ public class GtkHelloWorld
 
     private static string GetPassword()
     {
-        return "";
+        return "asdf";
     }
 }

@@ -1,34 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using ConsoleApp1.BuiltInActions;
 
 namespace ConsoleApp1
 {
     [DataContract]
-    internal class Note : INote
+    [KnownType(typeof(UserNote))]
+    [KnownType(typeof(LoggedNote))]
+    internal abstract class Note : ICreatable, IComparable<Note>
     {
-        [DataMember] public string NoteName { get; set; }
-        [DataMember] private readonly string _uniqueId;
-        [DataMember] public string NoteContents { get; set; }
-        [DataMember] public DateTime CreateTime { get; set; }
+        [IgnoreDataMember] public string EditChoiceText => NoteName;
+        [DataMember, AutoSingleLineString, Wizard] public string NoteName { get; set; }
+        [DataMember] protected readonly string UniqueId = Guid.NewGuid().ToString("N");
+        [DataMember, AutoMultiLineString, Wizard] public virtual string NoteContents { get; set; } = "";
+        [DataMember] public DateTime CreateTime { get; set; } = DateTime.Now;
         [DataMember] public List<string> Tags { get; set; } = new List<string>();
-
-        public Note(string noteName)
+        public virtual int CompareTo(Note obj)
         {
-            NoteName = noteName;
-            _uniqueId = Guid.NewGuid().ToString("N");
-            NoteContents = "";
-            CreateTime = DateTime.Now;
+            return string.Compare(UniqueId, obj.UniqueId, StringComparison.Ordinal);
         }
+    }
 
-        public int CompareTo(Note obj)
-        {
-            return string.Compare(_uniqueId, obj._uniqueId, StringComparison.Ordinal);
-        }
-
-        public int CompareTo(object obj)
-        {
-            return obj.GetType() != this.GetType() ? -1 : CompareTo((Note) obj);
-        }
+    class UserNote : Note
+    {
     }
 }

@@ -17,17 +17,14 @@ namespace ConsoleApp1.BuiltInActions
         {
             var a = new List<ITreeViewChoice>
             {
-                new NewNoteChoice(),
                 new OpenLoggedSshSessionChoice(_project),
-                new ExitChoice(),
-                new DeleteNotesAction(),
                 new ImportTargetsAction(_project),
                 new ResumeQueueAction(_project),
                 new ChoiceToActionProvider(new SelectCommandToRunMenu(_project), "Run Command")
             };
 
             var b = new ManageableCreatable(_project.TargetManager).GetActions();
-            var c = NotesManager.Instance.GetNoteChoices();
+            var c = new ManageableCreatable(_project.NotesManager).GetActions();
             var d = new ManageableCreatable(_project.PortManager).GetActions();
             return a.Concat(b.Concat(c.Concat(d)));
         }

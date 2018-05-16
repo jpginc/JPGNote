@@ -13,6 +13,7 @@ namespace ConsoleApp1.BuiltInActions
         }
 
         public TargetManager TargetManager => _settings.TargetManager;
+        public NotesManager NotesManager => _settings.NotesManager;
         public PortManager PortManager => _settings.PortManager;
         public CommandQueue CommandQueue => _settings.CommandQueue;
 

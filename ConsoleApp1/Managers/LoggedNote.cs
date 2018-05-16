@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
+using ConsoleApp1.BuiltInActions;
 
 namespace ConsoleApp1
 {
     [DataContract]
-    internal class LoggedNote : INote
+    internal class LoggedNote : Note
     {
         [DataMember] public string FileName { get; set; }
-        [DataMember] public DateTime CreateTime { get; set; }
 
-        [IgnoreDataMember] public string NoteContents
+        [IgnoreDataMember] public override string NoteContents
         {
             get => LoadLog();
             set { }
@@ -36,19 +36,11 @@ namespace ConsoleApp1
             return contents;
         }
 
-        [DataMember]
-        public string NoteName { get; set; }
-        [DataMember] public List<string> Tags { get; set; }
         public LoggedNote(string fileName, string noteName)
         {
             FileName = fileName;
             NoteName = noteName;
             CreateTime = DateTime.Now;
-        }
-        public int CompareTo(object obj)
-        {
-            return obj.GetType() != this.GetType() ? -1
-                : string.Compare(FileName, ((LoggedNote) obj).FileName, StringComparison.Ordinal);
         }
     }
 }
