@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace ConsoleApp1.BuiltInActions
@@ -34,6 +35,15 @@ namespace ConsoleApp1.BuiltInActions
         }
 
         public abstract void New(UserActionResult obj);
+        public virtual bool HasChildren()
+        {
+            return false;
+        }
+
+        public virtual IEnumerable<ICreatable> GetChildren(ICreatable parent)
+        {
+            return Enumerable.Empty<ICreatable>();
+        }
     }
 
     internal interface ISettingsClass

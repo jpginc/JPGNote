@@ -21,6 +21,7 @@ namespace ConsoleApp1.BuiltInActions
                 new OpenLoggedSshSessionChoice(_project),
                 new ExitChoice(),
                 new DeleteNotesAction(),
+                new ImportTargetsAction(_project),
                 new ChoiceToActionProvider(new SelectCommandToRunMenu(_project), "Run Command")
             };
 

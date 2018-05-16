@@ -49,6 +49,20 @@ namespace ConsoleApp1.BuiltInActions
             }
         }
 
+        public bool HasChildren()
+        {
+            return true;
+        }
+
+        public IEnumerable<ICreatable> GetChildren(ICreatable parent)
+        {
+            if (parent is Target)
+            {
+                return GetChildren((Target) parent);
+            }
+            return Enumerable.Empty<ICreatable>();
+        }
+
         public InputType InputType => InputType.Multi;
         public IEnumerable<ITreeViewChoice> GetActions()
         {

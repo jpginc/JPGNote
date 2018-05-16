@@ -135,6 +135,10 @@ namespace ConsoleApp1.BuiltInActions
         {
             var val = "";
             val += GetPreviewFromObject(Creatable);
+            foreach (var subThing in _manager.GetChildren(Creatable))
+            {
+                val += GetPreviewFromObject(subThing);
+            }
             MainWindow.Instance.SetInputText(val);
         }
 
@@ -157,7 +161,6 @@ namespace ConsoleApp1.BuiltInActions
                     }
                 }
             }
-
             return val;
         }
 

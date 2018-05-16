@@ -40,6 +40,11 @@ namespace ConsoleApp1.BuiltInActions
                 }
             }
 
+            if (_manager.HasChildren())
+            {
+                retList.AddRange(_manager.GetChildren(_obj).Select(v=> new AutoAction(v, _manager)));
+            }
+
             retList.Add(new AutoDeleteCreatable(_obj, _manager));
             return retList;
         }

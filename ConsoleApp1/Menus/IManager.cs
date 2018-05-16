@@ -12,6 +12,8 @@ namespace ConsoleApp1.BuiltInActions
         void Save();
         void Delete(ICreatable creatable);
         void New(UserActionResult obj);
+        bool HasChildren();
+        IEnumerable<ICreatable> GetChildren(ICreatable parent);
     }
 
     public interface ICreatable 

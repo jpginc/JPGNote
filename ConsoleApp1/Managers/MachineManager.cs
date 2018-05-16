@@ -89,5 +89,14 @@ namespace ConsoleApp1.BuiltInActions
         }
 
         public void New(UserActionResult obj) => CreateNewMachine(obj);
+        public bool HasChildren()
+        {
+            return false;
+        }
+
+        public IEnumerable<ICreatable> GetChildren(ICreatable parent)
+        {
+            return Enumerable.Empty<ICreatable>();
+        }
     }
 }
