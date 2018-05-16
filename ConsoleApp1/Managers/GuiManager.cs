@@ -161,7 +161,7 @@ namespace ConsoleApp1
                 DefaultWidth = 600
             };
             var input = new TextView {Buffer = {Text = currentValue}};
-            popup.ContentArea.PackEnd(input, true, true, 15);
+            popup.ContentArea.PackEnd(input, false, true, 15);
             popup.ShowAll();
             if (popup.Run() == (int) ResponseType.Ok)
             {
