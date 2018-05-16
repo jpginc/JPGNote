@@ -8,10 +8,8 @@ namespace ConsoleApp1
     [DataContract]
     internal class LoggedNote : INote
     {
-        [DataMember]
-        public string FileName { get; set; }
-        [DataMember]
-        public DateTime CreateTime { get; set; }
+        [DataMember] public string FileName { get; set; }
+        [DataMember] public DateTime CreateTime { get; set; }
 
         [IgnoreDataMember] public string NoteContents
         {
@@ -27,14 +25,7 @@ namespace ConsoleApp1
 
                 var logFileStream = new FileStream(FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 var logFileReader = new StreamReader(logFileStream);
-                contents = "";
-
-                while (!logFileReader.EndOfStream)
-                {
-                    contents += logFileReader.ReadLine();
-                    contents += Environment.NewLine;
-                }
-
+                contents = logFileReader.ReadToEnd();
                 logFileReader.Close();
                 logFileStream.Close();
             }
@@ -47,8 +38,7 @@ namespace ConsoleApp1
 
         [DataMember]
         public string NoteName { get; set; }
-        [DataMember]
-        public List<string> Tags { get; set; }
+        [DataMember] public List<string> Tags { get; set; }
         public LoggedNote(string fileName, string noteName)
         {
             FileName = fileName;
