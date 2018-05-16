@@ -58,11 +58,16 @@ namespace ConsoleApp1.BuiltInActions
         public void RunCommand(string commandString, Project project,
             UserAction userAction, string target, Port port)
         {
-            var logLocation = project.GetLogFileFullLocation(userAction, target);
-            var jobDetails = new JobDetails(commandString, logLocation, target, port, userAction, project);
+            var jobDetails = new JobDetails(commandString, target, port, userAction, project);
 
             _queue.Add(jobDetails);
             project.CommandQueued(jobDetails);
+            QueueMove();
+        }
+
+        public void ReviveCommand(JobDetails job)
+        {
+            _queue.Add(job);
             QueueMove();
         }
 
@@ -75,8 +80,7 @@ namespace ConsoleApp1.BuiltInActions
 
         private void QueueMove()
         {
-            Console.WriteLine($"Progressing queue. {_running} running. Total size " +
-                              $"(including running) {_queue.Count}");
+            Console.WriteLine($"Progressing queue. {_running} running. Total{_queue.Count}");
             if (_running < 15)
             {
                 var toRun = _queue.FirstOrDefault();
@@ -85,6 +89,8 @@ namespace ConsoleApp1.BuiltInActions
                     _running++;
                     _queue = _queue.Skip(1).ToList();
                     var args = MachineManager.Instance.GetSshCommandLineArgs() + $" \"{toRun.CommandString}\"";
+                    var logLocation = toRun.Project.GetLogFileFullLocation(toRun.UserAction, toRun.Target);
+                    toRun.LogLocation = logLocation;
                     RunExeToFile(_sshLocation, args, toRun);
                 }
             }
@@ -212,17 +218,16 @@ namespace ConsoleApp1.BuiltInActions
     {
         public readonly UserAction UserAction;
         public string CommandString { get; }
-        public string LogLocation { get; }
+        public string LogLocation { get; set; }
         public string Target { get; }
         public Port Port { get; }
         public Project Project { get; }
 
-        public JobDetails(string commandString, string logLocation, string target, Port port,
+        public JobDetails(string commandString, string target, Port port,
             UserAction userAction, Project project)
         {
             UserAction = userAction;
             CommandString = commandString;
-            LogLocation = logLocation;
             Target = target;
             Port = port;
             Project = project;

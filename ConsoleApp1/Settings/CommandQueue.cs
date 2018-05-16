@@ -48,8 +48,8 @@ namespace ConsoleApp1
                     continue;
                 }
 
-                CommandManager.Instance.RunCommand(j.CommandString, project,
-                    userAction, j.TargetName, port);
+                CommandManager.Instance.ReviveCommand(new JobDetails(j.CommandString, j.TargetName, 
+                    port, userAction, project));
             }
         }
     }
