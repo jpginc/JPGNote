@@ -26,7 +26,7 @@ namespace ConsoleApp1.BuiltInActions
 
         public int MachineCount()
         {
-            return Creatables.Count();
+            return Creatables.Count(m => ((SshAbleMachine)m).IsAvailable.Equals("yes"));
         }
 
         public IEnumerable<ITreeViewChoice> GetMachineChoices()
@@ -59,7 +59,7 @@ namespace ConsoleApp1.BuiltInActions
 
         public string GetSshCommandLineArgs(JobDetails toRun)
         {
-            foreach (var machine in Creatables)
+            foreach (var machine in Creatables.Where(m => ((SshAbleMachine) m).IsAvailable.Equals("yes")))
             {
                 var m = (SshAbleMachine) machine;
                 if (m.RunningJobs == null)

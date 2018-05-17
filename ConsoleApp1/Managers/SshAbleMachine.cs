@@ -15,6 +15,7 @@ namespace ConsoleApp1.BuiltInActions
         [AutoSingleLineString, DataMember] public string SshKeyPassphrase { get; set; } = "";
 
         [AutoSingleLineString, DataMember] public string IpOrDomainName { get; set; } = "";
+        [AutoSingleLineString, DataMember] public string IsAvailable { get; set; } = "yes";
 
         [DataMember] public List<string> Tags { get; set; }
 
