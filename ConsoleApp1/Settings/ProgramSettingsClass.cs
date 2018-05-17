@@ -17,7 +17,7 @@ internal class ProgramSettingsClass : ISettingsClass
 
     public ProgramSettingsClass()
     {
-        ProjectManager = new ProjectManager() {Settings = this, _loadedProjects = new List<ProjectPersistence>() };
+        ProjectManager = new ProjectManager() {Settings = this, LoadedProjects = new List<ProjectPersistence>() };
         MachineManager = new MachineManager();
         UserActionManager = new UserActionManager() {Settings = this};
     }
@@ -58,7 +58,7 @@ internal class ProgramSettingsClass : ISettingsClass
 
         ProjectManager.Instance = Instance.ProjectManager ?? new ProjectManager();
         ProjectManager.Instance.Settings = Instance;
-        ProjectManager.Instance._loadedProjects = new List<ProjectPersistence>();
+        ProjectManager.Instance.LoadedProjects = new List<ProjectPersistence>();
         MachineManager.Instance = Instance.MachineManager ?? new MachineManager();
         UserActionManager.Instance = Instance.UserActionManager ?? new UserActionManager();
         UserActionManager.Instance.Settings = Instance;
@@ -80,5 +80,18 @@ internal class ProgramSettingsClass : ISettingsClass
             stream1.Position = 0;
             writer.Write(AESThenHMAC.SimpleEncryptWithPassword(sr.ReadToEnd(), _password));
             writer.Close();
+    }
+
+    public ICreatable GetNote(string uniqueNoteId)
+    {
+        foreach (var project in ProjectManager.LoadedProjects)
+        {
+            Note note = null;
+            if ((note = project.NotesManager.GetNote(uniqueNoteId)) != null)
+            {
+                return note;
+            }
+        }
+        return null;
     }
 }

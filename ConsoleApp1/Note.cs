@@ -10,7 +10,7 @@ namespace ConsoleApp1
     {
         [IgnoreDataMember] public string EditChoiceText => NoteName;
         [DataMember, AutoSingleLineString, Wizard] public string NoteName { get; set; }
-        [DataMember] protected readonly string UniqueId = Guid.NewGuid().ToString("N");
+        [DataMember] public readonly string UniqueId = Guid.NewGuid().ToString("N");
         [DataMember, AutoMultiLineString, Wizard] public virtual string NoteContents { get; set; } = "";
         [DataMember] public DateTime CreateTime { get; set; } = DateTime.Now;
         [DataMember] public List<string> Tags { get; set; } = new List<string>();

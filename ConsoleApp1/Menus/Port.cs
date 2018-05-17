@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace ConsoleApp1.BuiltInActions
@@ -19,7 +20,18 @@ namespace ConsoleApp1.BuiltInActions
         [DataMember, Wizard, AutoSingleLineString]
         public string PortNumber { get; set; } = "";
         [DataMember, AutoSingleLineString] public string Target { get; set; } = "";
-        [DataMember] public List<ICreatable> Notes { get; set; } = new List<ICreatable>();
+        [IgnoreDataMember] public List<ICreatable> Notes
+        {
+            get
+            {
+                return NoteReferences.Select(r => ProgramSettingsClass.Instance.GetNote(r))
+                    .Where(n => n != null)
+                    .ToList();
+            }
+        }
+
+        public List<string> NoteReferences { get; set; } = new List<string>();
+
         [DataMember] public ScanItemState ScanItemStatus { get; set; } = ScanItemState.NotSet;
         public int CompareTo(Port other)
         {

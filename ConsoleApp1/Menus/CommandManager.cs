@@ -149,7 +149,8 @@ namespace ConsoleApp1.BuiltInActions
                 file.Write(Encoding.UTF8.GetBytes(remaining), 0, remaining.Length);
                 file.Close();
                 p.Close();
-                job.Port?.Notes.Add(note);
+                job.Project.NotesManager.AddPremade(note);
+                job.Port?.NoteReferences.Add(note.UniqueId);
                 ParseOutput(job);
             }).Start();
         }
@@ -193,7 +194,6 @@ namespace ConsoleApp1.BuiltInActions
                             if (discoveredTarget != null)
                             {
                                 job.Project.TargetManager.AddPremade(new Target {IpOrDomain = discoveredTarget});
-                                job.Project.TargetManager.Save();
                             }
                         }
                         else if (line.Equals("Port"))
@@ -207,14 +207,19 @@ namespace ConsoleApp1.BuiltInActions
                             var notes = "";
                             while (!(line = sr.ReadLine()).Equals("Done")) notes += line + " ";
 
-                            port.Notes.Add(new Note()
+                            var note = new Note()
                             {
                                 NoteName = job.UserAction.Name,
                                 NoteContents = notes
-                            });
+                            };
+
+                            job.Project.NotesManager.AddPremade(note);
+                            job.Port?.NoteReferences.Add(note.UniqueId);
+
                             Console.WriteLine("Adding port " + port);
                             job.Project.PortManager.AddPremade(port);
-                            job.Project.PortManager.Save();
+
+                            job.Project.Save();
                         }
                 }
             });

@@ -7,7 +7,7 @@ namespace ConsoleApp1.BuiltInActions
     [DataContract]
     internal class ProjectManager : Manager, IManagerAndActionProvider
     {
-        [IgnoreDataMember] public List<ProjectPersistence> _loadedProjects { get; set; }
+        [IgnoreDataMember] public List<ProjectPersistence> LoadedProjects { get; set; }
 
         //a list of project names and their folders
         [IgnoreDataMember] public override string ManageText => "Manage Projects";
@@ -35,7 +35,7 @@ namespace ConsoleApp1.BuiltInActions
             var projectData = new ProjectPersistence();
             if (projectData.Create(folder, proj.ProjectName, password))
             {
-                _loadedProjects.Add(projectData);
+                LoadedProjects.Add(projectData);
                 return true;
             }
             return false;
@@ -51,7 +51,7 @@ namespace ConsoleApp1.BuiltInActions
                 projectData = new ProjectPersistence();
                 if (projectData.Load(folder, proj.ProjectName, password))
                 {
-                    _loadedProjects.Add(projectData);
+                    LoadedProjects.Add(projectData);
                 }                
             }
 
@@ -60,7 +60,7 @@ namespace ConsoleApp1.BuiltInActions
 
         private ProjectPersistence GetLoadedProject(ProgramProjectSetting projectSettings)
         {
-            return _loadedProjects.FirstOrDefault(p => p.ProjectName.Equals(projectSettings.ProjectName));
+            return LoadedProjects.FirstOrDefault(p => p.ProjectName.Equals(projectSettings.ProjectName));
         }
 
         public InputType InputType => InputType.Single;

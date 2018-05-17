@@ -42,5 +42,15 @@ namespace ConsoleApp1
         {
             return ActionProviderResult.PassToTreeViewChoices;
         }
+
+        public Note GetNote(string uniqueNoteId)
+        {
+            return Creatables.FirstOrDefault(n => ((Note) n).UniqueId.Equals(uniqueNoteId)) as Note;
+        }
+
+        public void AddPremade(Note note)
+        {
+            Creatables.Add(note);
+        }
     }
 }
