@@ -6,6 +6,7 @@ namespace ConsoleApp1.BuiltInActions
     internal class SelectCommandToRunMenu : IActionProvider
     {
         private readonly Project _project;
+        private IEnumerable<Port> _prepopulatedPort;
 
         public SelectCommandToRunMenu(Project project)
         {
@@ -16,8 +17,13 @@ namespace ConsoleApp1.BuiltInActions
 
         public IEnumerable<ITreeViewChoice> GetActions()
         {
-            var userActions =  UserActionManager.Instance.GetUserActionChoices();
-            return userActions;
+            if (_prepopulatedPort == null)
+            {
+                var userActions = UserActionManager.Instance.GetUserActionChoices();
+                return userActions;
+            }
+
+            return UserActionManager.Instance.GetPortCommands();
         }
 
         public ActionProviderResult HandleUserAction(UserActionResult res)
@@ -25,13 +31,28 @@ namespace ConsoleApp1.BuiltInActions
             if (res.Result == UserActionResult.ResultType.Accept && res.UserChoices.Count() != 0)
             {
                 var command = (UserAction) ((AutoAction) res.UserChoices.First()).Creatable;
-                JpgActionManager.PushActionContext(new SetupCommandMenu(command, _project));
+                if (_prepopulatedPort == null)
+                {
+                    var menu = new SetupCommandMenu(command, _project);
+                    JpgActionManager.PushActionContext(menu);
+                }
+                else
+                {
+                    var cmd = new LoggedCommand(command, _project);
+                    cmd.SetPorts(_prepopulatedPort);
+                    cmd.Run();
+                }
             }
             else
             {
                 JpgActionManager.UnrollActionContext();
             }
             return ActionProviderResult.ProcessingFinished;
+        }
+
+        public void PrepopulatePorts(IEnumerable<Port> ports)
+        {
+            _prepopulatedPort = ports;
         }
     }
 }

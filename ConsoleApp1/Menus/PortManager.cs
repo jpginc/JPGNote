@@ -7,6 +7,7 @@ namespace ConsoleApp1.BuiltInActions
     [DataContract]
     public class PortManager : Manager, IManagerAndActionProvider 
     {
+        private Project _project;
         [IgnoreDataMember] public override string ManageText => "Manage Ports";
         [IgnoreDataMember] public override string CreateChoiceText => "New Port";
         [IgnoreDataMember] public override string DeleteChoiceText => "Delete Ports";
@@ -29,6 +30,14 @@ namespace ConsoleApp1.BuiltInActions
 
         public ActionProviderResult HandleUserAction(UserActionResult res)
         {
+            if (res.Result == UserActionResult.ResultType.Accept
+                && res.UserChoices.Count() > 1)
+            {
+                var x = new SelectCommandToRunMenu(Settings.Project);
+                x.PrepopulatePorts(res.UserChoices.Select(c => ((AutoAction)c).Creatable as Port));
+                JpgActionManager.PushActionContext(x);
+                return ActionProviderResult.ProcessingFinished;
+            }
             return ActionProviderResult.PassToTreeViewChoices;
         }
 

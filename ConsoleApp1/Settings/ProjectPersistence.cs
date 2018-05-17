@@ -20,6 +20,7 @@ namespace ConsoleApp1
         private static readonly string _settingsFileName = "settings.txt";
         public string ProjectName;
         private bool _isSaving;
+        [IgnoreDataMember] public Project Project { get; set; }
 
         private string SettingFileName => ProjectFolder + Path.DirectorySeparatorChar + ProjectName
                                           + Path.DirectorySeparatorChar + _settingsFileName;
@@ -142,6 +143,7 @@ namespace ConsoleApp1
             StartSaveTimer();
         }
 
+
         private void SaveAsync(object o)
         {
             SaveAsync();
@@ -204,12 +206,6 @@ namespace ConsoleApp1
             PortManager = new PortManager {Settings = this};
             CommandQueue = new CommandQueue();
             return Persist();
-        }
-
-        public void ResumeCommands(Project project)
-        {
-            if (CommandQueue == null) CommandQueue = new CommandQueue();
-            CommandQueue.Revive(project);
         }
     }
 }

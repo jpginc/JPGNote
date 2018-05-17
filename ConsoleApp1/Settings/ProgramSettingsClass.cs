@@ -82,6 +82,8 @@ internal class ProgramSettingsClass : ISettingsClass
             writer.Close();
     }
 
+    public Project Project { get; set; }
+
     public ICreatable GetNote(string uniqueNoteId)
     {
         foreach (var project in ProjectManager.LoadedProjects)

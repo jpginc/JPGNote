@@ -51,5 +51,6 @@ namespace ConsoleApp1.BuiltInActions
     public interface ISettingsClass
     {
         void Save();
+        Project Project { get; set; }
     }
 }

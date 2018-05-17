@@ -10,6 +10,7 @@ namespace ConsoleApp1.BuiltInActions
         public Project(ProjectPersistence settings)
         {
             _settings = settings;
+            _settings.Project = this;
         }
 
         public TargetManager TargetManager => _settings.TargetManager;

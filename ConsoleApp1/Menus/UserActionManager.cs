@@ -50,5 +50,11 @@ namespace ConsoleApp1.BuiltInActions
             }
             return null;
         }
+
+        public IEnumerable<ITreeViewChoice> GetPortCommands()
+        {
+            return Creatables.Where(c => ((UserAction) c).Command.Contains("{{PORT}}"))
+                .Select(c => new AutoAction(c, this));
+        }
     }
 }
