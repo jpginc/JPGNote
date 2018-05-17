@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace ConsoleApp1.BuiltInActions
@@ -18,7 +19,7 @@ namespace ConsoleApp1.BuiltInActions
         [DataMember, Wizard, AutoSingleLineString]
         public string PortNumber { get; set; } = "";
         [DataMember, AutoSingleLineString] public string Target { get; set; } = "";
-        [DataMember, AutoSingleLineString] public string Notes { get; set; } = "";
+        [DataMember] public List<Note> Notes { get; set; } = new List<Note>();
         [DataMember] public ScanItemState ScanItemStatus { get; set; } = ScanItemState.NotSet;
         public int CompareTo(Port other)
         {

@@ -24,7 +24,7 @@ namespace ConsoleApp1.BuiltInActions
                 new ChoiceToActionProvider(new SelectCommandToRunMenu(_project), "Run Command")
             };
 
-            var b = new ManageableCreatable(_project.TargetManager).GetActions();
+            var b = new ManageableCreatable(_project.TargetManager).GetActionsWithChildren();
             var c = new ManageableCreatable(_project.NotesManager).GetActions();
             var d = new ManageableCreatable(_project.PortManager).GetActions();
             return a.Concat(b.Concat(c.Concat(d)));

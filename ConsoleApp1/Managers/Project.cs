@@ -17,11 +17,11 @@ namespace ConsoleApp1.BuiltInActions
         public PortManager PortManager => _settings.PortManager;
         public CommandQueue CommandQueue => _settings.CommandQueue;
 
-        public string GetLogFileFullLocation()
+        public LoggedNote GetLogFileFullLocation()
         {
             var fileName = _settings.ProjectFolder + Path.DirectorySeparatorChar + GetLogFileName();
-            _settings.NotesManager.NewLoggedNote(fileName, "SSH Session " + DateTime.Now.ToLocalTime());
-            return fileName;
+            var note = _settings.NotesManager.NewLoggedNote(fileName, "SSH Session " + DateTime.Now.ToLocalTime());
+            return note;
         }
 
         private string GetLogFileName()
@@ -39,12 +39,12 @@ namespace ConsoleApp1.BuiltInActions
                 _settings.Save();
         }
 
-        public string GetLogFileFullLocation(UserAction userAction, string target)
+        public LoggedNote GetLogFileFullLocation(UserAction userAction, string target)
         {
             var fileName = _settings.ProjectFolder + Path.DirectorySeparatorChar + GetLogFileName();
-            _settings.NotesManager.NewLoggedNote(fileName, userAction.Name + " " + (target ?? "") + 
+            var note = _settings.NotesManager.NewLoggedNote(fileName, userAction.Name + " " + (target ?? "") + 
                 DateTime.Now.ToLocalTime());
-            return fileName;
+            return note;
         }
 
         public void CommandDone(JobDetails job)

@@ -7,7 +7,7 @@ namespace ConsoleApp1.BuiltInActions
     {
         public override IEnumerable<ITreeViewChoice> GetActions()
         {
-            var projects = new ManageableCreatable(ProjectManager.Instance).GetActions();
+            var projects = new ManageableCreatable(ProjectManager.Instance).GetActionsWithChildren();
             var c = new List<ITreeViewChoice>
             {
                 new ManageSlaveMachinesChoice(),

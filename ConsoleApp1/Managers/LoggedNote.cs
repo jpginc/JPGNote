@@ -7,7 +7,7 @@ using ConsoleApp1.BuiltInActions;
 namespace ConsoleApp1
 {
     [DataContract]
-    internal class LoggedNote : Note
+    public class LoggedNote : Note
     {
         [DataMember] public string FileName { get; set; }
 

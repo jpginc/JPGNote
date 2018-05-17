@@ -28,10 +28,10 @@ namespace ConsoleApp1.BuiltInActions
 
         public void OpenSshSession(Project project)
         {
-            var logLocation = project.GetLogFileFullLocation();
+            var loggedNote = project.GetLogFileFullLocation();
 
             var args = " /c \"" + MachineManager.Instance.DontWorryAboutTooManySessions() + " | "
-                       + GetOuputRedirectionString(logLocation) + "\"";
+                       + GetOuputRedirectionString(loggedNote.FileName) + "\"";
             RunRedirectedShell(_cmdLocation, args);
         }
 
@@ -92,14 +92,14 @@ namespace ConsoleApp1.BuiltInActions
                     _running++;
                     _queue = _queue.Skip(1).ToList();
                     var args = MachineManager.Instance.GetSshCommandLineArgs(toRun) + $" \"{toRun.CommandString}\"";
-                    var logLocation = toRun.Project.GetLogFileFullLocation(toRun.UserAction, toRun.Target);
-                    toRun.LogLocation = logLocation;
-                    RunExeToFile(_sshLocation, args, toRun);
+                    var note = toRun.Project.GetLogFileFullLocation(toRun.UserAction, toRun.Target);
+                    toRun.LogLocation = note.FileName;
+                    RunExeToFile(_sshLocation, args, toRun, note);
                 }
             }
         }
 
-        private void RunExeToFile(string exeFileName, string args, JobDetails job)
+        private void RunExeToFile(string exeFileName, string args, JobDetails job, LoggedNote note)
         {
             new Thread(() =>
             {
@@ -149,7 +149,7 @@ namespace ConsoleApp1.BuiltInActions
                 file.Write(Encoding.UTF8.GetBytes(remaining), 0, remaining.Length);
                 file.Close();
                 p.Close();
-                if (job.Port != null) job.Port.Notes += "\n" + output;
+                job.Port?.Notes.Add(note);
                 ParseOutput(job);
             }).Start();
         }
@@ -207,7 +207,11 @@ namespace ConsoleApp1.BuiltInActions
                             var notes = "";
                             while (!(line = sr.ReadLine()).Equals("Done")) notes += line + " ";
 
-                            port.Notes = notes;
+                            port.Notes.Add(new Note()
+                            {
+                                NoteName = job.UserAction.Name,
+                                NoteContents = notes
+                            });
                             Console.WriteLine("Adding port " + port);
                             job.Project.PortManager.AddPremade(port);
                             job.Project.PortManager.Save();

@@ -17,16 +17,22 @@ namespace ConsoleApp1.BuiltInActions
 
         public IEnumerable<ITreeViewChoice> GetActions()
         {
-            //not quite right, i need to have a choice that will then set the context to an auto menu
-            var a = new List<ITreeViewChoice>
+            return GetManageActions();
+        }
+        public IEnumerable<ITreeViewChoice> GetActionsWithChildren()
+        {
+            var existingCreatables = _manager.GetActions();
+            return GetManageActions().Concat(existingCreatables);
+        }
+
+        private List<ITreeViewChoice> GetManageActions()
+        {
+            return new List<ITreeViewChoice>
             {
                 new ChoiceToActionProvider(_manager, _manager.ManageText),
                 new AutoCreateCreatable(_manager),
                 new ChoiceToActionProvider(new AutoDeleteMenu(_manager), _manager.DeleteChoiceText)
             };
-
-            var existingCreatables = _manager.GetActions();
-            return existingCreatables.Concat(a);
         }
 
         public ActionProviderResult HandleUserAction(UserActionResult res)

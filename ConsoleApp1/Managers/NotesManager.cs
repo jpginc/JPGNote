@@ -24,11 +24,12 @@ namespace ConsoleApp1
             }
         }
 
-        public NotesManager NewLoggedNote(string fileName, string noteName)
+        public LoggedNote NewLoggedNote(string fileName, string noteName)
         {
-            Creatables.Add(new LoggedNote(fileName, noteName));
+            var note = new LoggedNote(fileName, noteName);
+            Creatables.Add(note);
             Save();
-            return this;
+            return note;
         }
 
         public InputType InputType => InputType.Single;

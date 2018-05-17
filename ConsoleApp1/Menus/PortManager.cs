@@ -45,7 +45,7 @@ namespace ConsoleApp1.BuiltInActions
             }
             else
             {
-                ((Port) existing).Notes += "\n" + port.Notes;
+                ((Port) existing).Notes.AddRange(port.Notes);
             }
         }
 
