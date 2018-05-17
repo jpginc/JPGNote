@@ -71,6 +71,16 @@ namespace ConsoleApp1
             try
             {
                 Directory.CreateDirectory(folderName);
+                if (File.Exists(SettingFileName))
+                {
+                    if (UserNotifier.Confirm("Project already exists. Select Yes to load, No to overwrite"))
+                    {
+                        return true;
+                    }
+
+                    File.Delete(SettingFileName);
+                    return true;
+                }
                 return true;
             }
             catch (IOException e)
@@ -163,7 +173,6 @@ namespace ConsoleApp1
 
         private bool Persist()
         {
-            Console.WriteLine("saving project");
             try
             {
                 var stream1 = new MemoryStream();
@@ -181,7 +190,9 @@ namespace ConsoleApp1
             }
             catch (Exception e)
             {
-                UserNotifier.Error("Error persisting \n" + e.StackTrace);
+                //UserNotifier.Error("Error persisting \n" + e.StackTrace);
+                Console.WriteLine("Error persisting \n" + e.StackTrace);
+                _stuffToSave = true;
                 return false;
             }
         }
@@ -191,6 +202,7 @@ namespace ConsoleApp1
             NotesManager = new NotesManager {Settings = this};
             TargetManager = new TargetManager {Settings = this};
             PortManager = new PortManager {Settings = this};
+            CommandQueue = new CommandQueue();
             return Persist();
         }
 

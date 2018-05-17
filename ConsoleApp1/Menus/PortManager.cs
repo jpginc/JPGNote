@@ -34,7 +34,11 @@ namespace ConsoleApp1.BuiltInActions
 
         public void AddPremade(Port port)
         {
-            var existing = Creatables.FirstOrDefault(p => ((Port)p).Equals(port));
+            var existing = Creatables.FirstOrDefault(p =>
+            {
+                var c = (Port)p;
+                return c.Target.Equals(port.Target) && c.PortNumber.Equals(port.PortNumber);
+            });
             if (existing == null)
             {
                 Creatables.Add(port);

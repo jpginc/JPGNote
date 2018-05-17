@@ -14,7 +14,8 @@ namespace ConsoleApp1.BuiltInActions
     [DataContract]
     internal class CommandManager
     {
-        [IgnoreDataMember] private const int SimultaniousScans = 15;
+        [IgnoreDataMember] private int SimultaniousScans => ScansPerMachine * MachineManager.Instance.MachineCount();
+        [IgnoreDataMember] private const int ScansPerMachine = 15;
         [DataMember] private List<JobDetails> _queue = new List<JobDetails>();
 
         [IgnoreDataMember] public static CommandManager Instance { get; } = new CommandManager();
@@ -29,7 +30,7 @@ namespace ConsoleApp1.BuiltInActions
         {
             var logLocation = project.GetLogFileFullLocation();
 
-            var args = " /c \"" + MachineManager.Instance.GetSshCommandLineString() + " | "
+            var args = " /c \"" + MachineManager.Instance.DontWorryAboutTooManySessions() + " | "
                        + GetOuputRedirectionString(logLocation) + "\"";
             RunRedirectedShell(_cmdLocation, args);
         }
@@ -75,6 +76,7 @@ namespace ConsoleApp1.BuiltInActions
         private void QueueDone(JobDetails job)
         {
             job.Project.CommandDone(job);
+            MachineManager.Instance.JobDone(job);
             _running--;
             QueueMove();
         }
@@ -89,7 +91,7 @@ namespace ConsoleApp1.BuiltInActions
                 {
                     _running++;
                     _queue = _queue.Skip(1).ToList();
-                    var args = MachineManager.Instance.GetSshCommandLineArgs() + $" \"{toRun.CommandString}\"";
+                    var args = MachineManager.Instance.GetSshCommandLineArgs(toRun) + $" \"{toRun.CommandString}\"";
                     var logLocation = toRun.Project.GetLogFileFullLocation(toRun.UserAction, toRun.Target);
                     toRun.LogLocation = logLocation;
                     RunExeToFile(_sshLocation, args, toRun);
@@ -224,6 +226,10 @@ namespace ConsoleApp1.BuiltInActions
         public Port Port { get; }
         public Project Project { get; }
 
+        public JobDetails()
+        {
+
+        }
         public JobDetails(string commandString, string target, Port port,
             UserAction userAction, Project project)
         {

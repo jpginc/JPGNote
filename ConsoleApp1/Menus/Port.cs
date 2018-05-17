@@ -22,8 +22,8 @@ namespace ConsoleApp1.BuiltInActions
         [DataMember] public ScanItemState ScanItemStatus { get; set; } = ScanItemState.NotSet;
         public int CompareTo(Port other)
         {
-            var portsFirst = string.CompareOrdinal(PortNumber, other.PortNumber);
-            return portsFirst != 0 ? portsFirst : string.CompareOrdinal(Target, other.Target);
+            return string.CompareOrdinal(PortNumber, other.PortNumber) 
+                   + string.CompareOrdinal(Target, other.Target);
         }
     }
 

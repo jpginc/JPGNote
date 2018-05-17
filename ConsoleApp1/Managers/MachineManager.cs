@@ -11,8 +11,7 @@ namespace ConsoleApp1.BuiltInActions
     [KnownType(typeof(SshAbleMachine))]
     internal class MachineManager : IManager
     {
-        [IgnoreDataMember]
-        private static readonly string _sshLocation = "C:\\Program Files\\Git\\usr\\bin\\ssh.exe";
+        [IgnoreDataMember] private static readonly string _sshLocation = "C:\\Program Files\\Git\\usr\\bin\\ssh.exe";
         [IgnoreDataMember] public string ManageText => "Manage Machines";
         [IgnoreDataMember] public string CreateChoiceText => "Create Machine";
         [IgnoreDataMember] public string DeleteChoiceText => "Delete Machines";
@@ -20,11 +19,14 @@ namespace ConsoleApp1.BuiltInActions
         [IgnoreDataMember] public static MachineManager Instance { get; set; } = new MachineManager();
 
 
-        [IgnoreDataMember] private SshAbleMachine CurrentMachine => (SshAbleMachine) Creatables.First();
-
         public void ManageMachines()
         {
             JpgActionManager.PushActionContext(new MachineManagerMenu());
+        }
+
+        public int MachineCount()
+        {
+            return Creatables.Count();
         }
 
         public IEnumerable<ITreeViewChoice> GetMachineChoices()
@@ -37,44 +39,68 @@ namespace ConsoleApp1.BuiltInActions
             var machineName = GuiManager.Instance.GetNonEmptySingleLineInput("Set Machine Name");
             if (machineName.ResponseType == UserActionResult.ResultType.Accept)
             {
-                SshAbleMachine machine = new SshAbleMachine {Name = machineName.Result};
+                var machine = new SshAbleMachine
+                {
+                    Name = machineName.Result,
+                    RunningJobs = new List<JobDetails>()
+                };
                 Creatables.Add(machine);
                 ProgramSettingsClass.Instance.Save();
                 JpgActionManager.PushActionContext(new AutoMenu(machine, this));
             }
         }
 
-        public string GetSshCommandLineString()
+        public string DontWorryAboutTooManySessions()
         {
             var str =
-                $"\"{_sshLocation}\" " + GetSshCommandLineArgs();
+                $"\"{_sshLocation}\" " + GetSshStringFromMachine((SshAbleMachine) Creatables.First());
             return str;
         }
 
-        public string GetSshCommandLineArgs()
+        public string GetSshCommandLineArgs(JobDetails toRun)
         {
-            var str = $"\"-i\" \"{PutSshKeyInTempLocation()}\" " +
-                $"\"{CurrentMachine.SshUserName}@{GetIpOrDomain()}\"";
-            return str;
+            foreach (var machine in Creatables)
+            {
+                var m = (SshAbleMachine) machine;
+                if (m.RunningJobs == null)
+                {
+                    m.RunningJobs = new List<JobDetails>();
+                }
+                if (m.RunningJobs.Count <= 15)
+                {
+                    m.RunningJobs.Add(toRun);
+                    Console.WriteLine("running on " + m.Name);
+                    return GetSshStringFromMachine(m);
+                }
+            }
+
+            throw new Exception("machines isn't workgin");
         }
 
-        private string GetIpOrDomain()
+        private string GetSshStringFromMachine(SshAbleMachine m)
+        {
+            return $"\"-i\" \"{PutSshKeyInTempLocation(m)}\" " +
+                   $"\"-o\" \"StrictHostKeyChecking=no\" " + 
+                   $"\"{m.SshUserName}@{GetIpOrDomain(m)}\"";
+        }
+
+        private string GetIpOrDomain(SshAbleMachine m)
         {
             //todo
-            return CurrentMachine.IpOrDomainName;
+            return m.IpOrDomainName;
         }
 
-        private string PutSshKeyInTempLocation()
+        private string PutSshKeyInTempLocation(SshAbleMachine sshAbleMachine)
         {
             var tempLocation = Path.GetTempFileName();
-            File.WriteAllText(tempLocation, CurrentMachine.SshKey);
+            File.WriteAllText(tempLocation, sshAbleMachine.SshKey);
             new Timer(DeleteTempFile, tempLocation, 1000, Timeout.Infinite);
             return tempLocation;
         }
 
         public void DeleteTempFile(object tempFile)
         {
-            File.Delete((string)tempFile);
+            File.Delete((string) tempFile);
         }
 
         public void Save()
@@ -88,7 +114,11 @@ namespace ConsoleApp1.BuiltInActions
             Save();
         }
 
-        public void New(UserActionResult obj) => CreateNewMachine(obj);
+        public void New(UserActionResult obj)
+        {
+            CreateNewMachine(obj);
+        }
+
         public bool HasChildren()
         {
             return false;
@@ -97,6 +127,23 @@ namespace ConsoleApp1.BuiltInActions
         public IEnumerable<ICreatable> GetChildren(ICreatable parent)
         {
             return Enumerable.Empty<ICreatable>();
+        }
+
+        public void JobDone(JobDetails job)
+        {
+            foreach (var machine in Creatables)
+            {
+                var m = (SshAbleMachine) machine;
+                if (m.RunningJobs == null)
+                {
+                    m.RunningJobs = new List<JobDetails>();
+                }
+                if (m.RunningJobs.Contains(job))
+                {
+                    m.RunningJobs.Remove(job);
+                    break;
+                }
+            }
         }
     }
 }

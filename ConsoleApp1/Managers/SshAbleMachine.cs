@@ -21,6 +21,7 @@ namespace ConsoleApp1.BuiltInActions
         [AutoSingleLineString, DataMember] public string Name { get; set; } = "";
         [AutoSingleLineString, DataMember] public string SshUserName { get; set; } = "";
         [IgnoreDataMember] public string EditChoiceText => Name;
+        [IgnoreDataMember] public List<JobDetails> RunningJobs { get; set; } = new List<JobDetails>();
         public IManager Manager => MachineManager.Instance;
     }
 }
