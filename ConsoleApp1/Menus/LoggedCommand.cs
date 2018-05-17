@@ -31,20 +31,19 @@ namespace ConsoleApp1.BuiltInActions
             {
                 foreach (var port in _ports)
                 {
-                    commandString = CreateCommandString(commandString, port.Target, port.PortNumber);
-                    CommandManager.Instance.RunCommand(commandString, _project, _userAction, port.Target, port);
+                    var withPort = CreateCommandString(commandString, port.Target, port.PortNumber);
+                    CommandManager.Instance.RunCommand(withPort, _project, _userAction, port.Target, port);
                 }
             } else if (NeedsTarget())
             {
                 foreach (var target in _targets)
                 {
-                    commandString = CreateCommandString(commandString, target.IpOrDomain, "");
-                    CommandManager.Instance.RunCommand(commandString, _project, _userAction, target.IpOrDomain, null);
+                    var withTarget = CreateCommandString(commandString, target.IpOrDomain, "");
+                    CommandManager.Instance.RunCommand(withTarget, _project, _userAction, target.IpOrDomain, null);
                 }
             }
             else
             {
-                commandString = CreateCommandString(commandString, "", "");
                 CommandManager.Instance.RunCommand(commandString, _project, _userAction, "", null);
             }
 
