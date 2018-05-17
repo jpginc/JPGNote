@@ -20,6 +20,7 @@ namespace ConsoleApp1.BuiltInActions
                 new OpenLoggedSshSessionChoice(_project),
                 new ImportTargetsAction(_project),
                 new ResumeQueueAction(_project),
+                new ClearQueueAction(_project),
                 new ChoiceToActionProvider(new SelectCommandToRunMenu(_project), "Run Command")
             };
 

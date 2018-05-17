@@ -57,6 +57,12 @@ namespace ConsoleApp1
                     port, userAction, project));
             }
         }
+
+        public void ClearQueue(Project project)
+        {
+            JobDetails.Clear();
+            project.Save();
+        }
     }
 
     [DataContract]
