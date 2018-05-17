@@ -17,7 +17,9 @@ namespace ConsoleApp1.BuiltInActions
         public InputType InputType => InputType.Multi;
         public IEnumerable<ITreeViewChoice> GetActions()
         {
-            var targets = _project.TargetManager.GetActions();
+            var targets = _project.TargetManager.Creatables
+                .Where(t => ! ((Target) t).CommandsRun.Contains(_loggedCommand.Name))
+                .Select(t => new AutoAction(t, _project.TargetManager));
             //todo select all
             //todo regex/grep targets
             //todo use Port's target

@@ -21,7 +21,8 @@ namespace ConsoleApp1.BuiltInActions
             var retVal = new List<ITreeViewChoice>();
             if (_loggedCommand.NeedsTarget())
             {
-                var selectTarget = new ChoiceToActionProvider(new SelectTargetMenu(_project, _loggedCommand), "Select Target");
+                var selectTarget = new ChoiceToActionProvider(new SelectTargetMenu(_project, 
+                    _loggedCommand), "Select Target");
                 retVal.Add(selectTarget);
             }
             //todo check if userAction needs ports

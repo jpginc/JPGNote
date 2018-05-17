@@ -86,6 +86,11 @@ namespace ConsoleApp1.BuiltInActions
         {
             return Settings.PortManager.GetChildren(target);
         }
+
+        public Target GetTarget(string targetName)
+        {
+            return Creatables.FirstOrDefault(t => ((Target) t).IpOrDomain == targetName) as Target;
+        }
     }
 
     internal interface IManagerAndActionProvider : IActionProvider , IManager
@@ -99,6 +104,7 @@ namespace ConsoleApp1.BuiltInActions
         [AutoSingleLineString]
         [Wizard]
         public string IpOrDomain { get; set; }
+        [DataMember] public List<string> CommandsRun { get; set; } = new List<string>();
         [IgnoreDataMember] public string EditChoiceText => IpOrDomain;
 
     }

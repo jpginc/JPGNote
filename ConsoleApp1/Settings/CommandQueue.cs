@@ -47,13 +47,14 @@ namespace ConsoleApp1
             {
                 var userAction = UserActionManager.Instance.GetAction(j.UserActionName);
                 var port = project.PortManager.GetPort(j.PortNumber);
+                var target = project.TargetManager.GetTarget(j.TargetName);
                 if (userAction == null)
                 {
                     Console.WriteLine("Job didn't have a valid user action");
                     continue;
                 }
 
-                CommandManager.Instance.ReviveCommand(new JobDetails(j.CommandString, j.TargetName, 
+                CommandManager.Instance.ReviveCommand(new JobDetails(j.CommandString, target, 
                     port, userAction, project));
             }
         }
@@ -76,7 +77,7 @@ namespace ConsoleApp1
         public SerialisableJob(JobDetails job)
         {
             UserActionName = job.UserAction.Name;
-            TargetName = job.Target;
+            TargetName = job.Target?.IpOrDomain;
             PortNumber = job.Port?.PortNumber;
             CommandString = job.CommandString;
         }

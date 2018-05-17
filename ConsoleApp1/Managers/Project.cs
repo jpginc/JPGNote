@@ -39,10 +39,10 @@ namespace ConsoleApp1.BuiltInActions
                 _settings.Save();
         }
 
-        public LoggedNote GetLogFileFullLocation(UserAction userAction, string target)
+        public LoggedNote GetLogFileFullLocation(UserAction userAction, Target target)
         {
             var fileName = _settings.ProjectFolder + Path.DirectorySeparatorChar + GetLogFileName();
-            var note = _settings.NotesManager.NewLoggedNote(fileName, userAction.Name + " " + (target ?? "") + 
+            var note = _settings.NotesManager.NewLoggedNote(fileName, userAction.Name + " " + (target?.IpOrDomain ?? "") + 
                 DateTime.Now.ToLocalTime());
             return note;
         }

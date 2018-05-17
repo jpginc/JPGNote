@@ -58,7 +58,7 @@ namespace ConsoleApp1.BuiltInActions
         }
 
         public void RunCommand(string commandString, Project project,
-            UserAction userAction, string target, Port port)
+            UserAction userAction, Target target, Port port)
         {
             var jobDetails = new JobDetails(commandString, target, port, userAction, project);
 
@@ -152,6 +152,7 @@ namespace ConsoleApp1.BuiltInActions
                 job.Project.NotesManager.AddPremade(note);
                 job.Port?.NoteReferences.Add(note.UniqueId);
                 job.Port?.CommandsRun.Add(job.UserAction.Name);
+                job.Target?.CommandsRun.Add(job.UserAction.Name);
                 ParseOutput(job);
             }).Start();
         }
@@ -203,7 +204,7 @@ namespace ConsoleApp1.BuiltInActions
                             var port = new Port
                             {
                                 PortNumber = portNumber,
-                                Target = job.Target
+                                Target = job.Target.IpOrDomain
                             };
                             var notes = "";
                             while (!(line = sr.ReadLine()).Equals("Done")) notes += line + " ";
@@ -232,7 +233,7 @@ namespace ConsoleApp1.BuiltInActions
         public readonly UserAction UserAction;
         public string CommandString { get; }
         public string LogLocation { get; set; }
-        public string Target { get; }
+        public Target Target { get; }
         public Port Port { get; }
         public Project Project { get; }
 
@@ -240,7 +241,7 @@ namespace ConsoleApp1.BuiltInActions
         {
 
         }
-        public JobDetails(string commandString, string target, Port port,
+        public JobDetails(string commandString, Target target, Port port,
             UserAction userAction, Project project)
         {
             UserAction = userAction;
