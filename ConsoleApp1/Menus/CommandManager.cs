@@ -151,6 +151,7 @@ namespace ConsoleApp1.BuiltInActions
                 p.Close();
                 job.Project.NotesManager.AddPremade(note);
                 job.Port?.NoteReferences.Add(note.UniqueId);
+                job.Port?.CommandsRun.Add(job.UserAction.Name);
                 ParseOutput(job);
             }).Start();
         }

@@ -19,6 +19,8 @@ namespace ConsoleApp1.BuiltInActions
             _project = project;
         }
 
+        public string Name => _userAction.Name;
+
         public bool Run()
         {
             string commandString = ReplaceUserInput(_userAction.Command);

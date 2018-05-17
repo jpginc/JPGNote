@@ -63,7 +63,7 @@ namespace ConsoleApp1.BuiltInActions
             return Enumerable.Empty<ICreatable>();
         }
 
-        public InputType InputType => InputType.Multi;
+        public InputType InputType => InputType.Single;
         public IEnumerable<ITreeViewChoice> GetActions()
         {
             return Creatables.Select(c => new AutoAction(c, this));

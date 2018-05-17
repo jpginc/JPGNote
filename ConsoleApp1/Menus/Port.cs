@@ -30,7 +30,8 @@ namespace ConsoleApp1.BuiltInActions
             }
         }
 
-        public List<string> NoteReferences { get; set; } = new List<string>();
+        [DataMember] public List<string> NoteReferences { get; set; } = new List<string>();
+        [DataMember] public List<string> CommandsRun { get; set; } = new List<string>();
 
         [DataMember] public ScanItemState ScanItemStatus { get; set; } = ScanItemState.NotSet;
         public int CompareTo(Port other)

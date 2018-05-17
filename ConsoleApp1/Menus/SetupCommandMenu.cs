@@ -27,7 +27,8 @@ namespace ConsoleApp1.BuiltInActions
             //todo check if userAction needs ports
             if (_loggedCommand.NeedsPort())
             {
-                var selectPort = new ChoiceToActionProvider(new SelectPortMenu(_project, _loggedCommand), "Select Port");
+                var selectPort = new ChoiceToActionProvider(new SelectPortMenu(_project, 
+                    _loggedCommand), "Select Port");
                 retVal.Add(selectPort);
             }
             //todo preview userAction
