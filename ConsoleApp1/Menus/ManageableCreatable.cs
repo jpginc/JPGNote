@@ -159,9 +159,9 @@ namespace ConsoleApp1.BuiltInActions
                     val += prop.Name + ": " + (prop.GetValue(obj) ?? "") + "\n";
                 }
 
-                if (prop.PropertyType == typeof(IEnumerable<ICreatable>))
+                if (prop.PropertyType == typeof(List<ICreatable>))
                 {
-                    foreach (var subThing in (IEnumerable<ICreatable>) prop.GetValue(obj))
+                    foreach (var subThing in (List<ICreatable>) prop.GetValue(obj))
                     {
                         val += GetPreviewFromObject(subThing);
                     }

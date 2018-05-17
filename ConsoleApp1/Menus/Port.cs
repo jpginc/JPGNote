@@ -19,7 +19,7 @@ namespace ConsoleApp1.BuiltInActions
         [DataMember, Wizard, AutoSingleLineString]
         public string PortNumber { get; set; } = "";
         [DataMember, AutoSingleLineString] public string Target { get; set; } = "";
-        [DataMember] public List<Note> Notes { get; set; } = new List<Note>();
+        [DataMember] public List<ICreatable> Notes { get; set; } = new List<ICreatable>();
         [DataMember] public ScanItemState ScanItemStatus { get; set; } = ScanItemState.NotSet;
         public int CompareTo(Port other)
         {
