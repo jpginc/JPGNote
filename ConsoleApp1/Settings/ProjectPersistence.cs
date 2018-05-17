@@ -27,7 +27,7 @@ namespace ConsoleApp1
         [DataMember] public NotesManager NotesManager { get; private set; }
         [DataMember] public TargetManager TargetManager { get; private set; }
         [DataMember] public PortManager PortManager { get; private set; }
-        [DataMember] public CommandQueue CommandQueue { get; private set; }
+        [DataMember] public CommandQueue CommandQueue { get; set; }
 
         public string ProjectFolder { get; private set; }
 
