@@ -1,4 +1,5 @@
 ﻿using System;
+using ConsoleApp1.BuiltInActions;
 using Gdk;
 using Gtk;
 using Key = Gdk.Key;
@@ -31,6 +32,11 @@ namespace ConsoleApp1
         {
             if (evnt.State == ModifierType.ControlMask)
             {
+                if (evnt.Key == Key.o)
+                {
+                    CommandManager.Instance.OpenSshSession(ProgramSettingsClass.Instance.Project);
+                    return true;
+                }
                 return base.OnKeyPressEvent(evnt);
             }
             if (evnt.Key == Key.Tab || evnt.Key == Key.ISO_Left_Tab)
