@@ -13,7 +13,7 @@ namespace ConsoleApp1
         private static readonly List<IActionProvider> _actionProviders 
             = new List<IActionProvider>() {new ProgramMenu()};
 
-        private static List<INote> _notes = new List<INote>();
+        private static readonly List<IEnumerable<INote>> Notes = new List<IEnumerable<INote>>();
 
         public override IEnumerable<ITreeViewChoice> GetActions()
         {
@@ -31,20 +31,24 @@ namespace ConsoleApp1
             {
                 _actionProviders.Remove(_actionProviders.Last());
             }
-            if (_notes.Count > 0)
+            if (Notes.Count > 0)
             {
-                _notes.Remove(_notes.Last());
+                Notes.Remove(Notes.Last());
             }
         }
 
+        public static void PushActionContext(IEnumerable<INote> note)
+        {
+            Notes.Add(note);
+        }
         public static void PushActionContext(INote note)
         {
-            _notes.Add(note);
+            Notes.Add(new List<INote>() {note});
         }
 
-        public static INote GetNoteContext()
+        public static IEnumerable<INote> GetNoteContext()
         {
-            return _notes.FirstOrDefault();
+            return Notes.FirstOrDefault();
         }
     }
 }

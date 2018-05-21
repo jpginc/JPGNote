@@ -56,5 +56,27 @@ namespace ConsoleApp1
             return note.ChildrenUniqueIds.Select(GetNote)
                 .Where(n => n != null);
         }
+
+        public static void DeleteNotes(IEnumerable<INote> notes)
+        {
+            foreach (var note in notes)
+            {
+                DeleteNote(note);
+            }
+        }
+
+        private static void DeleteNote(INote note)
+        {
+            Notes.Remove(note);
+            DeleteNotes(note.ChildrenUniqueIds.Select(GetNote)
+                .Where(n => !n.IsGlobal));
+            RemoveFromParent(note);
+        }
+
+        private static void RemoveFromParent(INote note)
+        {
+            var parent = GetNote(note.ParentUniqueId);
+            parent?.ChildrenUniqueIds.RemoveAll(cid => cid.Equals(note.UniqueId));
+        }
     }
 }

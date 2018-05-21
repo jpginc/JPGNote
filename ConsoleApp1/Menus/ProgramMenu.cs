@@ -22,7 +22,7 @@ namespace ConsoleApp1.BuiltInActions
 
     public class GenericMenu
     {
-        public INote Context => JpgActionManager.GetNoteContext();
+        public IEnumerable<INote> Context => JpgActionManager.GetNoteContext();
         public IEnumerable<INote> Notes { get; set; }
 
         public IEnumerable<ITreeViewChoice> GetChoices()
@@ -34,6 +34,12 @@ namespace ConsoleApp1.BuiltInActions
                 choices.AddRange(NewNotesManager.GetNotesByType(typeof(NewProject))
                     .Select(n => new NoteChoice(n)));
                 choices.Add(new NewProjectChoice());
+                choices.Add(new BuiltInTypeChoice(typeof(NewProject)));
+            }
+            else
+            {
+                choices.AddRange(Context.SelectMany(NewNotesManager.GetChildren)
+                    .Select(n => new NoteChoice(n)));
             }
 
             choices.AddRange(new ManageableCreatable(MachineManager.Instance).GetActions());
