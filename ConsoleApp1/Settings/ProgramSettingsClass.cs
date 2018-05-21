@@ -60,6 +60,7 @@ internal class ProgramSettingsClass : ISettingsClass
         ProjectManager.Instance.Settings = Instance;
         ProjectManager.Instance.LoadedProjects = new List<ProjectPersistence>();
         MachineManager.Instance = Instance.MachineManager ?? new MachineManager();
+        MachineManager.Instance.Settings = Instance;
         UserActionManager.Instance = Instance.UserActionManager ?? new UserActionManager();
         UserActionManager.Instance.Settings = Instance;
 
