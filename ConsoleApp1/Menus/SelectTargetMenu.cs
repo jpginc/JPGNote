@@ -22,7 +22,7 @@ namespace ConsoleApp1.BuiltInActions
                 .Select(t => new AutoAction(t, _project.TargetManager));
             //todo select all
             //todo regex/grep targets
-            //todo use Port's target
+            //todo use TcpPort's target
             return targets;
         }
 

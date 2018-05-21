@@ -29,7 +29,7 @@ namespace ConsoleApp1.BuiltInActions
             if (_loggedCommand.NeedsPort())
             {
                 var selectPort = new ChoiceToActionProvider(new SelectPortMenu(_project, 
-                    _loggedCommand), "Select Port");
+                    _loggedCommand), "Select TcpPort");
                 retVal.Add(selectPort);
             }
             //todo preview userAction
