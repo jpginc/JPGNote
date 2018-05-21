@@ -97,6 +97,20 @@ namespace ConsoleApp1.BuiltInActions
     {
     }
 
+    public abstract class ManagerAndActionProvider : Manager, IManagerAndActionProvider
+    {
+        public InputType InputType => InputType.Multi;
+        public virtual IEnumerable<ITreeViewChoice> GetActions()
+        {
+            return Creatables.Select(c => new AutoAction(c, this));
+        }
+
+        public virtual ActionProviderResult HandleUserAction(UserActionResult res)
+        {
+            return ActionProviderResult.PassToTreeViewChoices;
+        }
+    }
+
     [DataContract]
     public class Target : ICreatable
     {
