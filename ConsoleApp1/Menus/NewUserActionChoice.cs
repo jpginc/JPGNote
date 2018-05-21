@@ -2,7 +2,7 @@
 {
     internal class NewUserActionChoice : SimpleTreeViewChoice
     {
-        public NewUserActionChoice() : base("Create New Action")
+        public NewUserActionChoice() : base("New Action")
         {
             AcceptHandler = obj =>
             {

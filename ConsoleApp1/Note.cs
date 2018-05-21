@@ -8,24 +8,16 @@ using ConsoleApp1.BuiltInActions;
 namespace ConsoleApp1
 {
     [DataContract]
-    [KnownType(typeof(TcpPort))]
-    [KnownType(typeof(UdpPort))]
-    [KnownType(typeof(GlobalTcpPort))]
-    [KnownType(typeof(GlobalUdpPort))]
-    [KnownType(typeof(NewTarget))]
-    [KnownType(typeof(NewUserNote))]
-    [KnownType(typeof(NewLoggedNote))]
-    [KnownType(typeof(GlobalUserNote))]
-    [KnownType(typeof(NewProject))]
-    [KnownType(typeof(Tag))]
+
     public abstract class BaseNote : INote, IComparable<INote>
     {
-        [DataMember] public virtual List<string> TagsUniqueIds { get; } = new List<string>();
-        [DataMember] public virtual string UniqueId { get; } = Guid.NewGuid().ToString("N");
-        [DataMember] public List<string> ChildrenUniqueIds { get; } = new List<string>();
+        [DataMember] public virtual List<string> TagsUniqueIds { get; set; } = new List<string>();
+        [DataMember] public virtual string UniqueId { get; set; } = Guid.NewGuid().ToString("N");
+        [DataMember] public List<string> ChildrenUniqueIds { get; set; } = new List<string>();
         [DataMember] public virtual string ParentUniqueId { get; set; }
-        [DataMember] public string CreateTime { get; } = DateTime.Now.ToString(CultureInfo.InvariantCulture);
+        [DataMember] public string CreateTime { get; set; } = DateTime.Now.ToString(CultureInfo.InvariantCulture);
         [DataMember, AutoSingleLineString, Wizard] public virtual string Name { get; set; }
+        [IgnoreDataMember] public virtual bool HasContents => true;
         [DataMember, AutoMultiLineString, Wizard] public virtual string Contents { get; set; }
         public int CompareTo(INote other) => string.Compare(UniqueId, other.UniqueId, StringComparison.Ordinal);
     }
@@ -40,7 +32,7 @@ namespace ConsoleApp1
     public class NewLoggedNote : BaseNote
     {
         [DataMember] public override string Name { get; set; } = 
-            $"Logged session {DateTime.Now:ddd MMM d yy h:m:sstt}";
+            $"Logged session {DateTime.Now:ddd MMM d yy h:m:ss tt}";
 
         public NewLoggedNote(string fileName)
         {
@@ -82,6 +74,8 @@ namespace ConsoleApp1
     public class NewProject : BaseNote
     {
         [IgnoreDataMember] public override string ParentUniqueId => NewNotesManager.GetGlobalId();
+        [IgnoreDataMember] public override string Contents => Name;
+        [IgnoreDataMember] public override bool HasContents => false;
     }
 
     [DataContract]
@@ -89,23 +83,27 @@ namespace ConsoleApp1
     {
         [DataMember, AutoSingleLineString, Wizard] public string TargetAddress { get; set; }
         [IgnoreDataMember] public override string Contents => TargetAddress;
+        [IgnoreDataMember] public override bool HasContents => false;
     }
     public interface ITaggable
     {
         List<string> TagsUniqueIds { get; }
     }
-    public interface INote : ITaggable
+    public interface INote : ITaggable, IWizardable
     {
         string UniqueId { get;  }
         string ParentUniqueId { get;  }
         List<string> ChildrenUniqueIds { get; }
         string Name { get; }
+        bool HasContents { get; }
+        string Contents { get; }
     }
 
     [DataContract]
     public class Tag : BaseNote
     {
         [IgnoreDataMember] public override string Contents => Name;
+        [IgnoreDataMember] public override bool HasContents => false;
     }
 
     [DataContract]
@@ -114,6 +112,7 @@ namespace ConsoleApp1
         public abstract string PortType { get; }
         [DataMember, AutoSingleLineString, Wizard] public string PortNumber { get; set; }
         [IgnoreDataMember] public override string Contents => PortNumber;
+        [IgnoreDataMember] public override bool HasContents => false;
         [IgnoreDataMember] public override string Name => $"{PortType} {PortNumber}";
     }
 

@@ -16,7 +16,7 @@ namespace ConsoleApp1.BuiltInActions
         IEnumerable<ICreatable> GetChildren(ICreatable parent);
     }
 
-    public interface ICreatable 
+    public interface ICreatable : IWizardable
     {
         string EditChoiceText { get; }
     }

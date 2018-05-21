@@ -6,7 +6,7 @@ namespace ConsoleApp1.BuiltInActions
 {
     internal static class CreatableWizard
     {
-        public static bool GetRequiredFields(ICreatable obj)
+        public static bool GetRequiredFields(IWizardable obj)
         {
             foreach (var prop in obj.GetType().GetProperties())
             {
@@ -50,5 +50,9 @@ namespace ConsoleApp1.BuiltInActions
             }
             return inputFunc;
         }
+    }
+
+    public interface IWizardable
+    {
     }
 }
