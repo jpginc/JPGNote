@@ -12,7 +12,7 @@
 
         private void OpenSshSession(UserActionResult obj)
         {
-            CommandManager.Instance.OpenSshSession(_p);
+            CommandManager.Instance.OpenSshSession();
         }
     }
 }

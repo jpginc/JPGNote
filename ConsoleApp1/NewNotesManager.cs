@@ -11,6 +11,8 @@ namespace ConsoleApp1
     {
         [DataMember] public List<INote> Notes { get; set; } = new List<INote>();
         [IgnoreDataMember] public static NotesStore Instance { get; set; } = new NotesStore();
+        [IgnoreDataMember] public ISettingsClass Settings { get; set; }
+        public void Save() => Settings.Save();
     }
     public class NewNotesManager
     {

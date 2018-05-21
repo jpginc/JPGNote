@@ -34,7 +34,7 @@ namespace ConsoleApp1
             {
                 if (evnt.Key == Key.o)
                 {
-                    CommandManager.Instance.OpenSshSession(ProgramSettingsClass.Instance.Project);
+                    CommandManager.Instance.OpenSshSession();
                     return true;
                 }
                 return base.OnKeyPressEvent(evnt);

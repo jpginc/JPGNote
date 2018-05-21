@@ -20,14 +20,9 @@ namespace ConsoleApp1.BuiltInActions
 
         public LoggedNote GetLogFileFullLocation()
         {
-            var fileName = _settings.ProjectFolder + Path.DirectorySeparatorChar + GetLogFileName();
+            var fileName = _settings.ProjectFolder + Path.DirectorySeparatorChar + DateTime.Now.ToFileTimeUtc().ToString();
             var note = _settings.NotesManager.NewLoggedNote(fileName, "SSH Session " + DateTime.Now.ToLocalTime());
             return note;
-        }
-
-        private string GetLogFileName()
-        {
-            return DateTime.Now.ToFileTimeUtc().ToString();
         }
 
         public void Delete()
@@ -42,7 +37,7 @@ namespace ConsoleApp1.BuiltInActions
 
         public LoggedNote GetLogFileFullLocation(UserAction userAction, Target target)
         {
-            var fileName = _settings.ProjectFolder + Path.DirectorySeparatorChar + GetLogFileName();
+            var fileName = _settings.ProjectFolder + Path.DirectorySeparatorChar + DateTime.Now.ToFileTimeUtc().ToString();
             var note = _settings.NotesManager.NewLoggedNote(fileName, userAction.Name + " " + (target?.IpOrDomain ?? "") + 
                 DateTime.Now.ToLocalTime());
             return note;

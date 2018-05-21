@@ -16,7 +16,6 @@
         private void ProjectContext(UserActionResult obj)
         {
             var project = new Project(_projectManager.GetProjectPersistence(_project));
-            ProgramSettingsClass.Instance.Project = project;
             JpgActionManager.PushActionContext(new ProjectAction(project));
         }
     }

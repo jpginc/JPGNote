@@ -33,7 +33,7 @@ namespace ConsoleApp1.BuiltInActions
             if (res.Result == UserActionResult.ResultType.Accept
                 && res.UserChoices.Count() > 1)
             {
-                var x = new SelectCommandToRunMenu(Settings.Project);
+                var x = new SelectCommandToRunMenu(null);
                 x.PrepopulatePorts(res.UserChoices.Select(c => ((AutoAction)c).Creatable as Port));
                 JpgActionManager.PushActionContext(x);
                 return ActionProviderResult.ProcessingFinished;

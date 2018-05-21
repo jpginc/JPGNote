@@ -24,9 +24,7 @@ namespace ConsoleApp1.BuiltInActions
         {
             get
             {
-                return NoteReferences.Select(r => ProgramSettingsClass.Instance.GetNote(r))
-                    .Where(n => n != null)
-                    .ToList();
+                return null;
             }
         }
 
