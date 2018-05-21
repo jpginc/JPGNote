@@ -97,6 +97,7 @@ namespace ConsoleApp1.BuiltInActions
     {
     }
 
+    [DataContract]
     public abstract class ManagerAndActionProvider : Manager, IManagerAndActionProvider
     {
         public InputType InputType => InputType.Multi;
