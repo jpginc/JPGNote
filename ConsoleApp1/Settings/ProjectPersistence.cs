@@ -28,6 +28,7 @@ namespace ConsoleApp1
         [DataMember] public NotesManager NotesManager { get; private set; }
         [DataMember] public TargetManager TargetManager { get; private set; }
         [DataMember] public PortManager PortManager { get; private set; }
+        [DataMember] public TagManager TagManager { get; private set; }
         [DataMember] public CommandQueue CommandQueue { get; set; }
 
         public string ProjectFolder { get; private set; }
@@ -112,6 +113,8 @@ namespace ConsoleApp1
                 TargetManager.Settings = this;
                 PortManager = instance.PortManager;
                 PortManager.Settings = this;
+                TagManager = instance.TagManager ?? new TagManager();
+                TagManager.Settings = this;
                 //must be last
                 CommandQueue = instance.CommandQueue ?? new CommandQueue();
             }
@@ -204,6 +207,7 @@ namespace ConsoleApp1
             NotesManager = new NotesManager {Settings = this};
             TargetManager = new TargetManager {Settings = this};
             PortManager = new PortManager {Settings = this};
+            TagManager = new TagManager {Settings = this};
             CommandQueue = new CommandQueue();
             return Persist();
         }

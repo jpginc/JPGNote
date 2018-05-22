@@ -17,6 +17,7 @@ namespace ConsoleApp1.BuiltInActions
         public NotesManager NotesManager => _settings.NotesManager;
         public PortManager PortManager => _settings.PortManager;
         public CommandQueue CommandQueue => _settings.CommandQueue;
+        public TagManager TagManager => _settings.TagManager;
 
         public LoggedNote GetLogFileFullLocation()
         {

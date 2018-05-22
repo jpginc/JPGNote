@@ -27,7 +27,8 @@ namespace ConsoleApp1.BuiltInActions
             var b = new ManageableCreatable(_project.TargetManager).GetActionsWithChildren();
             var c = new ManageableCreatable(_project.NotesManager).GetActions();
             var d = new ManageableCreatable(_project.PortManager).GetActions();
-            return a.Concat(b.Concat(c.Concat(d)));
+            var e = new ManageableCreatable(_project.TagManager).GetActions();
+            return a.Concat(b.Concat(c.Concat(d).Concat(e)));
         }
     }
 }

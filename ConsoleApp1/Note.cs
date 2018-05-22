@@ -6,6 +6,19 @@ using ConsoleApp1.BuiltInActions;
 namespace ConsoleApp1
 {
     [DataContract]
+    public class Tag : ICreatable, IComparable<Tag>
+    {
+        [DataMember, AutoSingleLineString, Wizard] public string TagName { get; set; }
+        [DataMember] public readonly string UniqueId = Guid.NewGuid().ToString("N");
+        public string EditChoiceText => TagName;
+        public int CompareTo(Tag obj)
+        {
+            return string.Compare(UniqueId, obj.UniqueId, StringComparison.Ordinal);
+        }
+        [DataMember] public List<string> RefsToCreatablesThatAreTaggedByMe { get; set; } = new List<string>();
+        [DataMember] public List<string> RefsToNotesAboutThisTag { get; set; } = new List<string>();
+    }
+    [DataContract]
     public class Note : ICreatable, IComparable<Note>
     {
         [IgnoreDataMember] public string EditChoiceText => NoteName;
