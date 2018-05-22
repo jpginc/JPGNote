@@ -10,7 +10,7 @@ namespace ConsoleApp1.BuiltInActions
     {
         [IgnoreDataMember] public static UserActionManager Instance { get; set; }
         [IgnoreDataMember] public override string ManageText => "Manage Actions";
-        [IgnoreDataMember] public override string CreateChoiceText => "New Action";
+        [IgnoreDataMember] public override string CreateChoiceText => "Create New Action";
         [IgnoreDataMember] public override string DeleteChoiceText => "Delete Actions";
 
         public IEnumerable<ITreeViewChoice> GetUserActionChoices()
