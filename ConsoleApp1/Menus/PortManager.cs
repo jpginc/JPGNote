@@ -9,7 +9,7 @@ namespace ConsoleApp1.BuiltInActions
     {
         private Project _project;
         [IgnoreDataMember] public override string ManageText => "Manage Ports";
-        [IgnoreDataMember] public override string CreateChoiceText => "New TcpPort";
+        [IgnoreDataMember] public override string CreateChoiceText => "New Port";
         [IgnoreDataMember] public override string DeleteChoiceText => "Delete Ports";
         public override void New(UserActionResult obj)
         {

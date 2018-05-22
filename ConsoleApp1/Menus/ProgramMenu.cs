@@ -7,7 +7,7 @@ namespace ConsoleApp1.BuiltInActions
     {
         public override IEnumerable<ITreeViewChoice> GetActions()
         {
-            /*var projects = new ManageableCreatable(ProjectManager.Instance).GetActionsWithChildren();
+            var projects = new ManageableCreatable(ProjectManager.Instance).GetActionsWithChildren();
             var c = new List<ITreeViewChoice>
             {
                 new ManageSlaveMachinesChoice(),
@@ -15,39 +15,7 @@ namespace ConsoleApp1.BuiltInActions
                 new ExitChoice(),
             };
             return projects.Concat(c);
-            */
-            var menu = new GenericMenu();
-            menu.Context = MenuContext.Program;
-            menu.Notes = NewNotesManager.GetNotesByType(typeof(NewProject));
-            return menu.GetChoices();
         }
 
-    }
-
-    public enum MenuContext
-    {
-        Program,
-        Project,
-        Target,
-        Port
-    }
-    public class GenericMenu
-    {
-        public MenuContext Context { get; set; }
-        public IEnumerable<INote> Notes { get; set; }
-
-        public IEnumerable<ITreeViewChoice> GetChoices()
-        {
-            var choices = new List<ITreeViewChoice>();
-           
-            if (Context == MenuContext.Program)
-            {
-                choices.Add(new ManageSlaveMachinesChoice());
-                choices.Add(new ManageUserActionsChoice());
-                choices.Add(new ExitChoice());
-            }
-
-            return choices;
-        }
     }
 }

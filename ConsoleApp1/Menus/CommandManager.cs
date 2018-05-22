@@ -198,7 +198,7 @@ namespace ConsoleApp1.BuiltInActions
                                 job.Project.TargetManager.AddPremade(new Target {IpOrDomain = discoveredTarget});
                             }
                         }
-                        else if (line.Equals("TcpPort"))
+                        else if (line.Equals("Port"))
                         {
                             var portNumber = sr.ReadLine();
                             var port = new Port
