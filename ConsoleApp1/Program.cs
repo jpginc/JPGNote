@@ -3,7 +3,7 @@ using ConsoleApp1;
 
 public class GtkHelloWorld
 {
-    private static readonly string _fileName = "settings.txt";
+    private static readonly string _fileName = "settings3.txt";
     private static readonly string _folderName = "c:\\jpgtree";
     private static JpgActionManager _jpgActionManager;
 
