@@ -4,37 +4,28 @@ using System.Linq;
 
 namespace ConsoleApp1.BuiltInActions
 {
-    internal class BuiltInTypeChoice : SimpleTreeViewChoice, IActionProvider
+
+    internal class ManageNoteType : SimpleTreeViewChoice, IActionProvider
     {
         private Type _type;
-        private readonly bool _actionsToo;
-        private readonly Action<IEnumerable<INote>> _action;
 
-        public BuiltInTypeChoice(Type type, bool actionsToo = true, Action<IEnumerable<INote>> action = null) 
-            : base($"Manage {type.Name}")
+        public ManageNoteType(Type type ) : base($"Manage {type.Name}")
         {
             _type = type;
-            _actionsToo = actionsToo;
-            _action = action;
             AcceptHandler = (a) =>
             {
                 JpgActionManager.PushActionContext(this);
             };
         }
 
-        public InputType InputType => InputType.Multi;
+        public InputType InputType => InputType.Single;
         public IEnumerable<ITreeViewChoice> GetActions()
         {
-            var c = new List<ITreeViewChoice>();
-            c.AddRange(NewNotesManager.GetNotesByType(_type)
-                .Select(n => new NoteChoice(n)));
-            if (_actionsToo)
+            return new List<ITreeViewChoice>
             {
-                c.Add(new ActionChoice($"Delete {_type.Name}", DeleteNotes));
-                c.Add(new ActionChoice($"New {_type.Name}", NewNote));
-            }
-
-            return c;
+                new SimpleTreeViewChoice($"New {_type.Name}"),
+                new SimpleTreeViewChoice($"Delete {_type.Name}")
+            };
         }
 
         public ActionProviderResult HandleUserAction(UserActionResult res)
@@ -43,17 +34,7 @@ namespace ConsoleApp1.BuiltInActions
             {
                 if (HasActionChoice(res.UserChoices))
                 {
-                    var action = GetAction(res.UserChoices);
-                    if (HasNoteChoice(res.UserChoices))
-                    {
-                        action(res.UserChoices.Where(c => c.GetType() == typeof(NoteChoice))
-                            .Select(c => ((NoteChoice) c).Note));
-                    }
-                    else
-                    {
-                        var x = new BuiltInTypeChoice(_type, false, action);
-                        JpgActionManager.PushActionContext(x);
-                    }
+                    JpgActionManager.PushActionContext(GetAction(res.UserChoices));
                 }
                 else
                 {
@@ -61,13 +42,12 @@ namespace ConsoleApp1.BuiltInActions
                     JpgActionManager.PushActionContext(newContextt);
                 }
             }
-
             return ActionProviderResult.ProcessingFinished;
         }
 
-        private Action<IEnumerable<INote>> GetAction(IEnumerable<ITreeViewChoice> choices)
+        private IActionProvider GetAction(IEnumerable<ITreeViewChoice> choices)
         {
-            return _action ?? (choices.First(c => c.GetType() == typeof(ActionChoice)) as ActionChoice)?.Action;
+            return (choices.First(c => c.GetType() == typeof(ActionChoice)) as ActionChoice).Action;
         }
 
         private void NewNote(IEnumerable<INote> notes)

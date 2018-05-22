@@ -31,10 +31,7 @@ namespace ConsoleApp1.BuiltInActions
 
             if (Context == null)
             {
-                choices.AddRange(NewNotesManager.GetNotesByType(typeof(NewProject))
-                    .Select(n => new NoteChoice(n)));
-                choices.Add(new NewProjectChoice());
-                choices.Add(new BuiltInTypeChoice(typeof(NewProject)));
+                choices.AddRange(GetTheGlobalMenu());
             }
             else
             {
@@ -48,6 +45,16 @@ namespace ConsoleApp1.BuiltInActions
             {
                 choices.Add(new ExitChoice());
             }
+            return choices;
+        }
+
+        private IEnumerable<ITreeViewChoice> GetTheGlobalMenu()
+        {
+            var choices = new List<ITreeViewChoice>();
+            choices.AddRange(NewNotesManager.GetNotesByType(typeof(NewProject))
+                .Select(n => new NoteChoice(n)));
+            choices.Add(new NewProjectChoice());
+            choices.Add(new ManageNoteType(typeof(NewProject)));
             return choices;
         }
     }
