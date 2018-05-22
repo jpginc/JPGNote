@@ -9,16 +9,20 @@ namespace ConsoleApp1.BuiltInActions
 {
     [DataContract]
     [KnownType(typeof(SshAbleMachine))]
-    public class MachineManager : Manager, IManagerAndActionProvider
+    internal class MachineManager : IManager
     {
         [IgnoreDataMember] private static readonly string _sshLocation = "C:\\Program Files\\Git\\usr\\bin\\ssh.exe";
-        [IgnoreDataMember] public override string ManageText => "Manage Machines";
-        [IgnoreDataMember] public override string CreateChoiceText => "New Machine";
-        [IgnoreDataMember] public override string DeleteChoiceText => "Delete Machines";
+        [IgnoreDataMember] public string ManageText => "Manage Machines";
+        [IgnoreDataMember] public string CreateChoiceText => "Create Machine";
+        [IgnoreDataMember] public string DeleteChoiceText => "Delete Machines";
+        [DataMember] public List<ICreatable> Creatables { get; set; } = new List<ICreatable>();
+        [IgnoreDataMember] public static MachineManager Instance { get; set; } = new MachineManager();
 
-        [IgnoreDataMember]
-        public static MachineManager Instance { get; set; } = new MachineManager();
 
+        public void ManageMachines()
+        {
+            JpgActionManager.PushActionContext(new MachineManagerMenu());
+        }
 
         public int MachineCount()
         {
@@ -30,7 +34,7 @@ namespace ConsoleApp1.BuiltInActions
             return Creatables.Select(m => new AutoAction(m, this));
         }
 
-        public override void New(UserActionResult action)
+        public void CreateNewMachine(UserActionResult obj)
         {
             var machineName = GuiManager.Instance.GetNonEmptySingleLineInput("Set Machine Name");
             if (machineName.ResponseType == UserActionResult.ResultType.Accept)
@@ -41,7 +45,7 @@ namespace ConsoleApp1.BuiltInActions
                     RunningJobs = new List<JobDetails>()
                 };
                 Creatables.Add(machine);
-                Save();
+                ProgramSettingsClass.Instance.Save();
                 JpgActionManager.PushActionContext(new AutoMenu(machine, this));
             }
         }
@@ -99,6 +103,32 @@ namespace ConsoleApp1.BuiltInActions
             File.Delete((string) tempFile);
         }
 
+        public void Save()
+        {
+            ProgramSettingsClass.Instance.Save();
+        }
+
+        public void Delete(ICreatable creatable)
+        {
+            Creatables.Remove(creatable);
+            Save();
+        }
+
+        public void New(UserActionResult obj)
+        {
+            CreateNewMachine(obj);
+        }
+
+        public bool HasChildren()
+        {
+            return false;
+        }
+
+        public IEnumerable<ICreatable> GetChildren(ICreatable parent)
+        {
+            return Enumerable.Empty<ICreatable>();
+        }
+
         public void JobDone(JobDetails job)
         {
             foreach (var machine in Creatables)
@@ -114,17 +144,6 @@ namespace ConsoleApp1.BuiltInActions
                     break;
                 }
             }
-        }
-
-        public InputType InputType => InputType.Multi;
-        public IEnumerable<ITreeViewChoice> GetActions()
-        {
-            return Creatables.Select(c => new AutoAction(c, this));
-        }
-
-        public ActionProviderResult HandleUserAction(UserActionResult res)
-        {
-            return ActionProviderResult.PassToTreeViewChoices;
         }
     }
 }

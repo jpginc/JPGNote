@@ -42,8 +42,8 @@ namespace ConsoleApp1.BuiltInActions
            
             if (Context == MenuContext.Program)
             {
-                choices.AddRange(new ManageableCreatable(MachineManager.Instance).GetActions());
-                //choices.Add(new ManageUserActionsChoice());
+                choices.Add(new ManageSlaveMachinesChoice());
+                choices.Add(new ManageUserActionsChoice());
                 choices.Add(new ExitChoice());
             }
 
