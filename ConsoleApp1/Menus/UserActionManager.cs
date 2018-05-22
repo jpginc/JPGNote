@@ -6,19 +6,25 @@ using System.Runtime.Serialization;
 namespace ConsoleApp1.BuiltInActions
 {
     [DataContract]
-    internal class UserActionManager : ManagerAndActionProvider
+    [KnownType(typeof(UserAction))]
+    internal class UserActionManager : Manager
     {
         [IgnoreDataMember] public static UserActionManager Instance { get; set; }
         [IgnoreDataMember] public override string ManageText => "Manage Actions";
         [IgnoreDataMember] public override string CreateChoiceText => "Create New Action";
         [IgnoreDataMember] public override string DeleteChoiceText => "Delete Actions";
 
+        public void ManageUserActions()
+        {
+            JpgActionManager.PushActionContext(new UserActionManagerMenu());
+        }
+
         public IEnumerable<ITreeViewChoice> GetUserActionChoices()
         {
             return Creatables.Select(u => new AutoAction(u, this));
         }
 
-        public override void New(UserActionResult obj)
+        public void CreateNewUserAction(UserActionResult obj)
         {
             var userAction = new UserAction();
             if (CreatableWizard.GetRequiredFields(userAction))
@@ -27,6 +33,11 @@ namespace ConsoleApp1.BuiltInActions
                 Save();
                 JpgActionManager.PushActionContext(new AutoMenu(userAction, this));
             }
+        }
+
+        public override void New(UserActionResult obj)
+        {
+            CreateNewUserAction(obj);
         }
 
         public UserAction GetAction(string name)

@@ -4,16 +4,7 @@
     {
         public NewUserActionChoice() : base("Create New Action")
         {
-            AcceptHandler = obj =>
-            {
-                var userAction = new UserAction();
-                if (CreatableWizard.GetRequiredFields(userAction))
-                {
-                    UserActionManager.Instance.Creatables.Add(userAction);
-                    UserActionManager.Instance.Save();
-                    JpgActionManager.PushActionContext(new AutoMenu(userAction, UserActionManager.Instance));
-                }
-            };
+            AcceptHandler = UserActionManager.Instance.CreateNewUserAction;
         }
     }
 }
