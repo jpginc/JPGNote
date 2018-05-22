@@ -26,12 +26,12 @@ namespace ConsoleApp1.BuiltInActions
         [IgnoreDataMember] private int _running;
 
 
-        public void OpenSshSession()
+        public void OpenSshSession(Project project)
         {
-            var fileName = ProgramSettingsClass.FolderName + 
-                           Path.DirectorySeparatorChar + DateTime.Now.ToFileTimeUtc();
+            var loggedNote = project.GetLogFileFullLocation();
+
             var args = " /c \"" + MachineManager.Instance.DontWorryAboutTooManySessions() + " | "
-                       + GetOuputRedirectionString(fileName) + "\"";
+                       + GetOuputRedirectionString(loggedNote.FileName) + "\"";
             RunRedirectedShell(_cmdLocation, args);
         }
 

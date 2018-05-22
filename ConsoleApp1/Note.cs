@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Runtime.Serialization;
 using ConsoleApp1.BuiltInActions;
 
@@ -14,7 +12,6 @@ namespace ConsoleApp1
     [KnownType(typeof(GlobalUdpPort))]
     [KnownType(typeof(NewTarget))]
     [KnownType(typeof(NewUserNote))]
-    [KnownType(typeof(NewLoggedNote))]
     [KnownType(typeof(GlobalUserNote))]
     [KnownType(typeof(NewProject))]
     [KnownType(typeof(Tag))]
@@ -24,7 +21,6 @@ namespace ConsoleApp1
         [DataMember] public virtual string UniqueId { get; } = Guid.NewGuid().ToString("N");
         [DataMember] public List<string> ChildrenUniqueIds { get; } = new List<string>();
         [DataMember] public virtual string ParentUniqueId { get; set; }
-        [DataMember] public string CreateTime { get; } = DateTime.Now.ToString(CultureInfo.InvariantCulture);
         [DataMember, AutoSingleLineString, Wizard] public virtual string Name { get; set; }
         [DataMember, AutoMultiLineString, Wizard] public virtual string Contents { get; set; }
         public int CompareTo(INote other) => string.Compare(UniqueId, other.UniqueId, StringComparison.Ordinal);
@@ -34,42 +30,6 @@ namespace ConsoleApp1
     public class NewUserNote : BaseNote
     {
 
-    }
-
-    [DataContract]
-    public class NewLoggedNote : BaseNote
-    {
-        [DataMember] public override string Name { get; set; } = 
-            $"Logged session {DateTime.Now:ddd MMM d yy h:m:sstt}";
-
-        public NewLoggedNote(string fileName)
-        {
-            FileName = fileName;
-        }
-        [DataMember] public string FileName { get; set; }
-        [IgnoreDataMember] public override string Contents
-        {
-            get => LoadLog();
-            set { }
-        }
-        private string LoadLog()
-        {
-            string contents;
-            try
-            {
-
-                var logFileStream = new FileStream(FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                var logFileReader = new StreamReader(logFileStream);
-                contents = logFileReader.ReadToEnd();
-                logFileReader.Close();
-                logFileStream.Close();
-            }
-            catch (Exception e)
-            {
-                contents = "Error opening log file";
-            }
-            return contents;
-        }
     }
 
     [DataContract]

@@ -4,52 +4,39 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
-using System.Threading;
 using ConsoleApp1;
 using ConsoleApp1.BuiltInActions;
-using Gtk;
 
 [DataContract]
 internal class ProgramSettingsClass : ISettingsClass
 {
-    [DataMember] public MachineManager MachineManager { get; private set; }
-    [DataMember] public UserActionManager UserActionManager { get; private set; }
-    [DataMember] public NotesStore NotesStore { get; private set; }
-    [IgnoreDataMember] public string Password => _password;
-    [IgnoreDataMember] public static string SettingFileName => FolderName 
-               + Path.DirectorySeparatorChar + FileName;
-
-    [IgnoreDataMember] public static ProgramSettingsClass Instance { get; set; }
     [IgnoreDataMember] public static string FileName;
-    [IgnoreDataMember] public static string FolderName;
     [IgnoreDataMember] private static string _password;
-    [IgnoreDataMember] private const int SaveTimerInterval = 1000;
-    [IgnoreDataMember] private static bool _stuffToSave;
-    [IgnoreDataMember] private Timer _timer;
-    [IgnoreDataMember] private bool _isSaving;
- 
+    private string _lock = "";
+    [IgnoreDataMember] public static string FolderName;
 
     public ProgramSettingsClass()
     {
-        MachineManager = new MachineManager() {Settings = this};
+        ProjectManager = new ProjectManager() {Settings = this, LoadedProjects = new List<ProjectPersistence>() };
+        MachineManager = new MachineManager();
         UserActionManager = new UserActionManager() {Settings = this};
-        NotesStore = new NotesStore() {Settings = this};
     }
-    public void Save()
-    {
-        _stuffToSave = true;
-        StartSaveTimer();
-    }
+
+    [IgnoreDataMember] public static ProgramSettingsClass Instance { get; set; }
+    [DataMember] public ProjectManager ProjectManager { get; private set; }
+    [DataMember] public MachineManager MachineManager { get; private set; }
+    [DataMember] public UserActionManager UserActionManager { get; private set; }
+    public string Password => _password;
 
     public static ProgramSettingsClass Start(string folderName, string fileName, string password)
     {
         FolderName = folderName;
         _password = password;
-        FileName = fileName;
         StreamReader file = null;
+        FileName = folderName + Path.DirectorySeparatorChar + fileName;
         try
         {
-            file = File.OpenText(SettingFileName);
+            file = File.OpenText(FileName);
             var s = AESThenHMAC.SimpleDecryptWithPassword(file.ReadToEnd(), _password);
             //Console.WriteLine(s);
             file.Close();
@@ -69,71 +56,45 @@ internal class ProgramSettingsClass : ISettingsClass
             file?.Close();
         }
 
+        ProjectManager.Instance = Instance.ProjectManager ?? new ProjectManager();
+        ProjectManager.Instance.Settings = Instance;
+        ProjectManager.Instance.LoadedProjects = new List<ProjectPersistence>();
         MachineManager.Instance = Instance.MachineManager ?? new MachineManager();
         MachineManager.Instance.Settings = Instance;
         UserActionManager.Instance = Instance.UserActionManager ?? new UserActionManager();
         UserActionManager.Instance.Settings = Instance;
-        NotesStore.Instance = Instance.NotesStore ?? new NotesStore();
-        NotesStore.Instance.Settings = Instance;
 
         return Instance;
     }
 
-    private void StartSaveTimer()
+    public void Save()
     {
-        _timer = new Timer(b => SaveAsync(), null, SaveTimerInterval, Timeout.Infinite);
+            var stream1 = new MemoryStream();
+            var ser = new DataContractJsonSerializer(GetType());
+            ser.WriteObject(stream1, this);
+            stream1.Position = 0;
+            var sr = new StreamReader(stream1);
+            //Console.Write("JSON form of Note object: ");
+            //Console.WriteLine(sr.ReadToEnd());
+            var writer = new StreamWriter(FileName);
+            // Rewrite the entire value of s to the file
+            stream1.Position = 0;
+            writer.Write(AESThenHMAC.SimpleEncryptWithPassword(sr.ReadToEnd(), _password));
+            writer.Close();
     }
-        private void SaveAsync(object o)
-        {
-            SaveAsync();
-        }
 
-        private void SaveAsync()
+    public Project Project { get; set; }
+
+    public ICreatable GetNote(string uniqueNoteId)
+    {
+        foreach (var project in ProjectManager.LoadedProjects)
         {
-            Application.Invoke((a, b) =>
+            Note note = null;
+            if ((note = project.NotesManager.GetNote(uniqueNoteId)) != null)
             {
-                if (_stuffToSave && !_isSaving)
-                {
-                    _isSaving = true;
-                    _stuffToSave = false;
-                    new Thread(() =>
-                    {
-                        Persist();
-                        Application.Invoke((c,d) => 
-                        {
-                            _isSaving = false;
-                            if (_stuffToSave)
-                            {
-                                StartSaveTimer();
-                            }
-                        });
-                    }).Start();
-                }
-            });
-        }
-        private bool Persist()
-        {
-            try
-            {
-                var stream1 = new MemoryStream();
-                var ser = new DataContractJsonSerializer(GetType());
-                ser.WriteObject(stream1, this);
-                stream1.Position = 0;
-                var sr = new StreamReader(stream1);
-                var writer = new StreamWriter(SettingFileName);
-                // Rewrite the entire value of publics to the file
-                stream1.Position = 0;
-                writer.Write(AESThenHMAC.SimpleEncryptWithPassword(sr.ReadToEnd(), _password));
-                writer.Close();
-                //Console.WriteLine("saved");
-                return true;
-            }
-            catch (Exception e)
-            {
-                //UserNotifier.Error("Error persisting \n" + e.StackTrace);
-                Console.WriteLine("Error persisting \n" + e.StackTrace);
-                _stuffToSave = true;
-                return false;
+                return note;
             }
         }
+        return null;
+    }
 }
