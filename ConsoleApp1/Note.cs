@@ -8,6 +8,7 @@ using ConsoleApp1.BuiltInActions;
 namespace ConsoleApp1
 {
     [DataContract]
+
     public abstract class BaseNote : INote, IComparable<INote>
     {
         [DataMember] public virtual List<string> TagsUniqueIds { get; set; } = new List<string>();
@@ -18,7 +19,6 @@ namespace ConsoleApp1
         [DataMember, AutoSingleLineString, Wizard] public virtual string Name { get; set; }
         [IgnoreDataMember] public virtual bool HasContents => true;
         [DataMember, AutoMultiLineString, Wizard] public virtual string Contents { get; set; }
-        [IgnoreDataMember] public virtual bool IsGlobal => false;
         public int CompareTo(INote other) => string.Compare(UniqueId, other.UniqueId, StringComparison.Ordinal);
     }
 
@@ -68,7 +68,6 @@ namespace ConsoleApp1
     public class GlobalUserNote : NewUserNote
     {
         [IgnoreDataMember] public override string ParentUniqueId => NewNotesManager.GetGlobalId();
-        [IgnoreDataMember] public override bool IsGlobal => true;
     }
 
     [DataContract]
@@ -98,7 +97,6 @@ namespace ConsoleApp1
         string Name { get; }
         bool HasContents { get; }
         string Contents { get; }
-        bool IsGlobal { get; }
     }
 
     [DataContract]
@@ -130,7 +128,6 @@ namespace ConsoleApp1
     {
         [IgnoreDataMember] public override string UniqueId => PortNumber;
         [IgnoreDataMember] public override string ParentUniqueId => NewNotesManager.GetGlobalId();
-        [IgnoreDataMember] public override bool IsGlobal => true;
     }
 
     [DataContract]

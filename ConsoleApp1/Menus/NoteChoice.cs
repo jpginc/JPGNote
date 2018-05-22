@@ -6,14 +6,19 @@ namespace ConsoleApp1.BuiltInActions
 {
     internal class NoteChoice : SimpleTreeViewChoice
     {
-        public readonly INote Note;
+        private readonly INote _note;
 
         public NoteChoice(INote note) : base(note.Name)
         {
-            Note = note;
-            AcceptHandler = (a) =>
+            _note = note;
+            AcceptHandler = obj =>
             {
-                JpgActionManager.PushActionContext(note);
+                var project = new NewProject();
+                if (CreatableWizard.GetRequiredFields(project))
+                {
+                    NewNotesManager.AddNote(project);
+                    JpgActionManager.PushActionContext(project);
+                }
             };
             SelectHandler = PreviewValues;
 
@@ -21,8 +26,8 @@ namespace ConsoleApp1.BuiltInActions
         private void PreviewValues(JpgTreeView obj)
         {
             var val = "";
-            val += GetPreviewFromNote(Note);
-            foreach (var subThing in NewNotesManager.GetChildren(Note))
+            val += GetPreviewFromNote(_note);
+            foreach (var subThing in NewNotesManager.GetChildren(_note))
             {
                 val += GetPreviewFromNote(subThing);
             }
