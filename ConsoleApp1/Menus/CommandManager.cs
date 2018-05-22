@@ -190,6 +190,7 @@ namespace ConsoleApp1.BuiltInActions
                 {
                     string line;
                     while ((line = sr.ReadLine()) != null)
+                    {
                         if (line.Equals("Target"))
                         {
                             var discoveredTarget = sr.ReadLine();
@@ -201,28 +202,24 @@ namespace ConsoleApp1.BuiltInActions
                         else if (line.Equals("Port"))
                         {
                             var portNumber = sr.ReadLine();
-                            var port = new Port
+                            var port = job.Project.PortManager
+                                    .GetOrCreatePort(portNumber, job.Target.IpOrDomain);
+                            while (!(line = sr.ReadLine()).Equals("Done"))
                             {
-                                PortNumber = portNumber,
-                                Target = job.Target.IpOrDomain
-                            };
-                            var notes = "";
-                            while (!(line = sr.ReadLine()).Equals("Done")) notes += line + " ";
+                                if (line.Equals("TAG:"))
+                                {
+                                    var tagText = sr.ReadLine();
+                                    //Console.WriteLine($"Tag text is: {tagText}");
+                                    var tag = job.Project.TagManager.GetOrCreateTag(tagText);
+                                    port.TagReferences.Add(tag.UniqueId);
+                                    tag.RefsToCreatablesThatAreTaggedByMe.Add(port.UniqueId);
+                                }
+                            }
 
-                            var note = new Note()
-                            {
-                                NoteName = job.UserAction.Name,
-                                NoteContents = notes
-                            };
-
-                            job.Project.NotesManager.AddPremade(note);
-                            port.NoteReferences.Add(note.UniqueId);
-
-                            Console.WriteLine("Adding port " + port);
-                            job.Project.PortManager.AddPremade(port);
-
+                            Console.WriteLine("Adding port " + port.PortNumber);
                             job.Project.Save();
                         }
+                    }
                 }
             });
         }

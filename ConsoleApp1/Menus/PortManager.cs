@@ -43,19 +43,24 @@ namespace ConsoleApp1.BuiltInActions
 
         public void AddPremade(Port port)
         {
-            var existing = Creatables.FirstOrDefault(p =>
-            {
-                var c = (Port)p;
-                return c.Target.Equals(port.Target) && c.PortNumber.Equals(port.PortNumber);
-            });
+            ICreatable existing = GetExistingOrNull(port);
             if (existing == null)
             {
                 Creatables.Add(port);
             }
             else
             {
-                ((Port) existing).Notes.AddRange(port.Notes);
+                ((Port)existing).Notes.AddRange(port.Notes);
             }
+        }
+
+        private Port GetExistingOrNull(Port port)
+        {
+            return Creatables.FirstOrDefault(p =>
+            {
+                var c = (Port)p;
+                return c.Target.Equals(port.Target) && c.PortNumber.Equals(port.PortNumber);
+            }) as Port;
         }
 
         public IEnumerable<ICreatable> GetChildren(Target target)
@@ -66,6 +71,23 @@ namespace ConsoleApp1.BuiltInActions
         public Port GetPort(string portNumber)
         {
             return (Port) Creatables.FirstOrDefault(c => ((Port) c).PortNumber.Equals(portNumber));
+        }
+
+        public Port GetOrCreatePort(string portNumber, string targetIpOrDomain)
+        {
+            var port = new Port()
+            {
+                PortNumber = portNumber,
+                Target = targetIpOrDomain
+            };
+            var existing = GetExistingOrNull(port);
+            if (existing != null)
+            {
+                return existing;
+            }
+
+            Creatables.Add(port);
+            return port;
         }
     }
 }

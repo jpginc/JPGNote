@@ -96,4 +96,18 @@ internal class ProgramSettingsClass : ISettingsClass
         }
         return null;
     }
+
+    public Tag GetTag(string tagId)
+    {
+        foreach (var project in ProjectManager.LoadedProjects)
+        {
+            Tag tag = null;
+            if ((tag = project.TagManager.GetTag(tagId)) != null)
+            {
+                Console.WriteLine("Found tag " + tag.TagName);
+                return tag;
+            }
+        }
+        return null;
+    }
 }

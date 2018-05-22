@@ -20,6 +20,20 @@ namespace ConsoleApp1.BuiltInActions
         [DataMember, Wizard, AutoSingleLineString]
         public string PortNumber { get; set; } = "";
         [DataMember, AutoSingleLineString] public string Target { get; set; } = "";
+        [DataMember] public readonly string UniqueId = Guid.NewGuid().ToString("N");
+
+        [IgnoreDataMember]
+        public string Tags
+        {
+            get
+            {
+                var tags = string.Join(", ", TagReferences
+                           .Select(r => ProgramSettingsClass.Instance.GetTag(r))
+                           .Where(t => t != null)
+                           .Select(t => t.TagName));
+                return tags.Equals("") ? "": $"Tags: {tags}";
+            }
+        }
         [IgnoreDataMember] public List<ICreatable> Notes
         {
             get
@@ -31,6 +45,7 @@ namespace ConsoleApp1.BuiltInActions
         }
 
         [DataMember] public List<string> NoteReferences { get; set; } = new List<string>();
+        [DataMember] public List<string> TagReferences { get; set; } = new List<string>();
         [DataMember] public List<string> CommandsRun { get; set; } = new List<string>();
 
         [DataMember] public ScanItemState ScanItemStatus { get; set; } = ScanItemState.NotSet;

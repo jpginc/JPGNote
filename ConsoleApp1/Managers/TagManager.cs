@@ -42,5 +42,18 @@ namespace ConsoleApp1
         {
             Creatables.Add(tag);
         }
+
+        public Tag GetOrCreateTag(string tagText)
+        {
+            var existing = Creatables.FirstOrDefault(c => ((Tag)c).TagName.Equals(tagText)) as Tag;
+            if (existing != null)
+            {
+                return existing;
+            }
+
+            var newTag = new Tag() {TagName = tagText};
+            Creatables.Add(newTag);
+            return newTag;
+        }
     }
 }
