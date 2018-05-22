@@ -31,7 +31,7 @@ namespace ConsoleApp1.BuiltInActions
                            .Select(r => ProgramSettingsClass.Instance.GetTag(r))
                            .Where(t => t != null)
                            .Select(t => t.TagName));
-                return tags.Equals("") ? "": $"Tags: {tags}";
+                return tags.Equals("") ? "": $": {tags}";
             }
         }
         [IgnoreDataMember] public List<ICreatable> Notes

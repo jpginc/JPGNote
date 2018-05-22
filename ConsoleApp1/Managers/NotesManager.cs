@@ -16,12 +16,19 @@ namespace ConsoleApp1
 
         public override void New(UserActionResult obj)
         {
+            New();
+        }
+
+        public Note New()
+        {
             var userNote = new Note();
             if (CreatableWizard.GetRequiredFields(userNote))
             {
                 Creatables.Add(userNote);
                 Save();
             }
+
+            return userNote;
         }
 
         public LoggedNote NewLoggedNote(string fileName, string noteName)
@@ -43,7 +50,7 @@ namespace ConsoleApp1
             return ActionProviderResult.PassToTreeViewChoices;
         }
 
-        public Note GetNote(string uniqueNoteId)
+        public Note GetNoteByUniqueId(string uniqueNoteId)
         {
             return Creatables.FirstOrDefault(n => ((Note) n).UniqueId.Equals(uniqueNoteId)) as Note;
         }
@@ -51,6 +58,12 @@ namespace ConsoleApp1
         public void AddPremade(Note note)
         {
             Creatables.Add(note);
+        }
+
+        public void CreateLinkedNote(Port creatable)
+        {
+            var note = New();
+            creatable.NoteReferences.Add(note.UniqueId);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using ConsoleApp1.BuiltInActions;
 
@@ -14,6 +15,18 @@ namespace ConsoleApp1
         public int CompareTo(Tag obj)
         {
             return string.Compare(UniqueId, obj.UniqueId, StringComparison.Ordinal);
+        }
+
+        [IgnoreDataMember] public string TaggedItems
+        {
+            get
+            {
+                var tags = string.Join(", ", RefsToCreatablesThatAreTaggedByMe
+                    .Select(r => ProgramSettingsClass.Instance.GetCreatable(r))
+                    .Where(c => c != null)
+                    .Select(c => c.GetType().Name + " " + c.EditChoiceText));
+                return tags.Equals("") ? "" : $": {tags}";
+            }
         }
         [DataMember] public List<string> RefsToCreatablesThatAreTaggedByMe { get; set; } = new List<string>();
         [DataMember] public List<string> RefsToNotesAboutThisTag { get; set; } = new List<string>();

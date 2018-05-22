@@ -39,6 +39,11 @@ namespace ConsoleApp1.BuiltInActions
                     retList.AddRange(val.Select(v => new AutoAction(v, _manager)));
                 }
             }
+            if(_obj is Port port)
+            {
+                retList.Add(new AutoCreateLinkedCreatable(port, LinkedCreatableType.Tag ));
+                retList.Add(new AutoCreateLinkedCreatable(port, LinkedCreatableType.Note));
+            }
 
             if (_manager.HasChildren())
             {
@@ -47,6 +52,39 @@ namespace ConsoleApp1.BuiltInActions
 
             retList.Add(new AutoDeleteCreatable(_obj, _manager));
             return retList;
+        }
+    }
+
+    public enum LinkedCreatableType
+    {
+        Note,
+        Tag
+    }
+    internal class AutoCreateLinkedCreatable : SimpleTreeViewChoice
+    {
+        private readonly Port _creatable;
+        private readonly LinkedCreatableType _type;
+        private ProjectPersistence _proj;
+
+        public AutoCreateLinkedCreatable(Port creatable, LinkedCreatableType type) : base("New " + type)
+        {
+            _creatable = creatable;
+            _type = type;
+            _proj = ProgramSettingsClass.Instance.GetProject(_creatable);
+            AcceptHandler = NewThing;
+        }
+
+        private void NewThing(UserActionResult obj)
+        {
+            if (_type == LinkedCreatableType.Note)
+            {
+                _proj.NotesManager.CreateLinkedNote(_creatable);
+            }
+            else if(_type == LinkedCreatableType.Tag)
+            {
+                _proj.TagManager.CreateLinkedTag(_creatable);
+            }
+            _proj.Save();
         }
     }
 }

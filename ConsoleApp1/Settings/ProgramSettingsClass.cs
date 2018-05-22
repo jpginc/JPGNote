@@ -89,7 +89,7 @@ internal class ProgramSettingsClass : ISettingsClass
         foreach (var project in ProjectManager.LoadedProjects)
         {
             Note note = null;
-            if ((note = project.NotesManager.GetNote(uniqueNoteId)) != null)
+            if ((note = project.NotesManager.GetNoteByUniqueId(uniqueNoteId)) != null)
             {
                 return note;
             }
@@ -102,10 +102,40 @@ internal class ProgramSettingsClass : ISettingsClass
         foreach (var project in ProjectManager.LoadedProjects)
         {
             Tag tag = null;
-            if ((tag = project.TagManager.GetTag(tagId)) != null)
+            if ((tag = project.TagManager.GetTagByUniqueId(tagId)) != null)
             {
-                Console.WriteLine("Found tag " + tag.TagName);
                 return tag;
+            }
+        }
+        return null;
+    }
+
+    public ICreatable GetCreatable(string uid)
+    {
+        //Console.WriteLine("looking for " + uid);
+        return GetTag(uid) ?? GetNote(uid) ?? GetPort(uid);
+    }
+
+    public Port GetPort(string uid)
+    {
+        foreach (var project in ProjectManager.LoadedProjects)
+        {
+            Port port = null;
+            if ((port = project.PortManager.GetPortById(uid)) != null)
+            {
+                return port;
+            }
+        }
+        return null;       
+    }
+
+    public ProjectPersistence GetProject(ICreatable creatable)
+    {
+        foreach (var project in ProjectManager.LoadedProjects)
+        {
+            if (project.Contains(creatable))
+            {
+                return project;
             }
         }
         return null;

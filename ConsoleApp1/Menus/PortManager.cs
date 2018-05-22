@@ -89,5 +89,10 @@ namespace ConsoleApp1.BuiltInActions
             Creatables.Add(port);
             return port;
         }
+
+        public Port GetPortById(string uid)
+        {
+            return Creatables.FirstOrDefault(c => ((Port) c).UniqueId.Equals(uid)) as Port;
+        }
     }
 }

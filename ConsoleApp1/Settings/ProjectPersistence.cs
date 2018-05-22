@@ -211,5 +211,13 @@ namespace ConsoleApp1
             CommandQueue = new CommandQueue();
             return Persist();
         }
+
+        public bool Contains(ICreatable creatable)
+        {
+            return NotesManager.Creatables.Contains(creatable)
+                   || TargetManager.Creatables.Contains(creatable)
+                   || TagManager.Creatables.Contains(creatable)
+                   || PortManager.Creatables.Contains(creatable);
+        }
     }
 }
