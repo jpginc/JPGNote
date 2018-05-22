@@ -216,7 +216,7 @@ namespace ConsoleApp1.BuiltInActions
                             };
 
                             job.Project.NotesManager.AddPremade(note);
-                            job.Port?.NoteReferences.Add(note.UniqueId);
+                            port.NoteReferences.Add(note.UniqueId);
 
                             Console.WriteLine("Adding port " + port);
                             job.Project.PortManager.AddPremade(port);
