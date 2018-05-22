@@ -9,7 +9,7 @@ namespace ConsoleApp1.BuiltInActions
 {
     [DataContract]
     [KnownType(typeof(SshAbleMachine))]
-    public class MachineManager : ManagerAndActionProvider
+    public class MachineManager : Manager, IManagerAndActionProvider
     {
         [IgnoreDataMember] private static readonly string _sshLocation = "C:\\Program Files\\Git\\usr\\bin\\ssh.exe";
         [IgnoreDataMember] public override string ManageText => "Manage Machines";
@@ -23,6 +23,11 @@ namespace ConsoleApp1.BuiltInActions
         public int MachineCount()
         {
             return Creatables.Count(m => ((SshAbleMachine)m).IsAvailable.Equals("yes"));
+        }
+
+        public IEnumerable<ITreeViewChoice> GetMachineChoices()
+        {
+            return Creatables.Select(m => new AutoAction(m, this));
         }
 
         public override void New(UserActionResult action)
@@ -109,6 +114,17 @@ namespace ConsoleApp1.BuiltInActions
                     break;
                 }
             }
+        }
+
+        public InputType InputType => InputType.Multi;
+        public IEnumerable<ITreeViewChoice> GetActions()
+        {
+            return Creatables.Select(c => new AutoAction(c, this));
+        }
+
+        public ActionProviderResult HandleUserAction(UserActionResult res)
+        {
+            return ActionProviderResult.PassToTreeViewChoices;
         }
     }
 }
