@@ -16,7 +16,7 @@ namespace ConsoleApp1.BuiltInActions
         public string Command { get; set; } = "";
 
         [DataMember] [AutoFilePicker] public string ParsingCodeLocation { get; set; } = "";
-
+        [DataMember, AutoSingleLineString] public string IsInteractive { get; set; } = "no";
         [IgnoreDataMember] public string EditChoiceText => Name;
     }
 }

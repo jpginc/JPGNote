@@ -19,10 +19,10 @@ namespace ConsoleApp1.BuiltInActions
         public CommandQueue CommandQueue => _settings.CommandQueue;
         public TagManager TagManager => _settings.TagManager;
 
-        public LoggedNote GetLogFileFullLocation()
+        public LoggedNote GetLogFileFullLocation(string userActionName = "SSH Session")
         {
             var fileName = _settings.ProjectFolder + Path.DirectorySeparatorChar + GetLogFileName();
-            var note = _settings.NotesManager.NewLoggedNote(fileName, "SSH Session " + DateTime.Now.ToLocalTime());
+            var note = _settings.NotesManager.NewLoggedNote(fileName, userActionName + DateTime.Now.ToLocalTime());
             return note;
         }
 

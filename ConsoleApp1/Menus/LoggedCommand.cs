@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ConsoleApp1.BuiltInActions
@@ -8,8 +9,8 @@ namespace ConsoleApp1.BuiltInActions
         private const string userInputMarker = "{{USERINPUT}}";
         private readonly UserAction _userAction;
         private Project _project;
-        private IEnumerable<Target> _targets;
-        private IEnumerable<Port> _ports;
+        private IEnumerable<Target> _targets = new List<Target>();
+        private IEnumerable<Port> _ports = new List<Port>();
         private string portMarker = "{{PORT}}";
         private string targetMarker = "{{TARGET}}";
 

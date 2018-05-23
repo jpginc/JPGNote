@@ -61,10 +61,22 @@ namespace ConsoleApp1.BuiltInActions
             UserAction userAction, Target target, Port port)
         {
             var jobDetails = new JobDetails(commandString, target, port, userAction, project);
-
-            _queue.Add(jobDetails);
-            project.CommandQueued(jobDetails);
-            QueueMove();
+            if (userAction.IsInteractive.Equals("yes"))
+            {
+                var loggedNote = project.GetLogFileFullLocation(userAction.Name);
+                var args = " /c \"" + MachineManager.Instance.DontWorryAboutTooManySessions()
+                                    + " \"-t\" "
+                                    + $" \"{jobDetails.CommandString}; exec bash\""
+                                    + " | "
+                                    + GetOuputRedirectionString(loggedNote.FileName) + "\"";
+                RunRedirectedShell(_cmdLocation, args);
+            }
+            else
+            {
+                _queue.Add(jobDetails);
+                project.CommandQueued(jobDetails);
+                QueueMove();
+            }
         }
 
         public void ReviveCommand(JobDetails job)
