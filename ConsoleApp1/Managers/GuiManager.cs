@@ -100,7 +100,11 @@ namespace ConsoleApp1
                 DialogFlags.Modal | DialogFlags.DestroyWithParent,
                 MessageType.Question,
                 ButtonsType.OkCancel,
-                prompt) {DefaultResponse = ResponseType.Ok};
+                prompt)
+            {
+                DefaultResponse = ResponseType.Ok,
+                DefaultWidth = 600
+            };
             var input = new Entry
             {
                 Visibility = !isPassword,
