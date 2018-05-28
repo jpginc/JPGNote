@@ -42,7 +42,7 @@ namespace ConsoleApp1
         public InputType InputType => InputType.Single;
         public IEnumerable<ITreeViewChoice> GetActions()
         {
-            return Creatables.Select(c => new AutoAction(c, this));
+            return Creatables.Select(c => new AutoAction(c, this)).Reverse();
         }
 
         public ActionProviderResult HandleUserAction(UserActionResult res)
