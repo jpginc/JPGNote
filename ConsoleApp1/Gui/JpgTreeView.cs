@@ -287,5 +287,15 @@ namespace ConsoleApp1
             for (var i = 0; i < _sortedModel.IterNChildren() - 1; i++) _sortedModel.IterNext(ref iter);
             return iter;
         }
+
+        public void SelectEverything()
+        {
+            _store.GetIterFirst(out var iter);
+            for (var i = 0; i < _store.IterNChildren() - 1; i++)
+            {
+                Selection.SelectIter(iter);
+                _store.IterNext(ref iter);
+            }
+        }
     }
 }

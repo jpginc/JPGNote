@@ -103,5 +103,10 @@ namespace ConsoleApp1
         {
             _treeview.HandleDone();
         }
+
+        public void SelectAll()
+        {
+            _treeview.SelectEverything();
+        }
     }
 }
