@@ -9,6 +9,7 @@ namespace ConsoleApp1
         bool OnAcceptCallback(UserActionResult choice);
         bool OnSaveCallback(UserActionResult choice);
         void OnTreeViewDoneCallback(JpgTreeView jpgTreeView);
+        bool IsSticky { get; set; }
     }
     internal class SimpleTreeViewChoice : ITreeViewChoice
     {
@@ -43,6 +44,8 @@ namespace ConsoleApp1
         {
             DoneHandler(jpgTreeView);
         }
+
+        public bool IsSticky { get; set; }
 
 
         public Action<JpgTreeView> SelectHandler { get; set; } = DoNothingHandler;

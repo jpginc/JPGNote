@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Gdk;
 using Gtk;
 
 namespace ConsoleApp1
@@ -8,7 +9,8 @@ namespace ConsoleApp1
     public class JpgTreeView : TreeView
     {
         private const int DoubleClickInterval = 200;
-        private readonly TreeStore _store = new TreeStore(typeof(string), typeof(int), typeof(ITreeViewChoice));
+        private readonly TreeStore _store = new TreeStore(typeof(string), typeof(int), 
+            typeof(ITreeViewChoice));
         private DateTime _lastClick = DateTime.Now;
         private TreeModelSort _sortedModel;
         private ITreeViewChoice _lastClickedItem;
@@ -52,26 +54,104 @@ namespace ConsoleApp1
         private void SetupHandlers()
         {
             ActivateOnSingleClick = true;
-            KeyReleaseEvent += HandleUpAndDown;
+            KeyReleaseEvent += HandleKeyPresses;
             RowActivated += ClickHandler;
         }
 
-        public void HandleUpAndDown(object o, KeyReleaseEventArgs args)
+        private void HandleDownUpEdgeCase(object o, KeyPressEventArgs args)
+        {
+       }
+
+        protected override bool OnKeyPressEvent(EventKey evnt)
+        {
+            if (evnt.Key == Gdk.Key.Left)
+            {
+                SetItemAsStickySelected(false);
+            }
+            if (evnt.Key == Gdk.Key.Right)
+            {
+                SetItemAsStickySelected(true);
+            }
+            if (evnt.State != ModifierType.ControlMask 
+                && (evnt.Key == Gdk.Key.Down || evnt.Key == Gdk.Key.Up))
+            {
+                //when you deselect a row with the left key you don't want to select it again
+                GetCursor(out var path, out var column);
+                if (! Selection.PathIsSelected(path))
+                {
+                    //move to the next item and select it, don't really know why this works...
+                    SetCursor(path, column, false); 
+                }
+            }
+ 
+            return base.OnKeyPressEvent(evnt);
+        }
+
+        private void SetItemAsStickySelected(bool makeSticky)
+        {
+            if (Selection.Mode == SelectionMode.Multiple)
+            {
+                GetCursor(out var path, out var column);
+                _sortedModel.GetIter(out var row, path);
+                var val = GetValueFromSortedRow(row);
+                val.IsSticky = makeSticky;
+                if (!makeSticky)
+                {
+                    Selection.UnselectPath(path);
+                }
+            }
+        }
+
+        public void HandleKeyPresses(object o, KeyReleaseEventArgs args)
         {
             var evnt = args.Event;
-            if (evnt.Key == Gdk.Key.Down || evnt.Key == Gdk.Key.Up)
+            if (evnt.Key == Gdk.Key.Down || evnt.Key == Gdk.Key.Up
+                || evnt.Key == Gdk.Key.Next || evnt.Key == Gdk.Key.Prior)
             {
                 foreach (ITreeViewChoice item in GetSelectedItems())
                 {
                     item.OnTreeViewSelectCallback(this);
                 }
+
+                ReSelectStickyRows();
             }
+            
 
             if (evnt.Key == Gdk.Key.d && args.Event.State == Gdk.ModifierType.Mod1Mask)
             {
                 HandleDone();
             }
 
+        }
+
+        private void ReSelectStickyRows()
+        {
+            _sortedModel.GetIterFirst(out var iter);
+            for (var i = 0; i < _sortedModel.IterNChildren() - 1; i++)
+            {
+                var value = GetValueFromSortedRow(iter);
+                if (value.IsSticky)
+                {
+                    Selection.SelectIter(iter);
+                }
+
+                _sortedModel.IterNext(ref iter);
+            }
+        }
+
+        private TreeIter GetSortedRowFromStoreRow(TreeIter iter)
+        {
+            var val = GetValueFromUnsortedRow(iter);
+            _sortedModel.GetIterFirst(out var sortedIter);
+            for (var i = 0; i < _sortedModel.IterNChildren() - 1; i++)
+            {
+                if (val == GetValueFromSortedRow(iter))
+                {
+                    return iter;
+                }
+                _sortedModel.IterNext(ref sortedIter);
+            }
+            throw new Exception("where did my row go?");
         }
 
         public void HandleDone()
@@ -110,14 +190,14 @@ namespace ConsoleApp1
             Model = _sortedModel;
         }
 
-        private ITreeViewChoice GetSortedRowValue(TreeIter item)
+        private ITreeViewChoice GetValueFromSortedRow(TreeIter item)
         {
             return (ITreeViewChoice) _sortedModel.GetValue(item, (int) Column.Value);
         }
 
         private bool CheckForDoubleClickOrDoubleReturn(TreeIter sortedRow)
         {
-            var clickedItem = GetSortedRowValue(sortedRow);
+            var clickedItem = GetValueFromSortedRow(sortedRow);
             var isDoubleClick = (DateTime.Now - _lastClick).Milliseconds < DoubleClickInterval
                                 && Equals(_lastClickedItem, clickedItem);
             _lastClick = DateTime.Now;
@@ -171,7 +251,7 @@ namespace ConsoleApp1
         public JpgTreeView HandleSearchReturnKey()
         {
             var sortedFirstRow = GetSortedFirstRow();
-            //Console.WriteLine("return key give me " + GetSortedRowValue(sortedFirstRow)?.Text);
+            //Console.WriteLine("return key give me " + GetValueFromSortedRow(sortedFirstRow)?.Text);
             if (CheckForDoubleClickOrDoubleReturn(sortedFirstRow))
             {
                 SelectSortedRow(sortedFirstRow, true);
@@ -202,7 +282,7 @@ namespace ConsoleApp1
 
         private void NotifyOfSortedRowSelect(TreeIter sortedRow)
         {
-            GetSortedRowValue(sortedRow)?.OnTreeViewSelectCallback(this);
+            GetValueFromSortedRow(sortedRow)?.OnTreeViewSelectCallback(this);
         }
 
         public IEnumerable<ITreeViewChoice> GetSelectedItems()
@@ -211,7 +291,7 @@ namespace ConsoleApp1
             retVal = Selection.GetSelectedRows().Select(p =>
             {
                 _sortedModel.GetIter(out var item, p);
-                return GetSortedRowValue(item);
+                return GetValueFromSortedRow(item);
             }).ToList();
             return retVal;
         }
@@ -224,7 +304,7 @@ namespace ConsoleApp1
                 return;
             }
             var unsortedRow = GetUnsortedFirstRow();
-            //var temp = GetSortedRowValue(unsortedRow);
+            //var temp = GetValueFromSortedRow(unsortedRow);
             //Console.WriteLine("the first sortedRow i'm updating is " + temp?.Text);
             for (var i = 0; i < _store.IterNChildren(); i++)
             {
@@ -253,8 +333,8 @@ namespace ConsoleApp1
 
         public void RotateItems(bool forwardDirection)
         {
-            var firstValue = GetSortedRowValue(GetSortedFirstRow());
-            var lastValue = GetSortedRowValue(GetLastSortedRow());
+            var firstValue = GetValueFromSortedRow(GetSortedFirstRow());
+            var lastValue = GetValueFromSortedRow(GetLastSortedRow());
             var firstRowInStore = GetStoreRowFromValue(firstValue);
             var lastRowInStore = GetStoreRowFromValue(lastValue);
             if (forwardDirection)

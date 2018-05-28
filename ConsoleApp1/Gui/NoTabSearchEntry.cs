@@ -30,7 +30,6 @@ namespace ConsoleApp1
         //this is the only way to supress tab's change focus sideaffect
         protected override bool OnKeyPressEvent(EventKey evnt)
         {
-            Console.WriteLine(evnt.Key);
             if (evnt.Key == Key.Next || evnt.Key == Key.Prior)
             {
                 _parent.HandlePageDownUp();
