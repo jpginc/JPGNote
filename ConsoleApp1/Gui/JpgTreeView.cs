@@ -136,7 +136,7 @@ namespace ConsoleApp1
             else
             {
                 SelectSortedRow(clickedRow, true);
-                _search.GrabFocusWithoutSelecting();
+                //_search.GrabFocusWithoutSelecting();
             }
         }
 

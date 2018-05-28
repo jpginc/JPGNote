@@ -15,7 +15,7 @@ namespace ConsoleApp1.BuiltInActions
     internal class CommandManager
     {
         [IgnoreDataMember] private int SimultaniousScans => ScansPerMachine * MachineManager.Instance.MachineCount();
-        [IgnoreDataMember] private const int ScansPerMachine = 15;
+        [IgnoreDataMember] private const int ScansPerMachine = 10;
         [DataMember] private List<JobDetails> _queue = new List<JobDetails>();
 
         [IgnoreDataMember] public static CommandManager Instance { get; } = new CommandManager();
