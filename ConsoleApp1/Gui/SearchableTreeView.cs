@@ -108,5 +108,10 @@ namespace ConsoleApp1
         {
             _treeview.SelectEverything();
         }
+
+        public void HandlePageDownUp()
+        {
+            _treeview.GrabFocus();
+        }
     }
 }
