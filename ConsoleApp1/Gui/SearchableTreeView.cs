@@ -71,7 +71,7 @@ namespace ConsoleApp1
             return _treeview.GetSelectedItems();
         }
 
-        public string GetSearchValue()
+        public string GetSearchText()
         {
             return _search.Text;
         }
@@ -112,6 +112,12 @@ namespace ConsoleApp1
         public void HandlePageDownUp()
         {
             _treeview.GrabFocus();
+        }
+
+        public void SetSearchText(string searchText)
+        {
+            _search.Text = searchText;
+            _search.SelectRegion(-1, -1); //set the cursor at the end of the search
         }
     }
 }

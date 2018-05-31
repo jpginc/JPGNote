@@ -139,7 +139,7 @@ namespace ConsoleApp1
             _userActionResult.Result = t;
             _userActionResult.UserChoices = c;
             _userActionResult.MultiLineInput = _multiLineInputWidget.Buffer.Text;
-            _userActionResult.SingleLineInput = _searchableTreeView.GetSearchValue();
+            _userActionResult.SingleLineInput = _searchableTreeView.GetSearchText();
             UserActionCallback.Invoke(_userActionResult);
         }
 
@@ -222,6 +222,16 @@ namespace ConsoleApp1
         public void Accept(JpgTreeView obj)
         {
             Accept();
+        }
+
+        public string GetSearchText()
+        {
+            return _searchableTreeView.GetSearchText();
+        }
+
+        public void SetSearchText(string searchText)
+        {
+            _searchableTreeView.SetSearchText(searchText);
         }
     }
 }

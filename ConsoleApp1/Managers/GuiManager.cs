@@ -52,7 +52,7 @@ namespace ConsoleApp1
             }
         }
 
-        public void GetUserInput(JpgActionManager actionManager, string prompt)
+        public void GetUserInput(JpgActionManager actionManager, string prompt, string searchText)
         {
             switch (actionManager.CurrentActionProvider.InputType)
             {
@@ -65,6 +65,8 @@ namespace ConsoleApp1
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            MainWindow.Instance.SetSearchText(searchText);
         }
 
         private UserActionResult GetSingleLineInputFromGui(string prompt, bool resetGui = true)
@@ -209,6 +211,11 @@ namespace ConsoleApp1
 
             filechooser.Destroy();
             return retVal;
+        }
+
+        public string GetSearchText()
+        {
+            return MainWindow.Instance.GetSearchText();
         }
     }
 }

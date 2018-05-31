@@ -48,7 +48,7 @@ public class GtkHelloWorld
 
     private static bool Next()
     {
-        GuiManager.Instance.GetUserInput(_jpgActionManager, "What do you want to do?");
+        GuiManager.Instance.GetUserInput(_jpgActionManager, "What do you want to do?", JpgActionManager.RestoreText); 
         return true;
     }
 
