@@ -104,14 +104,13 @@ namespace ConsoleApp1.BuiltInActions
                     _running++;
                     _queue = _queue.Skip(1).ToList();
                     var args = MachineManager.Instance.GetSshCommandLineArgs(toRun) + $" \"{toRun.CommandString}\"";
-                    var note = toRun.Project.GetLogFileFullLocation(toRun.UserAction, toRun.Target);
-                    toRun.LogLocation = note.FileName;
-                    RunExeToFile(_sshLocation, args, toRun, note);
+                    toRun.LogLocation = toRun.Project.GetLogFileFullLocation(toRun.UserAction, toRun.Target);
+                    RunExeToFile(_sshLocation, args, toRun);
                 }
             }
         }
 
-        private void RunExeToFile(string exeFileName, string args, JobDetails job, LoggedNote note)
+        private void RunExeToFile(string exeFileName, string args, JobDetails job)
         {
             new Thread(() =>
             {
@@ -161,6 +160,12 @@ namespace ConsoleApp1.BuiltInActions
                 file.Write(Encoding.UTF8.GetBytes(remaining), 0, remaining.Length);
                 file.Close();
                 p.Close();
+                var note = new Note()
+                {
+                    NoteContents = output,
+                    ParentUniqueId = job.Port?.UniqueId ?? job.Target?.UniqueId ?? job.Project.UniqueId,
+                    NoteName = $"{job.UserAction.Name} {DateTime.Now.ToLocalTime()}"
+                };
                 job.Project.NotesManager.AddPremade(note);
                 job.Port?.NoteReferences.Add(note.UniqueId);
                 job.Port?.CommandsRun.Add(job.UserAction.Name);
@@ -191,6 +196,7 @@ namespace ConsoleApp1.BuiltInActions
                 p.Close();
             }
 
+            File.Delete(job.LogLocation);
             Application.Invoke((a, b) => QueueDone(job));
         }
 

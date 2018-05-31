@@ -15,12 +15,12 @@ namespace ConsoleApp1.BuiltInActions
     [DataContract]
     public class Port : ICreatable, IComparable<Port>, IDoneable
     {
-        [IgnoreDataMember] public string EditChoiceText => PortNumber;
+        [IgnoreDataMember] public string EditChoiceText => Target.Equals("") ? PortNumber : $"{PortNumber} ({Target})";
 
         [DataMember, Wizard, AutoSingleLineString]
         public string PortNumber { get; set; } = "";
         [DataMember, AutoSingleLineString] public string Target { get; set; } = "";
-        [DataMember] public readonly string UniqueId = Guid.NewGuid().ToString("N");
+        [DataMember] public string UniqueId { get; set; } = Guid.NewGuid().ToString("N");
 
         [IgnoreDataMember]
         public string Tags

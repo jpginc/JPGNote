@@ -60,10 +60,11 @@ namespace ConsoleApp1
             Creatables.Add(note);
         }
 
-        public void CreateLinkedNote(Port creatable)
+        public void CreateLinkedNote(ICreatable port)
         {
             var note = New();
-            creatable.NoteReferences.Add(note.UniqueId);
+            note.ParentUniqueId = port.UniqueId;
+            port.NoteReferences.Add(note.UniqueId);
         }
     }
 }

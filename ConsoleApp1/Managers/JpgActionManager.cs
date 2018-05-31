@@ -22,6 +22,7 @@ namespace ConsoleApp1
         public static void PushActionContext(IActionProvider action)
         {
             _actionProviders.Add(new ActionContext(action, GuiManager.Instance.GetSearchText()));
+            RestoreText = "";
         }
 
         public static void UnrollActionContext()

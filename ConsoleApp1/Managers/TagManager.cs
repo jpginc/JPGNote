@@ -74,7 +74,7 @@ namespace ConsoleApp1
             return newTag;
         }
 
-        public void CreateLinkedTag(Port port)
+        public void CreateLinkedTag(ICreatable port)
         {
             var tag = New();
             port.TagReferences.Add(tag.UniqueId);

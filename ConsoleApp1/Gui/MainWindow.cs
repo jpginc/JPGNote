@@ -94,6 +94,7 @@ namespace ConsoleApp1
             };
             //keyboard shortcut setup in the OnKeyPressEvent override
             _multiLineInputWidget = new TextView();
+            _multiLineInputWidget.WrapMode = WrapMode.Word;
             sw.Add(_multiLineInputWidget);
             var save = new Button("_Save");
             save.Clicked += OnSaveClick;

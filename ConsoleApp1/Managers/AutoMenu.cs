@@ -62,11 +62,11 @@ namespace ConsoleApp1.BuiltInActions
     }
     internal class AutoCreateLinkedCreatable : SimpleTreeViewChoice
     {
-        private readonly Port _creatable;
+        private readonly ICreatable _creatable;
         private readonly LinkedCreatableType _type;
         private ProjectPersistence _proj;
 
-        public AutoCreateLinkedCreatable(Port creatable, LinkedCreatableType type) : base("New " + type)
+        public AutoCreateLinkedCreatable(ICreatable creatable, LinkedCreatableType type) : base("New " + type)
         {
             _creatable = creatable;
             _type = type;

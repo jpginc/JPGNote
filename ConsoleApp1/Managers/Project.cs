@@ -13,6 +13,8 @@ namespace ConsoleApp1.BuiltInActions
             _settings.Project = this;
         }
 
+        public string UniqueId => _settings.UniqueId ?? "";
+
         public TargetManager TargetManager => _settings.TargetManager;
         public NotesManager NotesManager => _settings.NotesManager;
         public PortManager PortManager => _settings.PortManager;
@@ -41,12 +43,9 @@ namespace ConsoleApp1.BuiltInActions
                 _settings.Save();
         }
 
-        public LoggedNote GetLogFileFullLocation(UserAction userAction, Target target)
+        public string GetLogFileFullLocation(UserAction userAction, Target target)
         {
-            var fileName = _settings.ProjectFolder + Path.DirectorySeparatorChar + GetLogFileName();
-            var note = _settings.NotesManager.NewLoggedNote(fileName, userAction.Name + " " + (target?.IpOrDomain ?? "") + 
-                DateTime.Now.ToLocalTime());
-            return note;
+            return _settings.ProjectFolder + Path.DirectorySeparatorChar + GetLogFileName();
         }
 
         public void CommandDone(JobDetails job)

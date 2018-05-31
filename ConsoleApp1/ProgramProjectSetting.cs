@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace ConsoleApp1.BuiltInActions
@@ -11,7 +12,10 @@ namespace ConsoleApp1.BuiltInActions
         //[DataMember, Wizard, AutoFolderPicker]
         //public string ProjectFolder { get; set; }
 
-        public string EditChoiceText => ProjectName;
-        public IManager Manager => ProjectManager.Instance;
+        [IgnoreDataMember] public string EditChoiceText => ProjectName;
+        [DataMember] public string UniqueId { get; set; } = Guid.NewGuid().ToString("N");
+        [IgnoreDataMember] public List<string> TagReferences => null;
+        [IgnoreDataMember] public List<string> NoteReferences => null;
+        [IgnoreDataMember] public IManager Manager => ProjectManager.Instance;
     }
 }

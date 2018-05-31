@@ -22,7 +22,7 @@ namespace ConsoleApp1
         private bool _isSaving;
         [IgnoreDataMember] public Project Project { get; set; }
 
-        private string SettingFileName => ProjectFolder + Path.DirectorySeparatorChar + ProjectName
+        public string SettingFileName => ProjectFolder + Path.DirectorySeparatorChar + ProjectName
                                           + Path.DirectorySeparatorChar + _settingsFileName;
 
         [DataMember] public NotesManager NotesManager { get; private set; }
@@ -32,6 +32,7 @@ namespace ConsoleApp1
         [DataMember] public CommandQueue CommandQueue { get; set; }
 
         public string ProjectFolder { get; private set; }
+        [DataMember] public string UniqueId { get; set; } =  Guid.NewGuid().ToString("N");
 
         public bool Create(string folderName, string projectName, string password)
         {

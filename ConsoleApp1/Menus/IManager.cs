@@ -19,5 +19,8 @@ namespace ConsoleApp1.BuiltInActions
     public interface ICreatable 
     {
         string EditChoiceText { get; }
+        string UniqueId { get; }
+        List<string> TagReferences { get; }
+        List<string> NoteReferences { get; }
     }
 }

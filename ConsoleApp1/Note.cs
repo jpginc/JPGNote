@@ -10,8 +10,11 @@ namespace ConsoleApp1
     public class Tag : ICreatable, IComparable<Tag>
     {
         [DataMember, AutoSingleLineString, Wizard] public string TagName { get; set; }
-        [DataMember] public readonly string UniqueId = Guid.NewGuid().ToString("N");
         public string EditChoiceText => TagName;
+        [DataMember] public string UniqueId { get; set; } = Guid.NewGuid().ToString("N");
+        [IgnoreDataMember] public List<string> TagReferences => null;
+        [DataMember] public List<string> NoteReferences { get; set; } = new List<string>();
+
         public int CompareTo(Tag obj)
         {
             return string.Compare(UniqueId, obj.UniqueId, StringComparison.Ordinal);
@@ -35,11 +38,13 @@ namespace ConsoleApp1
     public class Note : ICreatable, IComparable<Note>
     {
         [IgnoreDataMember] public string EditChoiceText => NoteName;
+        [DataMember] public List<string> TagReferences { get; set; } = new List<string>();
+        [IgnoreDataMember] public List<string> NoteReferences => null;
         [DataMember, AutoSingleLineString, Wizard] public string NoteName { get; set; }
-        [DataMember] public readonly string UniqueId = Guid.NewGuid().ToString("N");
+        [DataMember] public string UniqueId { get; set; } = Guid.NewGuid().ToString("N");
         [DataMember, AutoMultiLineString, Wizard] public virtual string NoteContents { get; set; } = "";
         [DataMember] public DateTime CreateTime { get; set; } = DateTime.Now;
-        [DataMember] public List<string> Tags { get; set; } = new List<string>();
+        [DataMember] public string ParentUniqueId { get; set; } = "";
         public virtual int CompareTo(Note obj)
         {
             return string.Compare(UniqueId, obj.UniqueId, StringComparison.Ordinal);

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
@@ -105,6 +106,9 @@ namespace ConsoleApp1.BuiltInActions
         [Wizard]
         public string IpOrDomain { get; set; }
         [DataMember] public List<string> CommandsRun { get; set; } = new List<string>();
+        [DataMember] public string UniqueId { get; set; } = Guid.NewGuid().ToString("N");
+        [DataMember] public List<string> TagReferences { get; set; } = new List<string>();
+        [DataMember] public List<string> NoteReferences { get; set; } = new List<string>();
         [IgnoreDataMember] public string EditChoiceText => IpOrDomain;
 
     }
