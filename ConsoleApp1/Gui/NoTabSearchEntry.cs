@@ -28,6 +28,7 @@ namespace ConsoleApp1
         }
 
         //this is the only way to supress tab's change focus sideaffect
+        [GLib.ConnectBefore]
         protected override bool OnKeyPressEvent(EventKey evnt)
         {
             if (evnt.Key == Key.Next || evnt.Key == Key.Prior)
@@ -39,6 +40,11 @@ namespace ConsoleApp1
                 if (evnt.Key == Key.o)
                 {
                     CommandManager.Instance.OpenSshSession(ProgramSettingsClass.Instance.Project);
+                    return true;
+                }
+                if(evnt.Key == Key.a)
+                {
+                    _parent.SelectAll();
                     return true;
                 }
                 return base.OnKeyPressEvent(evnt);
