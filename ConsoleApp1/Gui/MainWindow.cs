@@ -96,13 +96,13 @@ namespace ConsoleApp1
             _multiLineInputWidget = new TextView();
             _multiLineInputWidget.WrapMode = WrapMode.Word;
             sw.Add(_multiLineInputWidget);
-            var save = new Button("_Save");
-            save.Clicked += OnSaveClick;
-            save.AddAccelerator("activate", _buttonKeyboardShortcutAccelGroup,
-                new AccelKey(Key.a, ModifierType.Mod1Mask, AccelFlags.Visible));
+            //var save = new Button("_Save");
+            //save.Clicked += OnSaveClick;
+            //save.AddAccelerator("activate", _buttonKeyboardShortcutAccelGroup,
+                //new AccelKey(Key.a, ModifierType.Mod1Mask, AccelFlags.Visible));
             container.Add(label);
-            container.AttachNextTo(sw, label, PositionType.Bottom, 1, 8);
-            container.AttachNextTo(save, sw, PositionType.Bottom, 1, 1);
+            container.AttachNextTo(sw, label, PositionType.Bottom, 1, 9);
+            //container.AttachNextTo(save, sw, PositionType.Bottom, 1, 1);
         }
 
         private void OnSaveClick(object sender, EventArgs e)
