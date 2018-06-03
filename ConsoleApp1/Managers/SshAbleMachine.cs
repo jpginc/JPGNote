@@ -26,9 +26,10 @@ namespace ConsoleApp1.BuiltInActions
         [IgnoreDataMember] public List<string> ChildrenReferences => null;
 
         [IgnoreDataMember]
-        public string CreatableSummary => $"Name: {Name}\nSSH Username: {SshUserName}\nIP or domain: {IpOrDomainName}";
+        public string ThisSummary => $"Name: {Name}\nSSH Username: {SshUserName}\nIP or domain: {IpOrDomainName}";
 
-        public string FullSummary => CreatableSummary;
+        public string FullSummary => ThisSummary;
+        public string SummaryForParent => FullSummary;
 
         [IgnoreDataMember] public List<JobDetails> RunningJobs { get; set; } = new List<JobDetails>();
         public IManager Manager => MachineManager.Instance;

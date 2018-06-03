@@ -9,9 +9,9 @@ namespace ConsoleApp1
     [KnownType(typeof(Tag))]
     public class TagManager : Manager, IManagerAndActionProvider
     {
-        [IgnoreDataMember] public override string ManageText => "Manage Tags";
+        [IgnoreDataMember] public override string ManageText => "Manage MyTagsAndChildTags";
         [IgnoreDataMember] public override string CreateChoiceText => "New Tag";
-        [IgnoreDataMember] public override string DeleteChoiceText => "Delete Tags";
+        [IgnoreDataMember] public override string DeleteChoiceText => "Delete MyTagsAndChildTags";
 
         public override void New(UserActionResult obj)
         {

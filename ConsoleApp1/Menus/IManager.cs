@@ -21,7 +21,8 @@ namespace ConsoleApp1.BuiltInActions
         string EditChoiceText { get; }
         string UniqueId { get; }
         List<string> ChildrenReferences { get; }
-        string CreatableSummary { get; }
+        string ThisSummary { get; }
         string FullSummary { get; }
+        string SummaryForParent { get;}
     }
 }

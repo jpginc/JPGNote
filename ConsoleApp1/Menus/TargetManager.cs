@@ -113,13 +113,34 @@ namespace ConsoleApp1.BuiltInActions
         [DataMember] public List<string> CommandsRun { get; set; } = new List<string>();
         [DataMember] public string UniqueId { get; set; } = Guid.NewGuid().ToString("N");
         [DataMember] public List<string> ChildrenReferences { get; set; } = new List<string>();
-        [IgnoreDataMember] public string CreatableSummary => IpOrDomain;
-        [IgnoreDataMember] public string FullSummary => $"{IpOrDomain}\n{ChildSummaries}\n{ChildrenReferences.Count}";
+        [IgnoreDataMember] public string ThisSummary => IpOrDomain;
+        [IgnoreDataMember] public string FullSummary => $"{IpOrDomain}{MyTagsAndChildTags}{MyPortsString}{MyChildNotes}";
+        public string MyChildNotes => string.Join("\n", MyChildren.Select(c => c.SummaryForParent));
 
-        [IgnoreDataMember] public string ChildSummaries => string.Join("\n",
-            ChildrenReferences.Select(c => ProgramSettingsClass.Instance.GetCreatable(c))
-                .Where(c => c != null)
-                .Select(c => c.FullSummary));
+        public string MyTagsAndChildTags
+        {
+            get
+            {
+                var x = string.Join(", ", MyPorts.SelectMany(p => p.Tags)
+                    .Select(t => t.ThisSummary)
+                    .Distinct());
+                return x.Equals("") ? "" : $"\nTags: {x}";
+            }
+        }
+
+
+        [IgnoreDataMember] public string SummaryForParent => FullSummary;
+
+        [IgnoreDataMember]
+        public IEnumerable<ICreatable> MyChildren => ChildrenReferences
+            .Select(c => ProgramSettingsClass.Instance.GetCreatable(c))
+            .Where(c => c != null);
+
+        [IgnoreDataMember] public IEnumerable<Port> MyPorts => MyChildren.Where(c => c.GetType() == typeof(Port))
+            .Select(c=> (Port)c);
+
+
+        [IgnoreDataMember] public string MyPortsString => "\nPorts: " + string.Join(", ", MyChildren.Select(c => c.ThisSummary));
 
 
         [IgnoreDataMember] public string EditChoiceText => IpOrDomain;

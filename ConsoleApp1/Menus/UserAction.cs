@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace ConsoleApp1.BuiltInActions
@@ -21,8 +22,9 @@ namespace ConsoleApp1.BuiltInActions
         [DataMember, AutoSingleLineString] public string IsInteractive { get; set; } = "no";
         [IgnoreDataMember] public string EditChoiceText => Name;
         [DataMember] public string UniqueId { get; set; } = Guid.NewGuid().ToString("N");
-        public string CreatableSummary => $"Name: {Name}\nCommand: {Command}\n";
-        public string FullSummary => CreatableSummary;
-        [IgnoreDataMember] public List<string> ChildrenReferences => null;
+        public string ThisSummary => $"Name: {Name}\nCommand: {Command}\n";
+        public string FullSummary => ThisSummary;
+        public string SummaryForParent => ThisSummary;
+        [IgnoreDataMember] public List<string> ChildrenReferences => new List<string>();
     }
 }
