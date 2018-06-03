@@ -84,7 +84,7 @@ internal class ProgramSettingsClass : ISettingsClass
 
     public Project Project { get; set; }
 
-    public ICreatable GetNote(string uniqueNoteId)
+    public Note GetNote(string uniqueNoteId)
     {
         foreach (var project in ProjectManager.LoadedProjects)
         {
@@ -113,7 +113,17 @@ internal class ProgramSettingsClass : ISettingsClass
     public ICreatable GetCreatable(string uid)
     {
         //Console.WriteLine("looking for " + uid);
-        return GetTag(uid) ?? GetNote(uid) ?? GetPort(uid);
+        ICreatable a = GetTag(uid);
+        if (a != null) return a;
+        a = GetNote(uid);
+        if (a != null)
+            return a;
+        a = GetPort(uid);
+        if (a != null)
+            return a;
+        a = GetTarget(uid);
+        return a;
+
     }
 
     public Port GetPort(string uid)
@@ -136,6 +146,19 @@ internal class ProgramSettingsClass : ISettingsClass
             if (project.Contains(creatable))
             {
                 return project;
+            }
+        }
+        return null;
+    }
+
+    public Target GetTarget(string uid)
+    {
+        foreach (var project in ProjectManager.LoadedProjects)
+        {
+            Target target = null;
+            if ((target = project.TargetManager.GetTargetById(uid)) != null)
+            {
+                return target;
             }
         }
         return null;

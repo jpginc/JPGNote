@@ -23,8 +23,13 @@ namespace ConsoleApp1.BuiltInActions
         [AutoSingleLineString, DataMember] public string SshUserName { get; set; } = "";
         [IgnoreDataMember] public string EditChoiceText => Name;
         [IgnoreDataMember] public string UniqueId => "";
-        [IgnoreDataMember] public List<string> TagReferences => null;
-        [IgnoreDataMember] public List<string> NoteReferences => null;
+        [IgnoreDataMember] public List<string> ChildrenReferences => null;
+
+        [IgnoreDataMember]
+        public string CreatableSummary => $"Name: {Name}\nSSH Username: {SshUserName}\nIP or domain: {IpOrDomainName}";
+
+        public string FullSummary => CreatableSummary;
+
         [IgnoreDataMember] public List<JobDetails> RunningJobs { get; set; } = new List<JobDetails>();
         public IManager Manager => MachineManager.Instance;
     }

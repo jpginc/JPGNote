@@ -19,7 +19,9 @@ namespace ConsoleApp1.BuiltInActions
 
         [DataMember, Wizard, AutoSingleLineString]
         public string PortNumber { get; set; } = "";
-        [DataMember, AutoSingleLineString] public string Target { get; set; } = "";
+        [DataMember, AutoSingleLineString] public string TargetReference { get; set; } = "";
+
+        [IgnoreDataMember] public string Target => ProgramSettingsClass.Instance.GetTarget(TargetReference).IpOrDomain;
         [DataMember] public string UniqueId { get; set; } = Guid.NewGuid().ToString("N");
 
         [IgnoreDataMember]
@@ -27,25 +29,28 @@ namespace ConsoleApp1.BuiltInActions
         {
             get
             {
-                var tags = string.Join(", ", TagReferences
+                var tags = string.Join(", ", ChildrenReferences
                            .Select(r => ProgramSettingsClass.Instance.GetTag(r))
                            .Where(t => t != null)
                            .Select(t => t.TagName));
                 return tags.Equals("") ? "": $": {tags}";
             }
         }
-        [IgnoreDataMember] public List<ICreatable> Notes
+        [IgnoreDataMember] public List<Note> Notes
         {
             get
             {
-                return NoteReferences.Select(r => ProgramSettingsClass.Instance.GetNote(r))
+                return ChildrenReferences.Select(r => ProgramSettingsClass.Instance.GetNote(r))
                     .Where(n => n != null)
                     .ToList();
             }
         }
 
-        [DataMember] public List<string> NoteReferences { get; set; } = new List<string>();
-        [DataMember] public List<string> TagReferences { get; set; } = new List<string>();
+        [DataMember] public List<string> ChildrenReferences { get; set; } = new List<string>();
+        [IgnoreDataMember] public string CreatableSummary => PortNumber;
+        public string FullSummary => $"Port number: {PortNumber}\nTarget: {Target}\nTags: {Tags}\nNotes: {NoteContents}\n";
+        [IgnoreDataMember] public string NoteContents => string.Join("\n", Notes.Select(n => n.CreatableSummary));
+
         [DataMember] public List<string> CommandsRun { get; set; } = new List<string>();
 
         [DataMember] public ScanItemState ScanItemStatus { get; set; } = ScanItemState.NotSet;

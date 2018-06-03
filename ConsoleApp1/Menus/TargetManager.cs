@@ -92,6 +92,11 @@ namespace ConsoleApp1.BuiltInActions
         {
             return Creatables.FirstOrDefault(t => ((Target) t).IpOrDomain == targetName) as Target;
         }
+
+        public Target GetTargetById(string uid)
+        {
+            return Creatables.FirstOrDefault(t => t.UniqueId.Equals(uid)) as Target;
+        }
     }
 
     internal interface IManagerAndActionProvider : IActionProvider , IManager
@@ -107,8 +112,16 @@ namespace ConsoleApp1.BuiltInActions
         public string IpOrDomain { get; set; }
         [DataMember] public List<string> CommandsRun { get; set; } = new List<string>();
         [DataMember] public string UniqueId { get; set; } = Guid.NewGuid().ToString("N");
-        [DataMember] public List<string> TagReferences { get; set; } = new List<string>();
-        [DataMember] public List<string> NoteReferences { get; set; } = new List<string>();
+        [DataMember] public List<string> ChildrenReferences { get; set; } = new List<string>();
+        [IgnoreDataMember] public string CreatableSummary => IpOrDomain;
+        [IgnoreDataMember] public string FullSummary => $"{IpOrDomain}\n{ChildSummaries}\n{ChildrenReferences.Count}";
+
+        [IgnoreDataMember] public string ChildSummaries => string.Join("\n",
+            ChildrenReferences.Select(c => ProgramSettingsClass.Instance.GetCreatable(c))
+                .Where(c => c != null)
+                .Select(c => c.FullSummary));
+
+
         [IgnoreDataMember] public string EditChoiceText => IpOrDomain;
 
     }

@@ -73,12 +73,12 @@ namespace ConsoleApp1.BuiltInActions
             return (Port) Creatables.FirstOrDefault(c => ((Port) c).PortNumber.Equals(portNumber));
         }
 
-        public Port GetOrCreatePort(string portNumber, string targetIpOrDomain)
+        public Port GetOrCreatePort(string portNumber, Target target)
         {
             var port = new Port()
             {
                 PortNumber = portNumber,
-                Target = targetIpOrDomain
+                TargetReference = target.UniqueId
             };
             var existing = GetExistingOrNull(port);
             if (existing != null)
@@ -87,6 +87,7 @@ namespace ConsoleApp1.BuiltInActions
             }
 
             Creatables.Add(port);
+            target.ChildrenReferences.Add(port.UniqueId);
             return port;
         }
 

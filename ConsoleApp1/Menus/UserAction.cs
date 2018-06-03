@@ -21,7 +21,8 @@ namespace ConsoleApp1.BuiltInActions
         [DataMember, AutoSingleLineString] public string IsInteractive { get; set; } = "no";
         [IgnoreDataMember] public string EditChoiceText => Name;
         [DataMember] public string UniqueId { get; set; } = Guid.NewGuid().ToString("N");
-        [IgnoreDataMember] public List<string> TagReferences => null;
-        [IgnoreDataMember] public List<string> NoteReferences => null;
+        public string CreatableSummary => $"Name: {Name}\nCommand: {Command}\n";
+        public string FullSummary => CreatableSummary;
+        [IgnoreDataMember] public List<string> ChildrenReferences => null;
     }
 }

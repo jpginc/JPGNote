@@ -12,8 +12,15 @@ namespace ConsoleApp1
         [DataMember, AutoSingleLineString, Wizard] public string TagName { get; set; }
         public string EditChoiceText => TagName;
         [DataMember] public string UniqueId { get; set; } = Guid.NewGuid().ToString("N");
-        [IgnoreDataMember] public List<string> TagReferences => null;
-        [DataMember] public List<string> NoteReferences { get; set; } = new List<string>();
+        public string CreatableSummary => TagName;
+        public string FullSummary => $"Tag: {TagName}\n{ChildSummaries}\n";
+
+        public string ChildSummaries => string.Join("\n",
+            ChildrenReferences.Select(c => ProgramSettingsClass.Instance.GetCreatable(c))
+                .Where(c => c != null)
+                .Select(c => c.CreatableSummary));
+
+        [DataMember] public List<string> ChildrenReferences { get; set; } = new List<string>();
 
         public int CompareTo(Tag obj)
         {
@@ -39,7 +46,9 @@ namespace ConsoleApp1
     {
         [IgnoreDataMember] public string EditChoiceText => NoteName;
         [DataMember] public List<string> TagReferences { get; set; } = new List<string>();
-        [IgnoreDataMember] public List<string> NoteReferences => null;
+        [IgnoreDataMember] public List<string> ChildrenReferences => null;
+        public string CreatableSummary => FullSummary;
+        public string FullSummary => NoteContents;
         [DataMember, AutoSingleLineString, Wizard] public string NoteName { get; set; }
         [DataMember] public string UniqueId { get; set; } = Guid.NewGuid().ToString("N");
         [DataMember, AutoMultiLineString, Wizard] public virtual string NoteContents { get; set; } = "";

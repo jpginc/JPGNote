@@ -139,13 +139,7 @@ namespace ConsoleApp1.BuiltInActions
 
         private void PreviewValues(JpgTreeView obj)
         {
-            var val = "";
-            val += GetPreviewFromObject(Creatable);
-            foreach (var subThing in _manager.GetChildren(Creatable))
-            {
-                val += GetPreviewFromObject(subThing);
-            }
-            MainWindow.Instance.SetInputText(val);
+            MainWindow.Instance.SetInputText(Creatable.FullSummary);
         }
 
         private string GetPreviewFromObject(ICreatable obj)

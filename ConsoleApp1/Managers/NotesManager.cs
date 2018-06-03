@@ -64,7 +64,7 @@ namespace ConsoleApp1
         {
             var note = New();
             note.ParentUniqueId = port.UniqueId;
-            port.NoteReferences.Add(note.UniqueId);
+            port.ChildrenReferences.Add(note.UniqueId);
         }
     }
 }

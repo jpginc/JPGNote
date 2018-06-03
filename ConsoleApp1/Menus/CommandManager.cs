@@ -164,10 +164,10 @@ namespace ConsoleApp1.BuiltInActions
                 {
                     NoteContents = output,
                     ParentUniqueId = job.Port?.UniqueId ?? job.Target?.UniqueId ?? job.Project.UniqueId,
-                    NoteName = $"{job.UserAction.Name} {DateTime.Now.ToLocalTime()}"
+                    NoteName = $"{job.UserAction.Name} {job.Target?.IpOrDomain ?? "" } {job.Port?.PortNumber ?? ""} {DateTime.Now.ToLocalTime()}"
                 };
                 job.Project.NotesManager.AddPremade(note);
-                job.Port?.NoteReferences.Add(note.UniqueId);
+                job.Port?.ChildrenReferences.Add(note.UniqueId);
                 job.Port?.CommandsRun.Add(job.UserAction.Name);
                 job.Target?.CommandsRun.Add(job.UserAction.Name);
                 ParseOutput(job);
@@ -221,7 +221,7 @@ namespace ConsoleApp1.BuiltInActions
                         {
                             var portNumber = sr.ReadLine();
                             var port = job.Project.PortManager
-                                    .GetOrCreatePort(portNumber, job.Target.IpOrDomain);
+                                    .GetOrCreatePort(portNumber, job.Target);
                             while (!(line = sr.ReadLine()).Equals("Done"))
                             {
                                 if (line.Equals("TAG:"))
@@ -229,7 +229,7 @@ namespace ConsoleApp1.BuiltInActions
                                     var tagText = sr.ReadLine();
                                     //Console.WriteLine($"Tag text is: {tagText}");
                                     var tag = job.Project.TagManager.GetOrCreateTag(tagText);
-                                    port.TagReferences.Add(tag.UniqueId);
+                                    port.ChildrenReferences.Add(tag.UniqueId);
                                     tag.RefsToCreatablesThatAreTaggedByMe.Add(port.UniqueId);
                                 }
                             }

@@ -77,7 +77,7 @@ namespace ConsoleApp1
         public void CreateLinkedTag(ICreatable port)
         {
             var tag = New();
-            port.TagReferences.Add(tag.UniqueId);
+            port.ChildrenReferences.Add(tag.UniqueId);
             tag.RefsToCreatablesThatAreTaggedByMe.Add(port.UniqueId);
         }
     }

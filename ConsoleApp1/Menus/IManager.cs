@@ -20,7 +20,8 @@ namespace ConsoleApp1.BuiltInActions
     {
         string EditChoiceText { get; }
         string UniqueId { get; }
-        List<string> TagReferences { get; }
-        List<string> NoteReferences { get; }
+        List<string> ChildrenReferences { get; }
+        string CreatableSummary { get; }
+        string FullSummary { get; }
     }
 }

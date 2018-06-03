@@ -22,7 +22,7 @@ namespace ConsoleApp1.BuiltInActions
             if (_loggedCommand.NeedsTarget())
             {
                 var selectTarget = new ChoiceToActionProvider(new SelectTargetMenu(_project, 
-                    _loggedCommand), "Select Target");
+                    _loggedCommand), "Select TargetReference");
                 retVal.Add(selectTarget);
             }
             //todo check if userAction needs ports

@@ -14,8 +14,9 @@ namespace ConsoleApp1.BuiltInActions
 
         [IgnoreDataMember] public string EditChoiceText => ProjectName;
         [DataMember] public string UniqueId { get; set; } = Guid.NewGuid().ToString("N");
-        [IgnoreDataMember] public List<string> TagReferences => null;
-        [IgnoreDataMember] public List<string> NoteReferences => null;
+        [IgnoreDataMember] public List<string> ChildrenReferences => null;
+        [IgnoreDataMember] public string CreatableSummary => "";
+        [IgnoreDataMember] public string FullSummary => "";
         [IgnoreDataMember] public IManager Manager => ProjectManager.Instance;
     }
 }
