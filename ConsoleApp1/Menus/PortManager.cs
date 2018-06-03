@@ -59,7 +59,7 @@ namespace ConsoleApp1.BuiltInActions
             return Creatables.FirstOrDefault(p =>
             {
                 var c = (Port)p;
-                return c.Target.Equals(port.Target) && c.PortNumber.Equals(port.PortNumber);
+                return c.TargetReference.Equals(port.TargetReference) && c.PortNumber.Equals(port.PortNumber);
             }) as Port;
         }
 

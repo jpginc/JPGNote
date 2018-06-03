@@ -14,6 +14,7 @@ namespace ConsoleApp1.BuiltInActions
                 new ManageUserActionsChoice(),
                 new ExitChoice(),
             };
+            c.AddRange(new ManageableCreatable(OutputFilterManager.Instance).GetActions());
             return projects.Concat(c);
         }
 

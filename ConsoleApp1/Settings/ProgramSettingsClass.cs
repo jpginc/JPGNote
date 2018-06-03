@@ -20,12 +20,14 @@ internal class ProgramSettingsClass : ISettingsClass
         ProjectManager = new ProjectManager() {Settings = this, LoadedProjects = new List<ProjectPersistence>() };
         MachineManager = new MachineManager();
         UserActionManager = new UserActionManager() {Settings = this};
+        OutputFilterManager = new OutputFilterManager() {Settings = this};
     }
 
     [IgnoreDataMember] public static ProgramSettingsClass Instance { get; set; }
-    [DataMember] public ProjectManager ProjectManager { get; private set; }
-    [DataMember] public MachineManager MachineManager { get; private set; }
-    [DataMember] public UserActionManager UserActionManager { get; private set; }
+    [DataMember] public ProjectManager ProjectManager { get; set; }
+    [DataMember] public MachineManager MachineManager { get; set; }
+    [DataMember] public UserActionManager UserActionManager { get; set; }
+    [DataMember] public OutputFilterManager OutputFilterManager { get; set; }
     public string Password => _password;
 
     public static ProgramSettingsClass Start(string folderName, string fileName, string password)
@@ -62,12 +64,15 @@ internal class ProgramSettingsClass : ISettingsClass
         MachineManager.Instance = Instance.MachineManager ?? new MachineManager();
         UserActionManager.Instance = Instance.UserActionManager ?? new UserActionManager();
         UserActionManager.Instance.Settings = Instance;
+        OutputFilterManager.Instance = Instance.OutputFilterManager ?? new OutputFilterManager();
+        OutputFilterManager.Instance.Settings = Instance;
 
         return Instance;
     }
 
     public void Save()
     {
+        Console.WriteLine("Saving program settings");
             var stream1 = new MemoryStream();
             var ser = new DataContractJsonSerializer(GetType());
             ser.WriteObject(stream1, this);

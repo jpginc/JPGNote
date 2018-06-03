@@ -12,6 +12,7 @@ namespace ConsoleApp1.BuiltInActions
     [KnownType(typeof(UserAction))]
     [KnownType(typeof(ProgramProjectSetting))]
     [KnownType(typeof(Port))]
+    [KnownType(typeof(Filter))]
     public abstract class Manager : IManager
     {
         public abstract string ManageText { get; }
