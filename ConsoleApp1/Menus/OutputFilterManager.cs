@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 
 namespace ConsoleApp1.BuiltInActions
 {
@@ -35,11 +36,21 @@ namespace ConsoleApp1.BuiltInActions
             if (CreatableWizard.GetRequiredFields(filter))
             {
                 Creatables.Add(filter);
-                Console.WriteLine("Saving this thing");
                 Save();
             }
 
             return filter;
+        }
+
+        internal string FilterString(string noteContents)
+        {
+            var regexs = Creatables.Where(f=> !((Filter)f).Regex.Equals("") )
+                    .Select(f => new Regex(((Filter)f).Regex));
+            foreach (var regex in regexs)
+            {
+                noteContents = regex.Replace(noteContents, "");
+            }
+            return noteContents;
         }
     }
 

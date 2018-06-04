@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ConsoleApp1.BuiltInActions;
 using Gdk;
 using Gtk;
 using Key = Gdk.Key;
@@ -205,6 +206,7 @@ namespace ConsoleApp1
 
         public MainWindow SetInputText(string noteContents)
         {
+            noteContents = OutputFilterManager.Instance.FilterString(noteContents);
             _multiLineInputWidget.Buffer.Text = noteContents;
             return this;
         }
