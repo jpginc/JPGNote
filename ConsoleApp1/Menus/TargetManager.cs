@@ -104,17 +104,15 @@ namespace ConsoleApp1.BuiltInActions
     }
 
     [DataContract]
-    public class Target : ICreatable
+    public class Target : BaseCreatable
     {
         [DataMember]
         [AutoSingleLineString]
         [Wizard]
         public string IpOrDomain { get; set; }
         [DataMember] public List<string> CommandsRun { get; set; } = new List<string>();
-        [DataMember] public string UniqueId { get; set; } = Guid.NewGuid().ToString("N");
-        [DataMember] public List<string> ChildrenReferences { get; set; } = new List<string>();
-        [IgnoreDataMember] public string ThisSummary => IpOrDomain;
-        [IgnoreDataMember] public string FullSummary => $"{IpOrDomain}{MyTagsAndChildTags}{MyPortsString}{MyChildNotes}";
+        [IgnoreDataMember] public override string ThisSummary => IpOrDomain;
+        [IgnoreDataMember] public override string FullSummary => $"{IpOrDomain}{MyTagsAndChildTags}{MyPortsString}{MyChildNotes}";
         public string MyChildNotes => string.Join("\n", MyChildren.Select(c => c.SummaryForParent));
 
         public string MyTagsAndChildTags
@@ -129,7 +127,7 @@ namespace ConsoleApp1.BuiltInActions
         }
 
 
-        [IgnoreDataMember] public string SummaryForParent => FullSummary;
+        [IgnoreDataMember] public override string SummaryForParent => FullSummary;
 
         [IgnoreDataMember]
         public IEnumerable<ICreatable> MyChildren => ChildrenReferences
@@ -143,7 +141,6 @@ namespace ConsoleApp1.BuiltInActions
         [IgnoreDataMember] public string MyPortsString => "\nPorts: " + string.Join(", ", MyChildren.Select(c => c.ThisSummary));
 
 
-        [IgnoreDataMember] public string EditChoiceText => IpOrDomain;
-
+        [IgnoreDataMember] public override string EditChoiceText => IpOrDomain;
     }
 }

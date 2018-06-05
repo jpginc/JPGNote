@@ -13,16 +13,15 @@ namespace ConsoleApp1.BuiltInActions
         Vulnerable
     }
     [DataContract]
-    public class Port : ICreatable, IComparable<Port>, IDoneable
+    public class Port : BaseCreatable, IComparable<Port>, IDoneable
     {
-        [IgnoreDataMember] public string EditChoiceText => Target.Equals("") ? PortNumber : $"{PortNumber} ({Target})";
+        [IgnoreDataMember] public override string EditChoiceText => Target.Equals("") ? PortNumber : $"{PortNumber} ({Target})";
 
         [DataMember, Wizard, AutoSingleLineString]
         public string PortNumber { get; set; } = "";
         [DataMember, AutoSingleLineString] public string TargetReference { get; set; } = "";
 
         [IgnoreDataMember] public string Target => ProgramSettingsClass.Instance.GetTarget(TargetReference).IpOrDomain;
-        [DataMember] public string UniqueId { get; set; } = Guid.NewGuid().ToString("N");
 
         [IgnoreDataMember]
         public string TagsString
@@ -49,13 +48,12 @@ namespace ConsoleApp1.BuiltInActions
             }
         }
 
-        [DataMember] public List<string> ChildrenReferences { get; set; } = new List<string>();
-        [IgnoreDataMember] public string ThisSummary => PortNumber;
+        [IgnoreDataMember] public override string ThisSummary => PortNumber;
 
-        public string FullSummary =>
+        public override string FullSummary =>
             $"Port number: {PortNumber}\nTarget: {Target}\nTags: {TagsString}{NotesSummaryOrEmpty()}";
 
-        public string SummaryForParent => NotesSummaryOrEmpty();
+        public override string SummaryForParent => NotesSummaryOrEmpty();
 
         [DataMember] public List<string> CommandsRun { get; set; } = new List<string>();
 

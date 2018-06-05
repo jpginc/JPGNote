@@ -6,7 +6,7 @@ namespace ConsoleApp1.BuiltInActions
 {
 
     [DataContract]
-    public class SshAbleMachine : ICreatable
+    public class SshAbleMachine : BaseCreatable
     {
         [AutoSingleLineString, DataMember] public string MacAddress { get; set; } = "";
 
@@ -21,15 +21,11 @@ namespace ConsoleApp1.BuiltInActions
 
         [AutoSingleLineString, DataMember] public string Name { get; set; } = "";
         [AutoSingleLineString, DataMember] public string SshUserName { get; set; } = "";
-        [IgnoreDataMember] public string EditChoiceText => Name;
-        [IgnoreDataMember] public string UniqueId => "";
-        [IgnoreDataMember] public List<string> ChildrenReferences => null;
+        [IgnoreDataMember] public override string EditChoiceText => Name;
+        [IgnoreDataMember] public override List<string> ChildrenReferences => new List<string>();
 
         [IgnoreDataMember]
-        public string ThisSummary => $"Name: {Name}\nSSH Username: {SshUserName}\nIP or domain: {IpOrDomainName}";
-
-        public string FullSummary => ThisSummary;
-        public string SummaryForParent => FullSummary;
+        public override string ThisSummary => $"Name: {Name}\nSSH Username: {SshUserName}\nIP or domain: {IpOrDomainName}";
 
         [IgnoreDataMember] public List<JobDetails> RunningJobs { get; set; } = new List<JobDetails>();
         public IManager Manager => MachineManager.Instance;

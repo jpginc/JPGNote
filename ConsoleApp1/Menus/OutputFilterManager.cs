@@ -44,20 +44,27 @@ namespace ConsoleApp1.BuiltInActions
 
         internal string FilterString(string noteContents)
         {
-            var regexs = Creatables.Where(f=> !((Filter)f).Regex.Equals("") )
-                    .Select(f => new Regex(((Filter)f).Regex));
-            foreach (var regex in regexs)
+            try
             {
-                noteContents = regex.Replace(noteContents, "");
+
+                var regexs = Creatables.Where(f => !((Filter)f).Regex.Equals(""))
+                        .Select(f => new Regex(((Filter)f).Regex));
+                foreach (var regex in regexs)
+                {
+                    noteContents = regex.Replace(noteContents, "");
+                }
+            } catch(Exception e)
+            {
+
             }
             return noteContents;
         }
     }
 
     [DataContract]
-    public class Filter : ICreatable
+    public class Filter : BaseCreatable
     {
-        [IgnoreDataMember] public string EditChoiceText => $"Edit {Name}";
+        [IgnoreDataMember] public override string EditChoiceText => $"Edit {Name}";
 
         [DataMember]
         [AutoSingleLineString]
@@ -68,14 +75,6 @@ namespace ConsoleApp1.BuiltInActions
         [Wizard]
         public string Regex { get; set; } = "";
 
-        [DataMember] public string UniqueId { get; set; } = Guid.NewGuid().ToString("N");
-
-        [IgnoreDataMember] public List<string> ChildrenReferences => new List<string>();
-
-        [IgnoreDataMember] public string ThisSummary => $"{Name}: {Regex}";
-
-        [IgnoreDataMember] public string FullSummary => ThisSummary;
-
-        [IgnoreDataMember] public string SummaryForParent => ThisSummary;
+        [IgnoreDataMember] public override string ThisSummary => $"{Name}: {Regex}";
     }
 }

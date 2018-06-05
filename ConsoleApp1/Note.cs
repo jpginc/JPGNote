@@ -7,21 +7,17 @@ using ConsoleApp1.BuiltInActions;
 namespace ConsoleApp1
 {
     [DataContract]
-    public class Tag : ICreatable, IComparable<Tag>
+    public class Tag : BaseCreatable, IComparable<Tag>
     {
         [DataMember, AutoSingleLineString, Wizard] public string TagName { get; set; }
-        public string EditChoiceText => TagName;
-        [DataMember] public string UniqueId { get; set; } = Guid.NewGuid().ToString("N");
-        public string ThisSummary => TagName;
-        public string FullSummary => $"Tag: {TagName}\n{ChildSummaries}\n";
-        public string SummaryForParent => TagName;
+        public override string EditChoiceText => TagName;
+        public override string ThisSummary => TagName;
+        public override string FullSummary => $"Tag: {TagName}\n{ChildSummaries}\n";
 
         public string ChildSummaries => string.Join("\n",
             ChildrenReferences.Select(c => ProgramSettingsClass.Instance.GetCreatable(c))
                 .Where(c => c != null)
                 .Select(c => c.ThisSummary));
-
-        [DataMember] public List<string> ChildrenReferences { get; set; } = new List<string>();
 
         public int CompareTo(Tag obj)
         {
@@ -43,16 +39,13 @@ namespace ConsoleApp1
         [DataMember] public List<string> RefsToNotesAboutThisTag { get; set; } = new List<string>();
     }
     [DataContract]
-    public class Note : ICreatable, IComparable<Note>
+    public class Note : BaseCreatable, IComparable<Note>
     {
-        [IgnoreDataMember] public string EditChoiceText => NoteName;
+        [IgnoreDataMember] public override string EditChoiceText => NoteName;
         [DataMember] public List<string> TagReferences { get; set; } = new List<string>();
-        [IgnoreDataMember] public List<string> ChildrenReferences => null;
-        public string ThisSummary => FullSummary;
-        public string FullSummary => NoteContents;
-        public string SummaryForParent { get; }
+        [IgnoreDataMember] public override List<string> ChildrenReferences => new List<string>();
+        public override string ThisSummary => NoteContents;
         [DataMember, AutoSingleLineString, Wizard] public string NoteName { get; set; }
-        [DataMember] public string UniqueId { get; set; } = Guid.NewGuid().ToString("N");
         [DataMember, AutoMultiLineString, Wizard] public virtual string NoteContents { get; set; } = "";
         [DataMember] public DateTime CreateTime { get; set; } = DateTime.Now;
         [DataMember] public string ParentUniqueId { get; set; } = "";

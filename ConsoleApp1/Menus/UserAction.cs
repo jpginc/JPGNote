@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 namespace ConsoleApp1.BuiltInActions
 {
     [DataContract]
-    public class UserAction : ICreatable
+    public class UserAction : BaseCreatable
     {
         [DataMember]
         [AutoSingleLineString]
@@ -20,11 +20,8 @@ namespace ConsoleApp1.BuiltInActions
 
         [DataMember] [AutoFilePicker] public string ParsingCodeLocation { get; set; } = "";
         [DataMember, AutoSingleLineString] public string IsInteractive { get; set; } = "no";
-        [IgnoreDataMember] public string EditChoiceText => Name;
-        [DataMember] public string UniqueId { get; set; } = Guid.NewGuid().ToString("N");
-        public string ThisSummary => $"Name: {Name}\nCommand: {Command}\n";
-        public string FullSummary => ThisSummary;
-        public string SummaryForParent => ThisSummary;
-        [IgnoreDataMember] public List<string> ChildrenReferences => new List<string>();
+        [IgnoreDataMember] public override string EditChoiceText => Name;
+        [IgnoreDataMember] public override string ThisSummary => $"Name: {Name}\nCommand: {Command}\n";
+        [IgnoreDataMember] public override List<string> ChildrenReferences => new List<string>();
     }
 }
