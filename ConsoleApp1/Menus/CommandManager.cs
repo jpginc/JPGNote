@@ -32,6 +32,7 @@ namespace ConsoleApp1.BuiltInActions
 
             var args = " /c \"" + MachineManager.Instance.DontWorryAboutTooManySessions() + " | "
                        + GetOuputRedirectionString(loggedNote.FileName) + "\"";
+            Console.WriteLine(args);
             RunRedirectedShell(_cmdLocation, args);
         }
 
@@ -40,7 +41,7 @@ namespace ConsoleApp1.BuiltInActions
             return $"\"{_teeLocation}\" \"{logLocation}\"";
         }
 
-        private void RunRedirectedShell(string exeFileName, string args)
+        private Process RunRedirectedShell(string exeFileName, string args)
         {
             //todo this isn't cross platform...
             var p = new Process
@@ -55,6 +56,31 @@ namespace ConsoleApp1.BuiltInActions
                 }
             };
             p.Start();
+            return p;
+        }
+
+        public string RunArpCommand()
+        {
+            return RunAndReturnOutput("arp.exe","-a");
+        }
+
+        private string RunAndReturnOutput(string exeFileName, string args){ 
+            var p = new Process
+            {
+                StartInfo =
+                {
+                    FileName = exeFileName,
+                    Arguments = args,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = false
+                }
+            };
+            p.Start();
+            var stdo = p.StandardOutput.ReadToEnd();
+            p.WaitForExit();
+            p.Close();
+            return stdo;
         }
 
         public void RunCommand(string commandString, Project project,

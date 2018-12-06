@@ -15,6 +15,7 @@ namespace ConsoleApp1.BuiltInActions
         [AutoSingleLineString, DataMember] public string SshKeyPassphrase { get; set; } = "";
 
         [AutoSingleLineString, DataMember] public string IpOrDomainName { get; set; } = "";
+        [IgnoreDataMember] public string SessionIpOrDomainName { get; set; } = "";
         [AutoSingleLineString, DataMember] public string IsAvailable { get; set; } = "yes";
 
         [DataMember] public List<string> Tags { get; set; }
@@ -29,5 +30,9 @@ namespace ConsoleApp1.BuiltInActions
 
         [IgnoreDataMember] public List<JobDetails> RunningJobs { get; set; } = new List<JobDetails>();
         public IManager Manager => MachineManager.Instance;
+
+        [IgnoreDataMember] public bool HasMac => MacAddress != null && ! MacAddress.Trim().Equals("");
+        [IgnoreDataMember] public bool HasIpOrDomainName => IpOrDomainName != null && ! IpOrDomainName.Trim().Equals("");
+        [IgnoreDataMember] public bool HasSessionIpOrDomainName => SessionIpOrDomainName != null && ! SessionIpOrDomainName.Trim().Equals("");
     }
 }

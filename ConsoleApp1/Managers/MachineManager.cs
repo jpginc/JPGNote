@@ -84,17 +84,57 @@ namespace ConsoleApp1.BuiltInActions
                    $"\"{m.SshUserName}@{GetIpOrDomain(m)}\"";
         }
 
+        private string removeDelimitersFromMac(string mac) {
+            return mac.Replace(":","").Replace("-","");
+        }
+
         private string GetIpOrDomain(SshAbleMachine m)
         {
-            //todo
-            return m.IpOrDomainName;
+            if(m.HasIpOrDomainName) {
+                return m.IpOrDomainName;
+            }
+            if(m.HasSessionIpOrDomainName) {
+                return m.SessionIpOrDomainName;
+            }
+            if(SetSessionIdFromMac(m)) {
+                return m.SessionIpOrDomainName;
+            }
+            SetSessionIdFromUserInput(m);
+            return m.SessionIpOrDomainName;
+        }
+        private void SetSessionIdFromUserInput(SshAbleMachine m) {
+            m.SessionIpOrDomainName = GuiManager.Instance.
+                GetNonEmptySingleLineInput("Cannot find IP address, Enter IP here").Result;
+        }
+
+        private bool SetSessionIdFromMac(SshAbleMachine m) {
+            if(!m.HasMac) {
+                return false;
+            }
+            var arpStr = removeDelimitersFromMac(CommandManager.Instance.RunArpCommand());
+            var trimmedMac = removeDelimitersFromMac(m.MacAddress).Trim();
+            var ip = arpStr
+                .Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None)
+                .FirstOrDefault(s => {Console.WriteLine(s); return s.Contains(trimmedMac);}) // find the line with the mac address
+                ?.Trim() //windows prepends a space or tab
+                .Split(new string[] {" ", "\t"},StringSplitOptions.None)
+                .FirstOrDefault();
+
+            //Console.WriteLine(arpStr);
+            //Console.WriteLine(trimmedMac);
+            //Console.WriteLine(ip);
+            if(ip != null && ! ip.Trim().Equals("")) {
+                m.SessionIpOrDomainName = ip;
+                return true;
+            }
+            return false;
         }
 
         private string PutSshKeyInTempLocation(SshAbleMachine sshAbleMachine)
         {
             var tempLocation = Path.GetTempFileName();
             File.WriteAllText(tempLocation, sshAbleMachine.SshKey);
-            new Timer(DeleteTempFile, tempLocation, 1000, Timeout.Infinite);
+            new Timer(DeleteTempFile, tempLocation, 5000, Timeout.Infinite);
             return tempLocation;
         }
 
