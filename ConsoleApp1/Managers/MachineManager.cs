@@ -79,9 +79,10 @@ namespace ConsoleApp1.BuiltInActions
 
         private string GetSshStringFromMachine(SshAbleMachine m)
         {
+            var IpOrDomainName = GetIpOrDomain(m); //get this before writing the ssh key to the temp dir
             return $"\"-i\" \"{PutSshKeyInTempLocation(m)}\" " +
                    $"\"-o\" \"StrictHostKeyChecking=no\" " + 
-                   $"\"{m.SshUserName}@{GetIpOrDomain(m)}\"";
+                   $"\"{m.SshUserName}@{IpOrDomainName}\"";
         }
 
         private string removeDelimitersFromMac(string mac) {
