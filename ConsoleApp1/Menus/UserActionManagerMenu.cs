@@ -10,7 +10,9 @@ namespace ConsoleApp1.BuiltInActions
             var userActions =  UserActionManager.Instance.GetUserActionChoices();
             var c = new List<ITreeViewChoice>
             {
-                new NewUserActionChoice()
+                new NewUserActionChoice(),
+                new ExportUserActionChoice(),
+                new ImportUserActionChoice()
             };
             return userActions.Concat(c);
         }

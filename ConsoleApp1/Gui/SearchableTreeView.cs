@@ -14,6 +14,10 @@ namespace ConsoleApp1
         public new int Height = 5;
         public new int Width = 1;
 
+        public SearchableTreeView(Func<bool> AcceptCallback) : this()
+        {
+            _treeview.AcceptCallback = AcceptCallback;
+        }
         public SearchableTreeView()
         {
             _label = new Label("Search: ");

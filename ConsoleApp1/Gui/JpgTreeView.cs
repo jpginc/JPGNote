@@ -16,6 +16,8 @@ namespace ConsoleApp1
         private ITreeViewChoice _lastClickedItem;
         private readonly SearchEntry _search;
 
+        public Func<bool> AcceptCallback = DefaultAcceptCallback;
+
         private enum Column
         {
             Text,
@@ -39,6 +41,8 @@ namespace ConsoleApp1
             SetupHandlers();
         }
 
+        private static bool DefaultAcceptCallback() => true;
+
         private void SetupTheSortingColumn()
         {
             var sortingColumn = new TreeViewColumn
@@ -60,7 +64,7 @@ namespace ConsoleApp1
 
         private void HandleDownUpEdgeCase(object o, KeyPressEventArgs args)
         {
-       }
+        }
 
         protected override bool OnKeyPressEvent(EventKey evnt)
         {
@@ -211,7 +215,7 @@ namespace ConsoleApp1
             if (CheckForDoubleClickOrDoubleReturn(clickedRow))
             {
                 SelectSortedRow(clickedRow, true);
-                MainWindow.Instance.Accept();
+                AcceptCallback();
             }
             else
             {
@@ -219,6 +223,8 @@ namespace ConsoleApp1
                 //_search.GrabFocusWithoutSelecting();
             }
         }
+
+
 
         private void SelectSortedRow(TreeIter item, bool selected)
         {
@@ -254,7 +260,7 @@ namespace ConsoleApp1
             if (CheckForDoubleClickOrDoubleReturn(sortedFirstRow))
             {
                 SelectSortedRow(sortedFirstRow, true);
-                MainWindow.Instance.Accept();
+                AcceptCallback();
             }
             else
             {

@@ -23,7 +23,7 @@ namespace ConsoleApp1
 
     public abstract class SimpleActionProvider : IActionProvider
     {
-        public InputType InputType => InputType.Single;
+        public virtual InputType InputType => InputType.Single;
         public abstract IEnumerable<ITreeViewChoice> GetActions();
 
         public ActionProviderResult HandleUserAction(UserActionResult res)

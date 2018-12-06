@@ -113,7 +113,7 @@ namespace ConsoleApp1
 
         private void AddLeftElements(Grid container)
         {
-            _searchableTreeView = new SearchableTreeView();
+            _searchableTreeView = new SearchableTreeView(Accept);
 
             AddAccelGroup(_buttonKeyboardShortcutAccelGroup);
 
@@ -155,10 +155,10 @@ namespace ConsoleApp1
             Callback(UserActionResult.ResultType.Canceled, null);
         }
 
-        public MainWindow Accept()
+        public bool Accept()
         {
             OnAcceptClick(null, null);
-            return this;
+            return true;
         }
 
         private void OnAcceptClick(object sender, EventArgs e)

@@ -39,6 +39,41 @@ namespace ConsoleApp1
                 .SetMultiSelect(multiSelect);
         }
 
+        private CancellableObj<IEnumerable<ITreeViewChoice>> GetChoiceBlocking(bool multiSelect, IEnumerable<ITreeViewChoice> choices, 
+            string prompt)
+        {
+            var retVal = new CancellableObj<IEnumerable<ITreeViewChoice>> {ResponseType = UserActionResult.ResultType.Canceled};
+            var popup = new MessageDialog(MainWindow.Instance,
+                DialogFlags.Modal | DialogFlags.DestroyWithParent,
+                MessageType.Question,
+                ButtonsType.OkCancel,
+                prompt)
+            {
+                DefaultResponse = ResponseType.Ok,
+                DefaultWidth = 600
+            };
+
+            var input = new SearchableTreeView();
+            input.SetChoices(choices);
+            input.SetMultiSelect(multiSelect);
+
+            popup.ContentArea.PackEnd(input, true, false, 5);
+            popup.ShowAll();
+            if (popup.Run() == (int) ResponseType.Ok)
+            {
+                retVal.ResponseType = UserActionResult.ResultType.Accept;
+                retVal.Result = input.GetSelectedItems();
+            }
+
+            popup.Destroy();
+            return retVal;
+        }
+
+        public CancellableObj<IEnumerable<ITreeViewChoice>> GetChoicesBlocking(IEnumerable<ITreeViewChoice> choices, string prompt) 
+        {
+            return GetChoiceBlocking(true, choices, prompt);
+        }
+
         public CancellableObj<string> GetNonEmptySingleLineInput(string prompt, bool isPassword = false)
         {
             while (true)
@@ -196,11 +231,20 @@ namespace ConsoleApp1
             GetChoice(false, jpgActionManager.GetActions(), prompt, false);
         }
 
-        public CancellableObj<string> GetFile(string prompt)
+        public CancellableObj<string> SaveFile(string prompt) 
         {
-             var retVal = new CancellableObj<string> {ResponseType = UserActionResult.ResultType.Canceled};
+            return GetFile(prompt, FileChooserAction.Save);
+        }
+
+        public CancellableObj<string> SelectFile(string prompt)
+        {
+            return GetFile(prompt, FileChooserAction.Open);
+        }
+        private CancellableObj<string> GetFile(string prompt, FileChooserAction choiceType) 
+        {
+            var retVal = new CancellableObj<string> {ResponseType = UserActionResult.ResultType.Canceled};
             var filechooser = new FileChooserDialog(prompt,
-                MainWindow.Instance, FileChooserAction.Open, "Cancel", ResponseType.Cancel,
+                MainWindow.Instance, choiceType, "Cancel", ResponseType.Cancel,
                 "Open", ResponseType.Accept);
 
             if (filechooser.Run() == (int) ResponseType.Accept)

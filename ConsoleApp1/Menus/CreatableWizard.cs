@@ -46,7 +46,7 @@ namespace ConsoleApp1.BuiltInActions
             }
             else if (prop.GetCustomAttributes(typeof(AutoFilePicker), false).Any())
             {
-                inputFunc = () => GuiManager.Instance.GetFile(prompt);
+                inputFunc = () => GuiManager.Instance.SelectFile(prompt);
             }
             return inputFunc;
         }
