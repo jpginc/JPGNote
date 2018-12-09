@@ -10,7 +10,7 @@ namespace ConsoleApp1.BuiltInActions
 {
     [DataContract]
     [KnownType(typeof(UserAction))]
-    internal class UserActionManager : Manager
+    internal class UserActionManager : Manager, IManagerAndActionProvider
     {
         [IgnoreDataMember] public static UserActionManager Instance { get; set; }
         [IgnoreDataMember] public override string ManageText => "Manage Actions";
@@ -126,6 +126,15 @@ namespace ConsoleApp1.BuiltInActions
         {
             return Creatables.Where(c => ((UserAction) c).Command.Contains("{{PORT}}"))
                 .Select(c => new AutoAction(c, this));
+        }
+        public InputType InputType => InputType.Single;
+        public IEnumerable<ITreeViewChoice> GetActions() 
+        {
+            return Creatables.Select(u => new AutoAction(u, this));
+        }
+        public ActionProviderResult HandleUserAction(UserActionResult res)
+        {
+            return ActionProviderResult.PassToTreeViewChoices;
         }
     }
 }

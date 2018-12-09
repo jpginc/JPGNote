@@ -25,7 +25,7 @@ namespace ConsoleApp1.BuiltInActions
             return GetManageActions().Concat(existingCreatables);
         }
 
-        private List<ITreeViewChoice> GetManageActions()
+        public List<ITreeViewChoice> GetManageActions()
         {
             return new List<ITreeViewChoice>
             {

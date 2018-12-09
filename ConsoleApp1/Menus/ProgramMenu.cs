@@ -8,14 +8,14 @@ namespace ConsoleApp1.BuiltInActions
         public override IEnumerable<ITreeViewChoice> GetActions()
         {
             var projects = new ManageableCreatable(ProjectManager.Instance).GetActionsWithChildren();
+            var userActions = new ManageableCreatable(UserActionManager.Instance).GetManageActions();
             var c = new List<ITreeViewChoice>
             {
                 new ManageSlaveMachinesChoice(),
-                new ManageUserActionsChoice(),
-                new ExitChoice(),
+                new ExitChoice()
             };
             c.AddRange(new ManageableCreatable(OutputFilterManager.Instance).GetActions());
-            return projects.Concat(c);
+            return projects.Concat(c).Concat(userActions);
         }
 
     }
