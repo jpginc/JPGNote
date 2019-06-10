@@ -204,6 +204,7 @@ namespace ConsoleApp1.BuiltInActions
         {
             if (File.Exists(job.UserAction.ParsingCodeLocation))
             {
+                var folder = Path.GetDirectoryName(job.UserAction.ParsingCodeLocation);
                 var p = new Process
                 {
                     StartInfo =
@@ -212,7 +213,8 @@ namespace ConsoleApp1.BuiltInActions
                         Arguments = "\"" + job.UserAction.ParsingCodeLocation + "\""
                                     + " \"" + job.LogLocation + "\"",
                         UseShellExecute = false,
-                        RedirectStandardOutput = true
+                        RedirectStandardOutput = true,
+                        WorkingDirectory = folder 
                     }
                 };
                 p.Start();
