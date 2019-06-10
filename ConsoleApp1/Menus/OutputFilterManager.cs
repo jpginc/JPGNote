@@ -46,7 +46,6 @@ namespace ConsoleApp1.BuiltInActions
         {
             try
             {
-
                 var regexs = Creatables.Where(f => !((Filter)f).Regex.Equals(""))
                         .Select(f => new Regex(((Filter)f).Regex));
                 foreach (var regex in regexs)
@@ -55,9 +54,14 @@ namespace ConsoleApp1.BuiltInActions
                 }
             } catch(Exception e)
             {
-
+                Console.WriteLine("REGEX FAILUER: " + e);
             }
-            return noteContents;
+            return RemoveDoubleNewlines(noteContents);
+        }
+
+        private string RemoveDoubleNewlines(string s)
+        {
+            return Regex.Replace(s, @"[\r\n]{3,}", "\r\n");
         }
     }
 
