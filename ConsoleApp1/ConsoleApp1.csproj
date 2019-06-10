@@ -9,7 +9,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
   </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>ConsoleApp1</RootNamespace>
+  </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="GtkSharp" Version="3.22.24.10"/>
+    <PackageReference Include="GtkSharp" Version="*"/>
   </ItemGroup>
 </Project>
