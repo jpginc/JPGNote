@@ -39,7 +39,7 @@ namespace ConsoleApp1
             {
                 if (evnt.Key == Key.o)
                 {
-                    CommandManager.Instance.OpenSshSession(ProgramSettingsClass.Instance.Project);
+                    //CommandManager.Instance.OpenSshSession(ProgramSettingsClass.Instance.Project);
                     return true;
                 }
                 if(evnt.Key == Key.a)

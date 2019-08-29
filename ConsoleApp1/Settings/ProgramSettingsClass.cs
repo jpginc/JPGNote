@@ -8,7 +8,7 @@ using ConsoleApp1;
 using ConsoleApp1.BuiltInActions;
 
 [DataContract]
-internal class ProgramSettingsClass : ISettingsClass
+internal class ProgramSettingsClass //: ISettingsClass
 {
     [IgnoreDataMember] public static string FileName;
     [IgnoreDataMember] private static string _password;
@@ -17,10 +17,12 @@ internal class ProgramSettingsClass : ISettingsClass
 
     public ProgramSettingsClass()
     {
+        /*
         ProjectManager = new ProjectManager() {Settings = this, LoadedProjects = new List<ProjectPersistence>() };
         MachineManager = new MachineManager();
         UserActionManager = new UserActionManager() {Settings = this};
         OutputFilterManager = new OutputFilterManager() {Settings = this};
+ */
     }
 
     [IgnoreDataMember] public static ProgramSettingsClass Instance { get; set; }
@@ -58,6 +60,7 @@ internal class ProgramSettingsClass : ISettingsClass
             file?.Close();
         }
 
+/*
         ProjectManager.Instance = Instance.ProjectManager ?? new ProjectManager();
         ProjectManager.Instance.Settings = Instance;
         ProjectManager.Instance.LoadedProjects = new List<ProjectPersistence>();
@@ -67,6 +70,7 @@ internal class ProgramSettingsClass : ISettingsClass
         OutputFilterManager.Instance = Instance.OutputFilterManager ?? new OutputFilterManager();
         OutputFilterManager.Instance.Settings = Instance;
 
+*/
         return Instance;
     }
 
@@ -87,7 +91,7 @@ internal class ProgramSettingsClass : ISettingsClass
             writer.Close();
     }
 
-    public Project Project { get; set; }
+    //public Project Project { get; set; }
 
     public Note GetNote(string uniqueNoteId)
     {

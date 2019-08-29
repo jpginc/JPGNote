@@ -11,7 +11,7 @@
         }
         private void ClearQueue(UserActionResult obj)
         {
-            _project.CommandQueue.ClearQueue(_project);
+            //_project.CommandQueue.ClearQueue(_project);
         }
     }
 }

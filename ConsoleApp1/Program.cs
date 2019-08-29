@@ -1,21 +1,30 @@
 ﻿using System;
+using Gtk;
+using System.Threading;
 using ConsoleApp1;
-
 public class GtkHelloWorld
 {
     private static readonly string _fileName = "settings3.txt";
-    private static readonly string _folderName = "c:\\users\\root\\JPGTree";
-    private static JpgActionManager _jpgActionManager;
+    private static readonly string _folderName = "c:\\test";
+    //private static JpgActionManager _jpgActionManager;
 
     public static void Main()
     {
+        Console.WriteLine("hello world");
+        Application.Init();
+        NewGuiManager.NewWindow();
+        NewGuiManager.NewWindow();
+        Application.Run();
+        Console.WriteLine("goodbye world");
+        /* 
         _jpgActionManager = new JpgActionManager();
         InitialiseSettingsClass();
         GuiManager.Instance.AcceptCallback = HandleInput;
         GuiManager.Instance.GetReady(_jpgActionManager, "What do you want to do?");
         GuiManager.Instance.Go();
+        */
     }
-
+/*
     private static bool HandleInput(UserActionResult choice)
     {
         if (_jpgActionManager.CurrentActionProvider.HandleUserAction(choice)
@@ -61,4 +70,5 @@ public class GtkHelloWorld
     {
         return "asdf";
     }
+ */
 }

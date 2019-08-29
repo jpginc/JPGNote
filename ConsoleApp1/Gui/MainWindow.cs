@@ -8,7 +8,7 @@ using Window = Gtk.Window;
 
 namespace ConsoleApp1
 {
-    internal class MainWindow : Window
+    public class MainWindow : Window
     {
         public Func<UserActionResult, bool> UserActionCallback;
         private SearchableTreeView _searchableTreeView;
@@ -76,7 +76,7 @@ namespace ConsoleApp1
 
         private void SetCloseOnExit()
         {
-            DeleteEvent += Exit;
+            DeleteEvent += NewGuiManager.GuiClosed;
         }
 
         private void SetSize()
@@ -145,9 +145,9 @@ namespace ConsoleApp1
             UserActionCallback.Invoke(_userActionResult);
         }
 
-        private static void Exit(object sender, EventArgs e)
+        private void Exit(object sender, EventArgs e)
         {
-            Environment.Exit(0);
+            Close();
         }
 
         private void OnBackClick(object sender, EventArgs e)

@@ -9,6 +9,7 @@ namespace ConsoleApp1
     [DataContract]
     public class CommandQueue
     {
+        /*
         [DataMember] public List<SerialisableJob> JobDetails = new List<SerialisableJob>();
         [IgnoreDataMember] private List<SerialisableJob> _seperateFromNewQueue;
 
@@ -89,5 +90,6 @@ namespace ConsoleApp1
                    && Equals(PortNumber, other.PortNumber)
                    && Equals(CommandString, other.CommandString);
         }
+ */
     }
 }

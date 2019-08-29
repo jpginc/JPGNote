@@ -1,6 +1,6 @@
 ﻿namespace ConsoleApp1
 {
-    internal class CancellableObj<T>
+    public class CancellableObj<T>
     {
         public CancellableObj()
         {

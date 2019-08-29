@@ -4,7 +4,7 @@ using Gtk;
 
 namespace ConsoleApp1
 {
-    internal class GuiManager
+    public class GuiManager
     {
         private MainWindow _gui;
         public Func<UserActionResult, bool> AcceptCallback { get; set; }
@@ -265,6 +265,11 @@ namespace ConsoleApp1
         public string GetSearchText()
         {
             return _gui.GetSearchText();
+        }
+
+        public void Notify(string message) 
+        {
+            _gui.UserNotify(message);
         }
     }
 }
