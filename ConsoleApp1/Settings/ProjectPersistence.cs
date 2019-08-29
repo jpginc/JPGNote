@@ -181,16 +181,20 @@ namespace ConsoleApp1
         {
             try
             {
+                var tempFileName = SettingFileName + ".backup";
                 var stream1 = new MemoryStream();
                 var ser = new DataContractJsonSerializer(GetType());
                 ser.WriteObject(stream1, this);
                 stream1.Position = 0;
                 var sr = new StreamReader(stream1);
-                var writer = new StreamWriter(SettingFileName);
+                var writer = new StreamWriter(tempFileName);
                 // Rewrite the entire value of publics to the file
                 stream1.Position = 0;
                 writer.Write(AESThenHMAC.SimpleEncryptWithPassword(sr.ReadToEnd(), _password));
                 writer.Close();
+                //if the program closes before the writer finishes writing we corrupt our settings
+                //file. So we copy (overwriting) the fully written file here
+                File.Copy(tempFileName, SettingFileName, /* overwrite */ true);
                 //Console.WriteLine("saved");
                 return true;
             }
