@@ -34,6 +34,9 @@ namespace ConsoleApp1.BuiltInActions
                 var selectPort = new ChoiceToActionProvider(new SelectPortMenu(_project, 
                     _loggedCommand), "Select Port");
                 retVal.Add(selectPort);
+                var selectPortAll = new ChoiceToActionProvider(new SelectPortMenuAll(_project, 
+                    _loggedCommand), "Select Port (ALL)");
+                retVal.Add(selectPortAll);
             }
             //todo preview userAction
             //var previewChoice = new TOTO;

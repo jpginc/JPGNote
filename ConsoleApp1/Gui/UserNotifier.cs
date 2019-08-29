@@ -4,9 +4,9 @@ namespace ConsoleApp1
 {
     internal class UserNotifier
     {
-        public static void Error(string message)
+        public static void Error(string message, MainWindow window)
         {
-            var popup = new MessageDialog(MainWindow.Instance,
+            var popup = new MessageDialog(window,
                     DialogFlags.Modal | DialogFlags.DestroyWithParent,
                     MessageType.Error,
                     ButtonsType.Ok,
@@ -16,14 +16,14 @@ namespace ConsoleApp1
             popup.Destroy();
         }
 
-        public static void Notify(string message)
+        public static void Notify(string message, MainWindow window)
         {
-            MainWindow.Instance.UserNotify(message);
+            window.UserNotify(message);
         }
 
-        public static bool Confirm(string message)
+        public static bool Confirm(string message, MainWindow window)
         {
-            var popup = new MessageDialog(MainWindow.Instance,
+            var popup = new MessageDialog(window,
                     DialogFlags.Modal | DialogFlags.DestroyWithParent,
                     MessageType.Warning,
                     ButtonsType.YesNo,

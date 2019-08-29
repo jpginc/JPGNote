@@ -65,7 +65,7 @@ namespace ConsoleApp1.BuiltInActions
                     ms.Close();
                     if(actions.Any(a => Creatables.Any(c => (c as UserAction).Name.Equals(a.Name))))
                     {
-                        if(UserNotifier.Confirm("Some actions have the same name. Skip importing those actions?"))
+                        if(UserNotifier.Confirm("Some actions have the same name. Skip importing those actions?", GuiManager.Instance.GetActiveGui()))
                         {
                             actions = actions.Where(a => ! Creatables.Any(c => (c as UserAction).Name.Equals(a.Name))).ToList();
                         }
@@ -78,7 +78,7 @@ namespace ConsoleApp1.BuiltInActions
                 }
                 catch (Exception e)
                 {
-                    UserNotifier.Error("Error importing commands\r\n" + e.StackTrace);
+                    UserNotifier.Error("Error importing commands\r\n" + e.StackTrace, GuiManager.Instance.GetActiveGui());
                     Console.WriteLine(e.StackTrace);
                     //throw e;
                 }

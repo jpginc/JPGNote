@@ -10,9 +10,9 @@ namespace ConsoleApp1
 {
     internal class MainWindow : Window
     {
-        public static MainWindow Instance { get; set; }
         public Func<UserActionResult, bool> UserActionCallback;
         private SearchableTreeView _searchableTreeView;
+        private bool doFilter = true;
 
         private readonly UserActionResult _userActionResult =
             new UserActionResult {Result = UserActionResult.ResultType.NoInput};
@@ -204,9 +204,19 @@ namespace ConsoleApp1
             _notificationLabel.ModifyBg(StateType.Normal, color);
         }
 
+        public bool ToggleFilter()
+        {
+            doFilter = !doFilter;
+            Console.WriteLine("toggled filter " + doFilter) ;
+            return doFilter;
+        }
+
         public MainWindow SetInputText(string noteContents)
         {
+            if(doFilter) {
             noteContents = OutputFilterManager.Instance.FilterString(noteContents);
+            }
+            noteContents = OutputFilterManager.Instance.RemoveDoubleNewlines(noteContents);
             _multiLineInputWidget.Buffer.Text = noteContents;
             return this;
         }

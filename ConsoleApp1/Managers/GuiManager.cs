@@ -15,6 +15,12 @@ namespace ConsoleApp1
         {
         }
 
+        //TODO remove this function
+        public MainWindow GetActiveGui()
+        {
+            return _gui;
+        }
+
         public void Go()
         {
             
@@ -43,7 +49,7 @@ namespace ConsoleApp1
             string prompt)
         {
             var retVal = new CancellableObj<IEnumerable<ITreeViewChoice>> {ResponseType = UserActionResult.ResultType.Canceled};
-            var popup = new MessageDialog(MainWindow.Instance,
+            var popup = new MessageDialog(_gui,
                 DialogFlags.Modal | DialogFlags.DestroyWithParent,
                 MessageType.Question,
                 ButtonsType.OkCancel,
@@ -83,7 +89,7 @@ namespace ConsoleApp1
                     || choice.ResponseType == UserActionResult.ResultType.Accept && !choice.Result.Equals(""))
                     return choice;
 
-                UserNotifier.Error("Error: Input cannot be an empty string");
+                UserNotifier.Error("Error: Input cannot be an empty string", _gui);
             }
         }
 
@@ -101,12 +107,12 @@ namespace ConsoleApp1
                     throw new ArgumentOutOfRangeException();
             }
 
-            MainWindow.Instance.SetSearchText(searchText);
+            _gui.SetSearchText(searchText);
         }
 
         private UserActionResult GetSingleLineInputFromGui(string prompt, bool resetGui = true)
         {
-            var choice = new[] {(ITreeViewChoice) new SelectingTriggersAcceptAction("Press enter to finish input")};
+            var choice = new[] {(ITreeViewChoice) new SelectingTriggersAcceptAction("Press enter to finish input", _gui)};
             GetChoice(false, choice, prompt, resetGui);
             return _gui.GetUserActionResult();
         }
@@ -120,7 +126,7 @@ namespace ConsoleApp1
                     || choice.Result == UserActionResult.ResultType.Accept && !choice.SingleLineInput.Equals(""))
                     return choice;
 
-                UserNotifier.Error("Error: Input cannot be an empty string");
+                UserNotifier.Error("Error: Input cannot be an empty string", _gui);
                 resetGui = false;
             }
         }
@@ -133,7 +139,7 @@ namespace ConsoleApp1
         public CancellableObj<string> GetSingleLineInput(string prompt, bool isPassword, string prepopulate = "")
         {
             var retVal = new CancellableObj<string> {ResponseType = UserActionResult.ResultType.Canceled};
-            var popup = new MessageDialog(MainWindow.Instance,
+            var popup = new MessageDialog(_gui,
                 DialogFlags.Modal | DialogFlags.DestroyWithParent,
                 MessageType.Question,
                 ButtonsType.OkCancel,
@@ -165,7 +171,7 @@ namespace ConsoleApp1
         {
             var retVal = new CancellableObj<string> {ResponseType = UserActionResult.ResultType.Canceled};
             var filechooser = new FileChooserDialog("Select ProjectFolder To Save ProgramProjectSetting Data",
-                MainWindow.Instance, FileChooserAction.SelectFolder, "Cancel", ResponseType.Cancel,
+                _gui, FileChooserAction.SelectFolder, "Cancel", ResponseType.Cancel,
                 "Open", ResponseType.Accept);
 
             if (filechooser.Run() == (int) ResponseType.Accept)
@@ -191,7 +197,7 @@ namespace ConsoleApp1
         public CancellableObj<string> GetMultiLineInput(string prompt, string currentValue)
         {
             var retVal = new CancellableObj<string> {ResponseType = UserActionResult.ResultType.Canceled};
-            var popup = new MessageDialog(MainWindow.Instance,
+            var popup = new MessageDialog(_gui,
                 DialogFlags.Modal | DialogFlags.DestroyWithParent,
                 MessageType.Question,
                 ButtonsType.OkCancel,
@@ -225,8 +231,7 @@ namespace ConsoleApp1
         public void GetReady(JpgActionManager jpgActionManager, string prompt)
         {
             Application.Init();
-            MainWindow.Instance = new MainWindow();
-            _gui = MainWindow.Instance;
+            _gui = new MainWindow();
             _gui.UserActionCallback = AcceptCallback;
             GetChoice(false, jpgActionManager.GetActions(), prompt, false);
         }
@@ -244,7 +249,7 @@ namespace ConsoleApp1
         {
             var retVal = new CancellableObj<string> {ResponseType = UserActionResult.ResultType.Canceled};
             var filechooser = new FileChooserDialog(prompt,
-                MainWindow.Instance, choiceType, "Cancel", ResponseType.Cancel,
+                _gui, choiceType, "Cancel", ResponseType.Cancel,
                 "Open", ResponseType.Accept);
 
             if (filechooser.Run() == (int) ResponseType.Accept)
@@ -259,7 +264,7 @@ namespace ConsoleApp1
 
         public string GetSearchText()
         {
-            return MainWindow.Instance.GetSearchText();
+            return _gui.GetSearchText();
         }
     }
 }

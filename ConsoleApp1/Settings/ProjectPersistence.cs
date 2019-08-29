@@ -20,6 +20,7 @@ namespace ConsoleApp1
         private static readonly string _settingsFileName = "settings.txt";
         public string ProjectName;
         private bool _isSaving;
+        [IgnoreDataMember] private MainWindow _gui = GuiManager.Instance.GetActiveGui();
         [IgnoreDataMember] public Project Project { get; set; }
 
         public string SettingFileName => ProjectFolder + Path.DirectorySeparatorChar + ProjectName
@@ -76,7 +77,7 @@ namespace ConsoleApp1
                 Directory.CreateDirectory(folderName);
                 if (File.Exists(SettingFileName))
                 {
-                    if (UserNotifier.Confirm("Project already exists. Select Yes to load, No to overwrite"))
+                    if (UserNotifier.Confirm("Project already exists. Select Yes to load, No to overwrite",_gui))
                     {
                         return true;
                     }
@@ -88,7 +89,7 @@ namespace ConsoleApp1
             }
             catch (IOException e)
             {
-                UserNotifier.Error("Some problem with creating the project folder!");
+                UserNotifier.Error("Some problem with creating the project folder!", _gui);
                 Console.WriteLine(e.StackTrace);
                 return false;
             }
@@ -121,13 +122,13 @@ namespace ConsoleApp1
             }
             catch (FileNotFoundException e)
             {
-                if (UserNotifier.Confirm("Project settings file not found, Create new file?")) StartNew();
+                if (UserNotifier.Confirm("Project settings file not found, Create new file?", _gui)) StartNew();
             }
             catch (Exception e)
             {
                 if (UserNotifier.Confirm("Something went wrong loading the file\n" +
                                          "Possibly wrong password. Would you like to trash" +
-                                         "the old file and create a new project?"))
+                                         "the old file and create a new project?", _gui))
                 {
                     file?.Close();
                     StartNew();

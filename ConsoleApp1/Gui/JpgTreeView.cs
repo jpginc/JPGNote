@@ -87,6 +87,11 @@ namespace ConsoleApp1
                     SetCursor(path, column, false); 
                 }
             }
+
+            if (evnt.Key == Gdk.Key.f && evnt.State == Gdk.ModifierType.ControlMask)
+            {
+                GuiManager.Instance.GetActiveGui().ToggleFilter();
+            }
  
             return base.OnKeyPressEvent(evnt);
         }

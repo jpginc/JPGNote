@@ -2,9 +2,9 @@
 {
     internal class SelectingTriggersAcceptAction : SimpleTreeViewChoice
     {
-        public SelectingTriggersAcceptAction(string choiceText) : base(choiceText)
+        public SelectingTriggersAcceptAction(string choiceText, MainWindow window) : base(choiceText)
         {
-            SelectHandler = MainWindow.Instance.Accept;
+            SelectHandler = window.Accept;
         }
     }
 }

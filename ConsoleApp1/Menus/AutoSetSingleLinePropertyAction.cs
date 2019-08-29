@@ -24,7 +24,7 @@ namespace ConsoleApp1.BuiltInActions
 
         private void Select(JpgTreeView obj)
         {
-            MainWindow.Instance.SetInputText((string)_property.GetValue(_obj));
+            GuiManager.Instance.GetActiveGui().SetInputText((string)_property.GetValue(_obj));
         }
 
         private void Set(UserActionResult obj)

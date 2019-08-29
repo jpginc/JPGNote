@@ -56,10 +56,10 @@ namespace ConsoleApp1.BuiltInActions
             {
                 Console.WriteLine("REGEX FAILUER: " + e);
             }
-            return RemoveDoubleNewlines(noteContents);
+            return noteContents;
         }
 
-        private string RemoveDoubleNewlines(string s)
+        public string RemoveDoubleNewlines(string s)
         {
             return Regex.Replace(s, @"[\r\n]{3,}", "\r\n");
         }

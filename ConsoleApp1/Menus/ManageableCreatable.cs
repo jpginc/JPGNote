@@ -77,7 +77,7 @@ namespace ConsoleApp1.BuiltInActions
         {
             if (choice.Result == UserActionResult.ResultType.Accept && choice.UserChoices.Count() != 0)
                 if (UserNotifier.Confirm(
-                    $"Are you sure you want to delete these {choice.UserChoices.Count()} items?"))
+                    $"Are you sure you want to delete these {choice.UserChoices.Count()} items?", GuiManager.Instance.GetActiveGui()))
                     foreach (var item in choice.UserChoices)
                         _manager.Delete(((AutoAction) item).Creatable);
             JpgActionManager.UnrollActionContext();
@@ -139,7 +139,7 @@ namespace ConsoleApp1.BuiltInActions
 
         private void PreviewValues(JpgTreeView obj)
         {
-            MainWindow.Instance.SetInputText(Creatable.FullSummary);
+            GuiManager.Instance.GetActiveGui().SetInputText(Creatable.FullSummary);
         }
 
         private string GetPreviewFromObject(ICreatable obj)

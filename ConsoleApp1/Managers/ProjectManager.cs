@@ -24,7 +24,7 @@ namespace ConsoleApp1.BuiltInActions
                     Creatables.Add(proj);
                     Save();
                 }
-                UserNotifier.Notify("Project Created");
+                UserNotifier.Notify("Project Created", GuiManager.Instance.GetActiveGui());
             }
         }
 
