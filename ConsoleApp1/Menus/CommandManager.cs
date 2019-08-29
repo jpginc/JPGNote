@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Gtk;
 using Action = System.Action;
 
@@ -140,6 +141,8 @@ namespace ConsoleApp1.BuiltInActions
         {
             new Thread(() =>
             {
+                //Console.WriteLine(exeFileName);
+                //Console.WriteLine(args);
                 var p = new Process
                 {
                     StartInfo =
@@ -148,44 +151,21 @@ namespace ConsoleApp1.BuiltInActions
                         Arguments = args,
                         UseShellExecute = false,
                         RedirectStandardOutput = true,
-                        RedirectStandardError = true
+                        RedirectStandardError = true,
+                        RedirectStandardInput = true
                     }
                 };
                 p.Start();
-                //File.WriteAllText(logLocation, "Command not complete yet.\nit may never finish");
-                var file = File.Open(job.LogLocation, FileMode.Create, FileAccess.Write, FileShare.Read);
+                p.StandardInput.Close(); // probably not neccessary
+                var errTask = p.StandardError.ReadToEndAsync();
+                var outTask = p.StandardOutput.ReadToEndAsync();
+                Task.WaitAll(new Task[] {errTask, outTask});
+
                 var output = "";
-                while (!p.HasExited)
-                {
-                    int nextChar;
-                    if (p.StandardOutput.Peek() > -1)
-                    {
-                        nextChar = p.StandardOutput.Read();
-                        file.WriteByte((byte) nextChar);
-                        output += (char) nextChar;
-                    }
+                output += outTask.Result;
+                output += errTask.Result;
+                p.Dispose();
 
-                    if (p.StandardError.Peek() > -1)
-                    {
-                        nextChar = p.StandardError.Read();
-                        file.WriteByte((byte) nextChar);
-                        output += (char) nextChar;
-                    }
-
-                    Thread.Sleep(0);
-                }
-
-                //output += p.StandardOutput.ReadToEnd();
-                //output += p.StandardError.ReadToEnd();
-                //File.WriteAllText(logLocation, output);
-                var remaining = p.StandardOutput.ReadToEnd();
-                output += remaining;
-                file.Write(Encoding.UTF8.GetBytes(remaining), 0, remaining.Length);
-                remaining = p.StandardError.ReadToEnd();
-                output += remaining;
-                file.Write(Encoding.UTF8.GetBytes(remaining), 0, remaining.Length);
-                file.Close();
-                p.Close();
                 var note = new Note()
                 {
                     NoteContents = output,
@@ -196,14 +176,16 @@ namespace ConsoleApp1.BuiltInActions
                 job.Port?.ChildrenReferences.Add(note.UniqueId);
                 job.Port?.CommandsRun.Add(job.UserAction.Name);
                 job.Target?.CommandsRun.Add(job.UserAction.Name);
-                ParseOutput(job);
+
+                ParseOutput(job, output);
             }).Start();
         }
 
-        private void ParseOutput(JobDetails job)
+        private void ParseOutput(JobDetails job, string log)
         {
             if (File.Exists(job.UserAction.ParsingCodeLocation))
             {
+                File.WriteAllText(job.LogLocation, log);
                 var folder = Path.GetDirectoryName(job.UserAction.ParsingCodeLocation);
                 var p = new Process
                 {
