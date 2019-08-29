@@ -230,8 +230,7 @@ namespace ConsoleApp1
 
         public void GetReady(JpgActionManager jpgActionManager, string prompt)
         {
-            Application.Init();
-            _gui = new MainWindow();
+            _gui = NewGuiManager.NewWindow().GuiWindow;
             _gui.UserActionCallback = AcceptCallback;
             GetChoice(false, jpgActionManager.GetActions(), prompt, false);
         }

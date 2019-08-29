@@ -41,20 +41,20 @@ namespace ConsoleApp1
     }
     public class MainGui
     {
-        private MainWindow _gui;
+        public MainWindow GuiWindow;
 
         public MainGui() {
-            _gui = new MainWindow();
+            GuiWindow = new MainWindow();
         }
 
         public bool HasWindow(MainWindow w) 
         {
-            return _gui == w;
+            return GuiWindow == w;
         }
 
         public void Notify(string message) 
         {
-            _gui.UserNotify(message);
+            GuiWindow.UserNotify(message);
         }
         public CancellableObj<string> GetNonEmptySingleLineInput(string prompt, bool isPassword = false)
         {
@@ -65,13 +65,13 @@ namespace ConsoleApp1
                     || choice.ResponseType == UserActionResult.ResultType.Accept && !choice.Result.Equals(""))
                     return choice;
 
-                UserNotifier.Error("Error: Input cannot be an empty string", _gui);
+                UserNotifier.Error("Error: Input cannot be an empty string", GuiWindow);
             }
         }
         public CancellableObj<string> GetSingleLineInput(string prompt, bool isPassword, string prepopulate = "")
         {
             var retVal = new CancellableObj<string> {ResponseType = UserActionResult.ResultType.Canceled};
-            var popup = new MessageDialog(_gui,
+            var popup = new MessageDialog(GuiWindow,
                 DialogFlags.Modal | DialogFlags.DestroyWithParent,
                 MessageType.Question,
                 ButtonsType.OkCancel,
