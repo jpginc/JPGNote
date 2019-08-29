@@ -6,6 +6,7 @@ using ConsoleApp1.BuiltInActions;
 
 namespace ConsoleApp1
 {
+    /*
     public interface INewAction
     {
         string ListViewDisplayText {get;}
@@ -35,5 +36,6 @@ namespace ConsoleApp1
             TypeName = PROJECT_TYPE_NAME;
         }
     }
+ */
 }
  

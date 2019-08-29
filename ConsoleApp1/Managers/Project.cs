@@ -10,7 +10,7 @@ namespace ConsoleApp1.BuiltInActions
         public Project(ProjectPersistence settings)
         {
             _settings = settings;
-            //_settings.Project = this;
+            _settings.Project = this;
         }
 
         public string UniqueId => _settings.UniqueId ?? "";
@@ -50,12 +50,12 @@ namespace ConsoleApp1.BuiltInActions
 
         public void CommandDone(JobDetails job)
         {
-            //CommandQueue.Remove(job);
+            CommandQueue.Remove(job);
         }
 
         public void CommandQueued(JobDetails jobDetails)
         {
-            //CommandQueue.Add(jobDetails);
+            CommandQueue.Add(jobDetails);
         }
     }
 }

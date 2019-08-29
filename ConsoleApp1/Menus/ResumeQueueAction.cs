@@ -12,7 +12,7 @@
 
         private void ResumeQueue(UserActionResult obj)
         {
-            //_project.CommandQueue.Revive(_project);
+            _project.CommandQueue.Revive(_project);
         }
     }
 }

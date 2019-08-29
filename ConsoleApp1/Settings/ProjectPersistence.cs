@@ -10,7 +10,7 @@ using Gtk;
 namespace ConsoleApp1
 {
     [DataContract]
-    public class ProjectPersistence //: ISettingsClass
+    public class ProjectPersistence : ISettingsClass
     {
 
         private const int SaveTimerInterval = 1000;
@@ -98,7 +98,6 @@ namespace ConsoleApp1
 
         private bool Load()
         {
-            /*
             StreamReader file = null;
             try
             {
@@ -140,7 +139,6 @@ namespace ConsoleApp1
             {
                 file?.Close();
             }
- */
             return true;
         }
 
@@ -212,14 +210,12 @@ namespace ConsoleApp1
 
         private bool StartNew()
         {
-            /*
             NotesManager = new NotesManager {Settings = this};
             TargetManager = new TargetManager {Settings = this};
             PortManager = new PortManager {Settings = this};
             TagManager = new TagManager {Settings = this};
             CommandQueue = new CommandQueue();
 
- */
             return Persist();
         }
 

@@ -6,6 +6,7 @@ using ConsoleApp1.BuiltInActions;
 
 namespace ConsoleApp1
 {
+    /*
     [DataContract]
     public class NewNote
     {
@@ -23,4 +24,5 @@ namespace ConsoleApp1
     public class NewNoteManager
     {
     }
-}
+    */
+ }
